@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Convolution - A tutorial with definition, interactive examples and properties</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_convolution/" />
+	<meta name="description" content="A convolution is the integral of the multiplication of a function by a reversed version of another function. Here you can understand better what it is, with a full description, interactive examples with different filters and the convolution properties.">
+	<meta name="keywords" content="convolution, properties, example, theorem, fourier transform, interactive, 2D, image, kernel">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'convolution';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../../p_convolution/">http://www.onmyphd.com/?p=convolution</a></p><h1>Convolution</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Integrals</li>
+<li>Dirac delta</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+	<li><a href="#h2_whatis">What is a convolution?</a></li>
+	<li><a href="#h2_graph">Graphical representation of a convolution</a></li>
+	<li><a href="#h2_2d">2D convolution</a></li>
+	<li><a href="#h2_corr">Similarity with correlation</a></li>
+	<li><a href="#h2_prop">Properties of a convolution</a></li>
+</ul>
+<h2 id="h2_whatis">What is a convolution?</h2>
+<p>
+A convolution is a mathematical operation that represents a signal passing through a LTI (Linear and Time-Invariant) system or filter. If we have a signal $s(t)$ passing through a system with impulse response $h(t)$, the output is the convolution of $s(t)$ with $h(t)$. The convolution is simply the integral of the product of the two functions (in this example the functions are $s(t)$ and $h(t)$), where one is reversed.
+$$(s*h)(t) = \int_0^\infty s(\tau)h(t-\tau)d\tau$$
+So why reverse one function? Consider the response of the system to an impulse at time $t_n$: it is $h(t - t_n)$, right? At $t = t_n$ you will have $h(0)$ and all other points of $h(t)$ will be shifted in the same way. At this point, we are convolving the systems's function with a dirac delta function:
+$$\delta(t-t_n)*h(t) = \int_0^\infty \delta(\tau-t_n)h(t-\tau)d\tau = h(t - t_n)$$
+Only for $\tau = t_n$ the multiplication inside the integral is non-zero and it is equal to $h(t-\tau) = h(t-t_n)$.
+Now imagine a sequence of impulses at times $t_0$, $t_1$, and so on until $t_n$ that form a discrete signal. The impulse responses accumulate, and you will have the accumulation of all the impulse responses shifted by each impulse.
+$$\sum_i \int_0^\infty\delta(\tau-t_i)h(t-\tau)d\tau$$
+we can put the sum inside the integral:
+$$ \int_0^\infty\left(\sum_i\delta(\tau-t_i)\right)h(t-\tau)d\tau$$
+In the limit of a continuous signal (the combination of very close together impulses creates a signal), the summation will lead to signal $s(t)$:
+$$ \int_0^\infty s(\tau) h(t-\tau)d\tau$$
+</p>
+<h2 id="h2_graph">Graphical representation of a convolution</h2>
+<p>
+Graphically, we can reverse one of the functions and while sliding that function through the time axis, calculate the integral of their product for each time. Here you can try several combinations of signal and system and make your own example.
+</p>
+<center>
+<div style="width:100%;max-width:600px;height:300px" id="conv_plot"></div>
+<p class="comment"> The slider controls the parameter time ($t$). You can see, for each time instance, the terms $h(t-\tau)$ and $s(\tau)$, their product and the result of the integration. You can also change the signal and impulse response with the buttons below.
+</p>
+<div id="slider"></div>
+<table>
+<tr><td>Signal:</td><td><input type="button" value="Decay" id="s_decay"/></td><td><input type="button" value="Box car" id="s_boxcar"/></td><td><input type="button" value="Impulse" id="s_imp"/></td></tr>
+<tr><td>System impulse response:</td><td><input type="button" value="Decay" id="h_decay"/></td><td><input type="button" value="Box car" id="h_boxcar"/></td><td><input type="button" value="Impulse" id="h_imp"/></td></tr>
+</table>
+</center>
+<h2 id="h2_2d">2D convolution</h2>
+<p>
+The convolution can generalize to more than one dimension. Two-dimensional (2D) convolutions are also extremely useful, for example in image processing. An image is a 2D signal and can be the input to a 2D filter as well. If an image is a signal $s(x,y)$, where $(x,y)$ is the position of a pixel, and $h(x,y)$ is the kernel of a filter, the convolution is:
+$$ (s*h)(x,y) = \int_x \int_y s(\alpha,\beta)h(x-\alpha, y - \beta) \partial\beta \partial\alpha$$
+For example, if the kernel is gaussian, the image will be smoothed because at each position $(x,y)$ we are integrating a small region of the image with an "average" filter.
+</p>
+<h2 id="h2_corr">Similarity with correlation</h2>
+<p>
+Convolution and correlation are very alike. In fact, the only difference is that no function is reversed in the correlation:
+$$\rho_{s,h} = corr(s,h) = s(t)*h(-t) = \int_0^\infty s(\tau)h(\tau-t)d\tau$$
+</p>
+<h2 id="h2_prop">Properties of a convolution</h2>
+<p>
+In what follows, I will call $s(t)$ and $h(t)$ as functions (because that is what they are). A convolution can be applied to any two functions of the same variable, for other purposes besides knowing the output of a system for a given input.
+</p>
+<h4>Commutative</h4>
+<p>
+You can exchange functions:
+$$s*h = h*s$$
+Exchange between signal and system in the plot above and see for yourself.
+</p>
+<h4>Associative</h4>
+<p>
+You can chain convolutions without any specific order:
+$$ f*(s*h) = (f*s)*h $$
+</p>
+<h4>Distributive</h4>
+<p>
+The convolution of a sum is the same as the sum of convolutions:
+$$ h*(s + f) = h*s + h*f $$
+</p>
+<h4>Scaling</h4>
+<p>
+A constant multiplied at any stage of the convolution will give the same result:
+$$\alpha (s * h) = (\alpha s) * h =  s * (\alpha h)$$
+</p>
+<h4>Identity</h4>
+<p>
+The dirac delta (impulse) is to the convolution as 1 is to the multiplication. Convolving with the dirac delta returns the original function:
+$$ h * \delta = h $$
+</p>
+<h4>Complex Conjugation</h4>
+<p>
+The conjugate of the convolution is the same as the convolution of the conjugates:
+$$ \overline{s*h} = \overline{s}*\overline{h} $$
+</p>
+<h4>Integration</h4>
+<p>
+The integral of the convolution is the product of the integrals of each function:
+$$ \int (s*h)(t)dt = \left(\int s(t)dt\right) \left(\int h(t)dt\right)$$
+</p>
+<h4>Differentiation</h4>
+<p>
+The derivative of the convolution is the same as the convolution of a function with the derivative of the other:
+$$ \frac{d s*h}{d t} = \frac{d s}{d t}*h = s*\frac{d h}{d t}$$
+</p>
+<h4>Convolution theorem</h4>
+<p>
+This one is a major property! <b>The Fourier transform of the convolution is the same as the product of the Fourier transform of each function</b>:
+$$ \mathcal{F}\{s*h\} = \mathcal{F}\{s\}\mathcal{F}\{h\} $$
+If we realize that the Fourier transform is an integral of the function, it is not surprising that from the Integration property this one can be obtained.
+</p>
+<script type="text/javascript" src="../../pages/convolution.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

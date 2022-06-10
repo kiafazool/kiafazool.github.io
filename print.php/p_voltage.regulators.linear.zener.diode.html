@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Zener-diode/Shunt linear voltage regulators</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_voltage.regulators.linear.zener.diode/" />
+	<meta name="description" content="Linear voltage regulators control the voltage drop between input and output as needed to set the desired output voltage. The shunt type does that by adding a path parallel to the load that diverts a part of the input current to ground. ">
+	<meta name="keywords" content="Shunt voltage regulator, zener diode regulator">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'voltage.regulators.linear.zener.diode.shunt';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../../p_voltage.regulators.linear.zener.diode/">http://www.onmyphd.com/?p=voltage.regulators.linear.zener.diode.shunt</a></p><h1>Zener diode/Shunt Linear Voltage regulators</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basics of electronic circuits</li>
+<li>Zener diodes</li>
+<li>Bipolar Junction Transistor (BJT) operation</li>
+<li>MOSFET operation</li>
+<li>Opamp principle of operation</li>
+<li><a href="../../print.php/p_voltage/" class="page">What is a voltage regulator</a></li>
+<li><a href="../../print.php/p_voltage.regulators/" class="page">What is a linear regulator</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_how">How do shunt regulators control the current flowing into the load?</a></li>
+<li><a href="#h2_activedevices">Shunt regulator with active devices</a></li>
+<li><a href="#h2_feedback">Shunt regulator with feedback</a></li>
+</ul>
+<p>
+<a href="../../print.php/p_voltage.regulators/" class="page">Linear regulators</a> control the voltage drop between the input and output as required to produce the desired output. Shunt linear regulators control the voltage drop indirectly by controlling the current that flows to a path in parallel with the load.
+</p>
+<h2 id="h2_how">How do shunt regulators control the current flowing into the load?</h2>
+Shunt regulators control a variable resistance in parallel with the load to divert the extra current from the load. Since:
+$$ V_{out} = V_{in} - I_{in}R_S $$
+If the input voltage, $R_S$ and (hopefully) $V_{out}$ are fixed, the input current $I_{in}$ should be constant too. And since
+$$ I_{in} = I_Z + I_{out}$$
+$I_Z$ should counterbalance $I_{out}$ to maintain a constant input current.
+<center>
+<img src="../../pages/linear.regulator/linear.regulator_shunt.concept.svg" width="300" class="svg" alt="Concept of linear shunt regulator"/>
+<p class="comment">Concept of linear shunt regulator</p>
+</center>
+<p>
+The efficiency of the regulator is
+$$\eta = \frac{P_{out}}{P_{in}} = \frac{V_{out} I_{out}}{V_{in} I_{in}} = \frac{V_{out}I_{out}}{V_{in}(I_{out}+I_{z})}$$
+and the power loss is:
+$$P_{in} - P_{out} = V_{in}I_{in} - V_{out}I_{out} = (V_{in} - V_{out}) I_{in} + V_{out} I_{z}$$
+i.e., the power loss is equal to the power lost in the resistance $R_S$ , plus the power consumed by the parallel resistance $R_Z$.
+</p>
+<p>
+The simplest shunt regulator is made with a resistor and a <b>zener diode</b>. Every diode has a maximum reverse voltage above which it breaks down, the properly named reverse breakdown voltage. A zener diode differs from normal diodes in that its breakdown voltage is well-defined during fabrication and it can revert from the breakdown region. In this region, its dynamic resistance is very low, which means that a large change in current has a small effect on its voltage. Therefore, the zener diode has the ability to keep a reasonably steady reverse voltage at its terminals around its breakdown voltage for a wide range of reverse currents. This property makes it a voltage reference on its own.
+</p>
+<center>
+<img src="../../pages/linear.regulator/linear.regulator_shunt.svg" width="300" class="svg"/>
+<p class="comment">Basic linear shunt regulator</p>
+</center>
+<p>
+Then, the series resistance of the shunt regulator is sized such that the current $I_{in}$ flowing through the resistance  is equal to the current $I_{out}$ flowing through the load plus the current flowing through the zener diode necessary to put it in breakdown $I_Z$.
+$$I_{in} = I_Z+I_{out}$$
+The current flowing through the resistance is of course, the difference between input and output voltage divided by the resistance value:
+$$I_{in} = \frac{V_{in} - V_{out}}{R_S}$$
+Putting it all together, we get:
+$$R_S = \frac{V_{in} - V_{out}}{I_Z+I_{out}}$$
+For a fixed resistance $R_S$, a change in the load current will be compensated by an opposite change in the zener current. However, this has two drawbacks:
+<ul>
+<li>A change in the zener reverse current will have some, although small, effect on the zener reverse voltage. Therefore, the output voltage will have some dependence on the current load</li>
+<li>If there is a large drop in load current, the current that the zener will have to compensate may damage it.</li>
+</ul>
+Apart from this, this shunt regulator is the simplest but least efficient regulator there is: all current flowing through the zener diode is dissipated, as well as the energy in the $R_S$ resistance.
+</p>
+<h2 id="h2_activedevices">Shunt regulator with active devices</h2>
+<p>
+Improvements can be made by adding active devices to the regulator. Active devices, such as a transistor, can drive large loads while being controlled by a low power signal.
+</p>
+<center>
+<img src="../../pages/linear.regulator/linear.regulator_shunt2.svg" width="300" class="svg"/>
+<p class="comment">Linear shunt regulator with active device</p>
+</center>
+<p>
+As before, the zener diode sets a constant voltage, this time to the base of a power Bipolar Junction Transistor (BJT). The output voltage is the zener voltage plus the $V_{BE}$ drop of the BJT. The improvement of this regulator is that any change in the load current is actually compensated by the current $I_C$, which can handle more current than the zener diode. The zener current is only affected by the base current of the BJT, which is $I_C$ divided by the $\beta$ parameter of the BJT. Given the small value of the base current, the zener voltage is hardly affected by changes in load current, unlike the first version of the shunt regulator. To quantify this, we see that the zener current $I_Z$ is equal to the current flowing through $R_D$ plus the BJT base current $I_B$. Also, the input current is the sum of the currents in the three parallel branches. In sum:
+$$R_S = \frac{V_{in} - V_{out}}{I_{in}}$$
+$$I_{in} = I_Z + I_C + I_L$$
+$$I_Z = I_D + \frac{I_C}{\beta}$$
+Putting all pieces together, the $R_S$ resistor should be sized such that:
+$$R_S = \frac{V_{in} - V_{out}}{I_D + \frac{\beta+1}{\beta}I_C + I_L}$$
+Since the zener current is small, the load current is balanced by the BJT current.
+</p>
+<p>
+The circuit stabilizes in states where all the following conditions are met:
+$$I_S = I_Z + I_C + I_L$$
+$$V_{out} = V_{in} - R_S I_{in}$$
+$$V_{be} = V_{out} - V_{Z}$$
+$$I_C = I_{es}(e^{\frac{V_{be}}{V_t}}-1)$$
+$$I_L = V_{out}/R_L$$
+$$I_Z = \frac{V_{be}}{R_D} + \frac{I_C}{\beta}$$
+</p>
+<center>
+<div style="position:relative">
+<span id="vout" style="color:orange;position:absolute;left:520px;top:10px;">vout</span>
+<span id="vbe" style="color:orange;position:absolute;left:340px;top:110px;">vbe</span>
+<span id="iz" style="color:orange;position:absolute;left:285px;top:70px;">iz</span>
+<span id="id" style="color:orange;position:absolute;left:285px;top:160px;">id</span>
+<span id="ic" style="color:orange;position:absolute;left:480px;top:50px;">ic</span>
+<span id="ib" style="color:orange;position:absolute;left:420px;top:60px;">ib</span>
+<span id="is" style="color:orange;position:absolute;left:365px;top:5px;">is</span>
+</div>
+<img src="../../pages/linear.regulator/linear.regulator_shunt2.svg" width="300" class="svg"/>
+</center>
+<center>
+<table>
+<tr>
+<td><div id="icvbe" style="width:400px;height:300px"></div></td>
+<td><div id="voutvin" style="width:400px;height:300px"></div></td>
+</tr>
+</table>
+<span id="state"></span>
+<table>
+<tr>
+<td>$V_{in}$ = <span id="vin"></span></td>
+<td><div id="vin-slider" style="width:600px;"></div></td>
+</tr>
+<tr>
+<td>$I_{L}$ = <span id="il"></span></td>
+<td><div id="il-slider" style="width:600px;"></div></td>
+</tr>
+</table>
+<input type="button" value="Clear" id="clearioplot"/>
+</center>
+<p class="comment">Take some time to experiment with this example and have a feeling for how a linear regulator with a BJT shunt transistor works. Say we want to have a 5V output. Considering that the $V_{be}$ drop is around 0.7V, the zener should have a reverse breakdown voltage of 4.3V. The first slider controls the input voltage and the second slider controls the current that the load is requesting. The negative feedback created by the zener diode and the BJT sinks the current necessary to create the voltage drop $V_{in} - V_{out}$ in the resistance $R_S$. The left plot shows the $I_c-V_{be}$ curve of the transistor, as well as its operating point. As the load current is increased, the current that the BJT sinks must decrease to balance the current $I_S$ and therefore the voltage drop. If the load current is too high, it alone, flowing through $R_S$ can push the output voltage below 5V. A bigger input voltage allows a larger current to flow through $R_S$, thereby allowing more headroom for the BJT current. The right plot marks the output voltage every time you move the sliders. With that, the right plot will build the input-output voltage map. To start over, click on the Clear button. You can also see the state of the circuit (voltages and currents) on the circuit diagram above.
+</p>
+<p>A similar option is to use a PNP transistor and switch the positions of the zener and $R_D$. The rationale is the same, and the equations can be derived the same way.
+</p>
+<center>
+<img src="../../pages/linear.regulator/linear.regulator_shunt3.svg" width="300" class="svg"/>
+<p class="comment">Linear shunt regulator with active device</p>
+</center>
+<p>
+There is a problem with both versions, though: A larger input voltage will increase the current flowing through $R_S$ and consequently through all parallel branches of the regulator. Due to higher currents, the zener voltage as well as the BJT base-emitter voltage will increase, which affects the output voltage (you may try that in the example above). To avoid that, negative feedback must be employed to keep the output voltage stable under all sources of perturbations, including variations in input voltage and load current.
+</p>
+<h2 id="h2_feedback">Shunt regulator with feedback</h2>
+<p>
+This more elaborate example of a shunt regulator adds a feedback loop to monitor the output voltage and dinamically biases the BJT to sink the extra current. The component of excelence to implement this feedback loop is the opamp.
+</p>
+<center>
+<img src="../../pages/linear.regulator/linear.regulator_shunt.feedback.svg" width="450" class="svg"/>
+<p class="comment">Linear shunt regulator with feedback</p>
+</center>
+<p>
+The zener diode provides the reference voltage to the negative input of the opamp. Note that any other kind of voltage reference, such as a <a href="../../print.php/p_bandgap/" class="page">bandgap voltage reference</a> would also work (and it is actually better). A voltage divider composed by $R_1$ and $R_2$ provides a measure of the output voltage suitable for the opamp, i.e., if we want the output voltage to be $k$ times higher than the voltage reference, than the voltage divider should divide the output voltage by $k$ so that both inputs of the opamp can be equal for the desired output voltage. Then, the opamp drives the BJT such that its positive input (the output voltage) follows its negative input (the reference), due to the beautiful effect of negative feedback. Say the output voltage rises above the reference voltage. The differential input voltage of the opamp increases and also the driving voltage of the BJT. In turn, the BJT pulls more current, increasing the input current and the voltage drop in $R_S$, thereby reducing the output voltage. This works just as well when the output is below the reference voltage. Then, any perturbation of the input voltage or the load current (or even others) will affect the output voltage, but the feedback loop will quickly adjust the driving of the BJT base to stabilize the output voltage at the desired reference. 
+</p>
+<p>
+Linear regulators datasheets provide information about the sensitivity of the output voltage to the output current (<a href="../../print.php/p_load/" class="page">load regulation</a>), the input voltage (<a href="../../print.php/p_line/" class="page">line regulation</a>) and temperature (thermal regulation).
+</p>
+<script type="text/javascript" src="../../pages/voltage.regulators.linear_shunt.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Tips on how to properly design/layout a Printed Circuit Board (PCB)</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_pcb/" />
+	<meta name="description" content="The design or layout of Printed Circuit Boards has many details that should not be forgotten. This How To helps to keep in mind of several issues when designing a PCB.">
+	<meta name="keywords" content="printed circuit board, PCB, ground plane, bypass capacitor, design, layout, schematic, traces, components, heat">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'pcb.design';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="/">http://www.onmyphd.com/?p=pcb.design</a></p><h1>Tips on how to properly design/layout a Printed Circuit Board (PCB)</h1>
+<h2>Sections</h2>
+<ul>
+	<li><a href="#h2_general">General tips</a></li>
+	<ul>
+		<li><a href="#tip1">Make important nodes accessible</a></li>
+		<li><a href="#tip2">Give space between components</a></li>
+		<li><a href="#tip3">Place components with the same orientation</a></li>
+		<li><a href="#tip4">Print the layout to see if components' sizes match</a></li>
+		<li><a href="#tip5">Exchange wiring directions between layers</a></li>
+		<li><a href="#tip6">Select the width of lines depending on current</a></li>
+		<li><a href="#tip7">Know the specifications of the manufacturer</a></li>
+		<li><a href="#tip8">Avoid 90º angles with traces</a></li>
+		<li><a href="#tip9">Use the silk layer</a></li>
+		<li><a href="#tip10">Use the schematic vs. layout comparison</a></li>
+		<li><a href="#tip11">Create a ground plane</a></li>
+		<li><a href="#tip12">Place bypass capacitors</a></li>
+		<li><a href="#diff.signal">Route the differential signal traces in parallel</a></li>
+		<li><a href="#tip13">Consider spots of heat</a></li>
+		<li><a href="#tip14">Make parallel footprints for hard to find components</a></li>
+	</ul>
+	<li><a href="#h2_power">Tips for power circuits</a></li>
+	<ul>
+		<li><a href="#tip15">Keep power and control grounds separate</a></li>
+		<li><a href="#tip16">Use an inner layer for the control ground</a></li>
+		<li><a href="#tip17">Make power traces wider to withstand higher currents</a></li>
+	</ul>
+	<li><a href="#h2_mixed">Tips for mixed-signal circuits</a></li>
+	<ul>
+		<li><a href="#tip18">Keep digital and analog grounds separate</a></li>
+		<li><a href="#tip19">Protect analog grounds from noise</a></li>
+	</ul>
+	<li><a href="#h2_mount">Tips for PCB mounting</li>
+	<ul>
+		<li><a href="#tip14">Solder from small to large components</a></li>
+		<li><a href="#tip20">Be aware of cold solder joints</a></li>
+		<li><a href="#tip21">Use flux for easy soldering</a></li>
+		<li><a href="#tip22">Do not trust the multimeter continuity test</a></li>
+	</ul>
+</ul>
+<h2 id="h2_general">General tips</h2>
+<h3 id="tip1">Make important nodes accessible</h3>
+<p>
+It will eventually happen that you are trying to figure out why something is not working and you want to measure a signal inside your PCB. Before designing the PCB, you should think which points will be important to troubleshoot your circuit and, in case they are not easily accessible, add a test point somewhere connected to them. There are various forms of test points, but the ones that form a loop are great for test probes with hooks.
+</p>
+<center>
+<table cellspacing="20">
+<tr>
+<td><img src="../../pages/pcb.design/test.point1.jpg" alt="Test point #1"/></td>
+<td><img src="../../pages/pcb.design/test.point2.jpg" alt="Test point #2"/></td>
+<td><img src="../../pages/pcb.design/test.point3.jpg" alt="Test point #3"/></td>
+</tr>
+</table>
+</center>
+<h3 id="tip2">Give space between components</h3>
+<p>
+It is tempting to pack the components as close as possible, only to realize that there is no room for the routing of wires. Give some space between components so that wires can spread. The more pins the component has, the more space it will need. Spacing will not only facilitate auto-routing as it will make soldering easier.
+</p>
+<center>
+<img src="../../pages/pcb.design/component.spacing.jpg" alt="Spacing between components"/>
+</center>
+<h3 id="tip3">Place components with the same orientation</h3>
+<p>
+Components generally have a standard pin numbering, with pin #1 in the upper-left corner. If all components are oriented equally, you will not make mistakes when soldering or when inspecting a component.
+</p>
+<h3 id="tip4">Print the layout to see if components' sizes match</h3>
+<p>
+After laying out all the components, print out the layout. Place each component on top of the layout paper to see if they match. Sometimes datasheets may have errors.
+</p>
+<h3 id="tip5">Exchange wiring directions between layers</h3>
+<p>
+Draw vertical traces on one side and horizontal traces on the other. This facilitates wiring of lines that have to cross over the others. For multiple layers, alternate between directions.
+</p>
+<h3 id="tip6">Select the width of lines depending on current</h3>
+<p>
+Larger width reduces resistance, which in turn reduces the heat caused by dissipation. The width of the lines should be sized according to the estimated current that flows through them. You can use <a href="http://circuitcalculator.com/wordpress/2006/01/31/pcb-trace-width-calculator/" target="_blank">this online calculator</a> to calculate their width. Therefore, power lines should be wider because all the current is supplied by these wires.
+</p>
+<h3 id="tip7">Know the specifications of the manufacturer</h3>
+<p>
+Each manufacturer has its own specifications, such as minimum trace width, spacing, number of layers, etc. Before starting design, you should consider what you need and find a manufacturer that meets your requirements.
+Your requirements also include the grade of materials of the PCB. There are grades ranging from FR-1 (paper-phenolic mixture) up to FR-5 (glass cloth and epoxy). Most PCB prototyping manufacturers use the FR-4, but FR–2 is used in high-volume consumer applications. The type of material affects the circuit board's strength, durability, moisture absorption and Flame Resistance (FR).
+</p>
+<h3 id="tip8">Avoid 90º angles with traces</h3>
+<p>
+Sharp right angle turns are difficult to keep the trace width constant. This is a reason of concern for narrow traces, where a small difference makes a significant fraction of the trace. A better approach is to do two 45º bends. 
+</p>
+<center>
+<img src="../../pages/pcb.design/45.bends.jpg" alt="45º bends"/>
+</center>
+<h3 id="tip9">Use the silk layer</h3>
+<p>
+This layer is pretty standard in professional PCB manufacturers and it is extremely useful for labeling. Label your components (the PCB layout software usually does this) and add some information regarding what the board is about, a revision number, and the author/owner.
+</p>
+<h3 id="tip10">Use the schematic vs. layout comparison</h3>
+<p>
+Many PCB layout softwares have a comparison tool between schematic and layout. Use it to guarantee that your layout is matching the schematic.
+</p>
+<h3 id="tip11">Create a ground plane</h3>
+<p>
+Especially in analog circuits, it is important that "ground" means the same voltage throughout the PCB. If you use traces to route the ground signal, their resistance will create voltage drops that will make different "grounds" in the PCB have different potentials. To avoid that, you should create a ground plane, i.e., a large area of copper (or even better, reserve a layer for the plane) where the components connecting to ground can do it directly through vias. The ground plane can be completely filled with copper (better for heat dissipation) or in a square grid like the picture below.
+</p>
+<center>
+<img src="../../pages/pcb.design/ground_plane.jpg" alt="Ground plane"/>
+</center>
+<p>
+One of the downsides of a plane is the difficulty to solder a component, since the heat gets dissipated quickly through the plane. To avoid this, the contacts to planes can be made through thin traces, like the picture below.
+</p>
+<center>
+<img src="../../pages/pcb.design/spider.contact.png" alt="Spider contact"/>
+</center>
+<h3 id="tip12">Place bypass capacitors</h3>
+<p>
+Bypass capacitors are used to filter AC components from your constant power supply. They reduce noise, ripples and other unwanted AC signals. They do so by bypassing these AC fluctuations to ground, which gives them the name. Therefore, they are usually connected between wherever voltage we want to filter (supply voltage, reference signals, etc.) and ground.
+</p>
+<p>
+A good place to choose for these capacitors is at the power inlet to your PCB: the wires connecting the power supply to your PCB are usually long and act as antennas, collecting lots of RF signals. Another effective place is close to the ICs (as close as possible to the power and ground pins), to reduce any noise added inside your PCB. The same holds true for reference pins, or any other pin where you need a very stable voltage.
+</p>
+<center>
+<img src="../../pages/pcb.design/bypass.cap.jpg" alt="Bypass capacitors"/>
+</center>
+<p>
+The values of the capacitors depend on the frequencies of the AC components. Each capacitor has its own frequency response determined by its resistance and Equivalent Series Inductance (ESL) that is tuned to a range of frequencies. For example, to filter low frequencies you need a larger capacitor. As a rule, a capacitor of 0.1-1µF suffices for the mid-range frequencies, if you have slow fluctuations, you may choose around 1-10µF and for high-frequency noise you can use 0.001-0.1µF capacitors. You can also use any combination of bypass capacitors to remove a wider range of frequencies. For chips that drive a lot of current, you may put 10 µF - 100 µF capacitors to work as buffers. If the value of the capacitor allows, use monolithic ceramic capacitors because they are small and cheap.
+</p>
+<h3 id="diff.signal">Route the differential signal traces in parallel</h3>
+<p>
+Differential signals are often used to improve immunity to noise and amplify the dynamic range. This is only effective if the traces of both signals follow similar paths, so that the noise disturbs both paths equally. To that end, the two lines of a differential signal should be made parallel to each other and as close as possible.
+</p>
+<center>
+<img src="../../pages/pcb.design/diff.signal.jpg" alt="Differential signal traces"/>
+</center>
+<h3 id="tip13">Consider spots of heat</h3>
+<p>
+Heat can degrade performance of circuits and even damage them, if not well dissipated. Consider which components consume more power and how the heat produced is being diverted by the package. The datasheet has a parameter called "Thermal Resistance" that states how much temperature increases per Watt of power given certain conditions. The conditions can be for example with a copper area of x by y mm underneath the IC. For stronger heat dissipation, you should add heat sinks or even a fan to cool down the IC. Furthermore, keep critical parts of the circuit board isolated from these heat sources.
+</p>
+<center>
+<img src="../../pages/pcb.design/heatsink.fan.jpg" alt="Heat sink and fan"/>
+</center>
+<h3 id="tip14">Make parallel footprints for hard to find components</h3>
+<p>
+Often times, you are using components that are usually unavailable for sale, or the prices of two components with the same functionality fluctuate and you would like to buy the cheapest. These are cases where you would prefer to change component depending on external factors, even if they do not have the same footprint, but keep the design of the circuit board unchanged. If board area is not of much concern, you can prepare your design with more than one footprint in parallel for a specific block, so that you mount the part that you have available at the moment and keep the others empty.
+</p>
+<h2 id="h2_power">Tips for power circuits</h2>
+<h3 id="tip15">Keep power and control grounds separate</h3>
+<p>
+Large voltage and current spikes from power circuits can generate disruptive interference in the control circuits, which are usually low voltage and current. For each power supply stage, you should keep power ground and control ground separate. If you tie them together in the PCB, do it in a point near the end of the supply path (most notably near the PCB ground connection).
+</p>
+<h3 id="tip16">Use an inner layer for the control ground</h3>
+<p>
+In case you are thinking about using a multilayer circuit board, use the top layer for power traces, the bottom layer for control traces and an inner layer for the control ground. The large ground plane in the middle layer will offer a small impedance path for any interference from the power circuits and protect the control paths from it.
+</p>
+<h3 id="tip17">Make power traces wider to withstand higher currents</h3>
+<p>
+This is actually a general tip, but it is more important for power circuits. You should size the width of the wire of each power path according to the current that flows through it. Failing to do so can generative excessive heat and burn the wires. You can use <a href="http://circuitcalculator.com/wordpress/2006/01/31/pcb-trace-width-calculator/" target="_blank">this online calculator</a> to calculate their width.
+</p>
+<h2 id="h2_mixed">Tips for mixed-signal circuits</h2>
+<h3 id="tip18">Keep digital and analog grounds separate</h3>
+<p>
+As for the case of power circuits, you should keep the digital and analog grounds separate. The reason is the same: voltage and current spikes from digital circuits can generate interference (noise) in the analog circuits, affecting their performance. If you tie them together in the PCB, do it in a point near the end of the supply path (most notably near the PCB ground connection). Although there are other points of view to this problem, this is the most accepted.
+</p>
+<h3 id="tip19">Protect analog grounds from noise</h3>
+<p>
+Any interference in the analog ground has the same effect as it would be in the signal lines (all that matters is the differential voltage between any point and ground). You want a large ground plane to reduce its resistance, but that also makes it more susceptible to capacitive coupling to lines routed above or beneath it. To that end, analog ground should only have analog lines crossing it and the same for digital. That reduces the capacitive coupling between analog and digital circuits.
+</p>
+<h2 id="h2_mount">Tips for PCB mounting</h2>
+<h3 id="tip14">Solder from small to large components</h3>
+<p>
+If you start soldering large components, they will block access to solder the next components. You should start from the small components, such as Surface Mount Devices (SMD) and end with the large components, such as through-hole capacitors or terminal blocks. 
+</p>
+<h3 id="tip20">Be aware of cold solder joints</h3>
+<p>
+A cold solder joint is when, while making a solder joint, a hot solder flows onto a cold joint, and gives a greyish blob of solder that is not well adhered to the joint. It can also happen when not enough heat was applied for the solder to melt properly or the surface being soldered was not clean enough. Sometimes it can be seen with bare eyes (you will crack the solder joint if you try to move the pin), other times looks like a well done solder. The effects of these solder joints can be static noises, intermittant cutouts and others. To solve this, you can either remelt the existing solder or suck it out, clean the spot and solder again. To avoid cold solder joints, first heat the joint with the tip of the soldering iron, then touch the joint with the solder. The hot joint will melt the solder and it will flow and engulf the joint properly. A nice way to avoid cold solder joints, and facilitate soldering in general, is to use flux.
+<center>
+<img src="../../pages/pcb.design/cold_solder.jpg" alt="Cold solder joint. Credits: Coronium"/>
+<p class="comment">A cold solder joint. Notice the crack around the pin. Credits: Coronium.</p>
+</center>
+</p>
+<h3 id="tip21">Use flux for easy soldering</h3>
+<p>
+Soldering flux is a chemical agent that makes soldering a piece of cake. It does so by improving the wetting characteristics of the liquid solder. Just add some flux in the surface to be soldered and the hot solder will immediately <i>glue</i> to the pin.
+</p>
+<center>
+<a href="http://www.amazon.com/gp/product/B008OC3VMU/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=B008OC3VMU&amp;linkCode=as2&amp;tag=httpwwwonmyph-20"><img border="0" src="../../images/VMU_Format__SL160__ID_AsinImage_MarketPlace_US_ServiceVersion_20070822_WS_1_tag_httpwwwonmyph-20_jpg_cwxf7gfwj7dnnbs4ypgdcy.jpg"></a><img src="../../e/ir_t_httpwwwonmyph-20_l_as2_o_1_a_B008OC3VMU.jpg" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"/>
+</center>
+<p>
+See it in action in these video<br/>
+<center><iframe width="420" height="315" src="http://www.youtube.com/embed/ECXL9GNDyxo" frameborder="0" allowfullscreen></iframe></center>
+</p>
+<h3 id="tip22">Do not trust the multimeter continuity test</h3>
+<p>
+A normal multimeter has a continuity test mode that beeps when the resistance between the two probes is small. This is commonly used to test continuities, because you don't need to jump between looking at where you put the probes and at the value on the multimeter. However, a resistance of a few ohms still beeps, although it is a sign of bad soldering. Assuming low resistance lines and a few solder points, the resistance should be below 1 ohm. Use the resistance measurement mode to guarantee that the resistance between two points is as low as it should be, which also means good solder joints.
+</p>
+<script type="text/javascript" src="../../pages/pcb.design.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

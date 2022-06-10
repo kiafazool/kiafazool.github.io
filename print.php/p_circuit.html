@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Circuit simulation</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_circuit/" />
+	<meta name="description" content="Electronic circuit simulation is used to reduce development time and cost. The simulator engines have models for each component and a netlist is extracted from the schematic. From there, the simulator runs different types of analysis to extract different kinds of information from the circuit. The simulation engine uses complex optimization techniques to calculate the measurements from the analyses.">
+	<meta name="keywords" content="circuit simulation, types of analysis, DC operating point, AC analysis, Monte carlo, noise analysis">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'circuit.simulation';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../../p_circuit/">http://www.onmyphd.com/?p=circuit.simulation</a></p><h1>Circuit simulation</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basic knowledge of electronic circuits</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_what">What is circuit simulation?</a></li>
+<li><a href="#h2_types_sim">Types of simulations</a></li>
+<ul>
+<li><a href="#h3_analog">Analog</a></li>
+<li><a href="#h3_digital">Digital</a></li>
+<li><a href="#h3_mix">Mixed-signal</a></li>
+<li><a href="#h3_piecewise">Piecewise linear</a></li>
+</ul>
+<li><a href="#h2_how">How does circuit simulation work?</a></li>
+<li><a href="#h2_models">Models</a></li>
+<li><a href="#h2_types_analysis">Types of analysis</a></li>
+<ul>
+<li><a href="#h3_dc">DC Operating point</a></li>
+<li><a href="#h3_ac">AC transfer function</a></li>
+<li><a href="#h3_transient">Transient analysis</a></li>
+<li><a href="#h3_noise">Noise analysis</a></li>
+<li><a href="#h3_montecarlo">Monte Carlo analysis</a></li>
+</ul>
+</ul>
+<h2 id="h2_what">What is circuit simulation?</h2>
+<p>
+Say you want to build a circuit that does some kind of signal processing. You draw your schematic in a paper, make your hand calculations, select the components, build the circuit, turn it on, and it does not do what you were expecting... or even worse, it damages one or more components in the process. <b>Finding the flaw in the circuit and even replacing the lost components may be a pain</b>.
+</p>
+<p>
+From the selection of the components forward, you could have chosen another path. <b>You could have simulated your circuit in a circuit simulation software</b>. This has several <b>advantages</b>:
+<ul>
+<li>It is much faster to build the circuit in the simulator than in real life</li>
+<li>If it does not work at first, no harm done. It is easy to adjust and improve.</li>
+<li>You can access any node in the circuit with a click of the mouse, which makes debugging much faster.</li>
+<li>You can try components that you do not physically have.</li>
+</ul>
+It has however the following <b>disadvantages</b>:
+<ul>
+<li>If it works, you still have to build the real circuit</li>
+<li>It does not simulate the components with complete accuracy. There is always some differences between the simulation and the reality.</li>
+</ul>
+</p>
+<p>
+That being said, circuit simulators are ever more accurate and are an indispensable tool for electronic engineers. <b>They reduce development time and cost</b>.
+</p>
+<h2 id="h2_types_sim">Types of simulations</h2>
+<p>
+While the focus of this topic is on the analog circuit simulation, others exist that deserve their reference. 
+</p>
+<h3 id="h3_analog">Analog</h3>
+<p>
+This type is what is usually referred as circuit simulation. A circuit, by its nature analog, is simulated, while registering and displaying the voltages at the nodes and currents flowing through the components. 
+</p>
+<h3 id="h3_digital">Digital</h3>
+<p>
+Digital circuits are usually written in a RTL (Register-Transfer Level) language, such as Verilog or VHDL. These languages describe the circuit through links (e.g. node A is connected to node B by some combinatorial logic) or through events (e.g. when clock rises). Either way, the simulation of this type of language only looks for changes in the digital signals, and it is therefore event-driven.
+</p>
+<h3 id="h3_mix">Mixed-signal</h3>
+<p>
+The purpose of mixed-mode simulators is to combine the two previous types of simulation. They integrate digital with analog signals, but keep the digital blocks event-driven (faster simulation) and the analog blocks as usual.
+</p>
+<h3 id="h3_piecewise">Piecewise linear</h3>
+<p>
+The not so well known piecewise linear type of simulation consists in changing between analog models at certain conditions. In power electronics, where nowadays switching circuits are dominant, the switching alters the topology of the circuit. The advantage is that, given the flexibility to change the analog model, it can be made linear (hence piecewise linear), which improves speed and stability. 
+</p>
+<h2 id="h2_how">How does circuit simulation work?</h2>
+<p>
+Circuit simulators are complex pieces of code that rely heavily on optimization techniques. They start with models of the components, which mimic their behavior with a certain level of accuracy. The drawn schematic provides not only the components to be used but also how they connect to each other.
+</p>
+<p>
+Both of these combined allow the generation of a netlist, a piece of text that describes each component used in the circuit and to where they connect.
+</p>
+<center>
+<img src="../../pages/circuit.simulation/circuit.svg" class="svg" width="250" style="float:right"/>
+</center>
+<code>
+v1 1 0 dc 5<br/>
+r1 1 2 10k<br/>
+c1 2 0 10u<br/>
+.end
+</code>
+<p>
+The above example is the SPICE netlist for the schematic in the right. SPICE (Simulation Program with Integrated Circuit Emphasis) is the most used circuit simulation engine and it is open-source. It receives a netlist that describes the circuit, and performs several types of simulations. The simulation commands can also be incorporated in the netlist.
+</p>
+<p>
+Back to the netlist, the first column is the name of the component, attributed sequentially or user defined. The next columns are the nodes it is connected to (two for voltage sources, resistances and capacitors, but can be more; 0 always refers to the reference or ground). Names started with "r" are resistances, with "c" are capacitors and with "v" are independent voltage sources. Other letters mean other standard components. The remaining columns are component-specific information: "dc 5" means 5V DC, while for resistances and capacitors the only necessary information is their value. As you can see, with these 3 parts:
+<ul>
+<li>Designation</li>
+<li>Connecting nodes</li>
+<li>Component-specific information</li>
+</ul>
+you can basically describe any circuit.
+</p>
+<p>
+How each component behaves is provided by models. Each component has a model, with its own parameters. For instance, the resistance model needs the resistance value, while a capacitance model has the initial condition (ic) optional value (the voltage at the capacitance when the simulation starts). This could be added to the netlist as such:
+</p>
+<code>
+c1 2 0 10u ic=0
+</code>
+<p>
+Finally, commands that describe what type of analysis to run and its specific options are appended to the netlist. For example
+</p>
+<code>
+.OP
+</code>
+<p>
+is a DC analysis and requires no parameters.
+</p>
+<code>
+.AC lin NP SF EF
+</code>
+<p>
+requests an AC analysis and requires the starting (SF) and ending (EF) frequencies and the number of frequencies to be analyzed in between (NP), among others. The types of analysis are covered in <a href="#h2_types_analysis">a later section</a>.
+</p>
+<h2 id="h2_models">Models</h2>
+<p>
+The netlist only describes the components that make up the circuit and their connections. It is also necessary a description of how each component works. Models define the relation between voltages and currents at the terminals of a device. For example, the model of a resistance has a linear relation between the voltage at its terminals and the current flowing through it. The model of a capacitance relates the change in the voltage at its terminals with the current flowing through it. A MOSFET or bipolar transistor, besides having more than two terminals, has a much more complex relation between the voltages and currents at its terminals. To have an idea, advanced models of integrated MOS transistors have hundreds of parameters. Even more complex models may be built by grouping simpler models. 
+</p>
+<h2 id="h2_types_analysis">Types of analysis</h2>
+<p>
+A circuit simulator runs different types of simulations. Each gives different information about the circuit.
+</p>
+<h3 id="h3_dc">DC Operating point</h3>
+<p>
+Analog circuits are usually built to process signals. They are operated at a steady condition (the DC operation point, bias point or quiescent point) and the AC signals fluctuate around that operating point. The most basic analysis is to keep only the DC signals and calculate where the circuit stabilizes. This analysis provides the DC voltages at every nodes and the DC currents of all terminals. <a href="http://www.ni.com/white-paper/12704/en/" rel="external" target="_blank">Here is how it is done in Multisim</a>.
+</p>
+<center>
+<img src="../../pages/circuit.simulation/bias.svg" class="svg" width="300"/>
+</center>
+<h3 id="h3_dc">AC transfer function</h3>
+<p>
+Apart from some basic components, such as resistances, capacitances or inductors, most of the components are not linear. They can, however, be linearized around some point. The DC operating point analysis gives the point where the circuit will operate, hence, where it can be linearized. This will affect the sensitivity of each component to their parameters (in the plot above, the sensitivity $\partial y/ \partial x$ is dependent on the operating point because the relation is nonlinear). Having a linear circuit, with the small-signal models of each component, all AC signals applied to the circuit can be superimposed to measure the resulting effect on each node. Furthermore, given the frequency dependent behavior of capacitances and inductances, the result also changes with the frequency of the AC signals. Since the circuit is now linear, if sinusoidal signals are applied to the circuit, only sinusoids with the same frequency must exist in any node.
+</p>
+<p>Therefore, the AC analysis performs these measurements and takes the amplitude and phase of a sinusoid at a certain node for a range of frequencies. The simulation then plots the amplitude and phase for that range, resulting in a <a href="../../print.php/p_bode/" class="page">bode plot</a>.
+</p>
+<h3 id="h3_transient">Transient analysis</h3>
+<p>
+The transient analysis simulates the response of the circuit to a transient input, in the time domain. This analysis comes naturally, as it is the one that most resembles what you see when you turn on the circuit, apply signals and read a voltage in the oscilloscope. This is the simulation that takes the longest, as the circuit needs to be traced during a certain period of time, and the nonlinear equations need to be calculated.
+</p>
+<h3 id="h3_noise">Noise analysis</h3>
+<p>
+Every component generates noise, even a simple <a href="../../print.php/p_noise/" class="page">resistance</a>. Noises have known spectrums and are uncorrelated. They can be seen as unpredictable, unwanted small signals. Similarly to the AC analysis, the circuit can be linearized around its operating point and the sources of noise can be superimposed. The noise analysis measures the noise at a given node. Since the spectrums are known, the measure can be given in the form of a bode plot, its PSD (Power spectral density) at a given frequency, or its power in a band of frequencies. 
+</p>
+<h3 id="h3_montecarlo">Monte Carlo analysis</h3>
+<p>
+Fabricated components have deviations from sample to sample. The reason is that, due to the fabrication process, every parameter of a component can be in a range of values (with its corresponding mean), instead of a single value. Nominal circuit simulation (all of the above) uses the average value of the parameters for simulation.
+</p>
+<p>Specially in the semiconductor industry, it is equally important to simulate the circuit for the complete range of parameter values, because the yield (the percentage of circuits that pass the specification) is highly dependent on it. Here is an example: an opamp needs to have a voltage gain greater than 100000. The nominal simulation measures a gain of 120000. However, a Monte Carlo simulation will measure the gain for many samples extracted from the range of parameters. As a result, only 60% of the trials actually have a gain greater than 100000. If this circuit was to be fabricated, nearly half of the production would go to the trash. As you can see, design a circuit to guarantee a high yield is very important when thinking about production.
+</p>
+<p>
+Monte Carlo is not a different analysis <i>per se</i>, but uses other analysis instead. Parameters usually follow a Normal distribution (although others can be used), with a given mean and standard deviation. Each trial from the Monte Carlo simulation takes a value out of the distribution and runs the simulations explained above with that parameter value.
+</p>
+<p>
+The result from the simulation is a histogram for each measurement. For our opamp example, the histogram of the gain would have a mean of 120000. 40% of the samples (the left side) would be below 100000. 
+</p>
+<script type="text/javascript" src="../../pages/typeset.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

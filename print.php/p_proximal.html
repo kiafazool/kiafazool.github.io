@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Proximal operator or mapping</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_proximal/" />
+	<meta name="description" content="The proximal operator is used to make an approximation to a value, while making a compromise between the accuracy of the approximation and a cost associated to the new value. The proximal operator is the analytic solution to the approximation problem.">
+	<meta name="keywords" content="approximation problem, iterative soft-threshold">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'proximal.operator';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../../p_proximal/">http://www.onmyphd.com/?p=proximal.operator</a></p><h1>Proximal operator or mapping</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basics of mathematics</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_what">What is a proximal operator or mapping?</a></li>
+<ul>
+<li><a href="#h3_example">Examples</a></li>
+</ul>
+</ul>
+<h2 id="h2_what">What is the proximal operator?</h2>
+<p>
+The proximal operator is used to make an approximation to a value, while making a compromise between the accuracy of the approximation and a cost associated to the new value. Say we have the following minimization problem:
+$$\underset{\mathbf{u}}{\min } \frac{1}{2}\left\Vert \mathbf{u} - \mathbf{x}\right\Vert _2^2.$$
+It is clear that the best approximation to $\mathbf{x}$ is the $\mathbf{x}$ itself ($\mathbf{u} = \mathbf{x}$). Now we add a cost to the choice we make of $\mathbf{u}$: 
+$$\textrm{prox}_h(\mathbf{x}) = \underset{\mathbf{u}}{\textrm{argmin }} \frac{1}{2}\left\Vert \mathbf{u} - \mathbf{x}\right\Vert _2^2 + h(\mathbf{u}).$$
+Now the best approximation depends how costly it is to choose $\mathbf{u} = \mathbf{x}$, given $h(\mathbf{u})$, and a compromise must be made. The first example is the case that $h(\mathbf{u}) = 0$. <b>The proximal operator $\textrm{prox}_h(\mathbf{x})$ is the analytic solution</b> to the previous minimization problem.
+</p>
+<h3 id="h3_example">Examples</h3>
+<ul>
+<li>
+Consider $h(\mathbf{u}) = \lambda \left\Vert \mathbf{u} \right\Vert_1$.
+The minimization function is
+$$\frac{1}{2}\left\Vert\mathbf{u} - \mathbf{x}\right\Vert _2^2 + \lambda \left\Vert \mathbf{u} \right\Vert_1$$
+To find the minimum we must solve for the root of the gradient of this function. You may note that both terms are separable in $\mathbf{u}$ and thus we can minimize each element of $\mathbf{u}$ individually. This simplifies the expression to:
+$$\frac{1}{2} (u_i - x_i)^2 + \lambda |u_i|, \forall i$$
+To find the derivative of $|u_i|$, we have two situations: either $u_i \gt 0$ or $u_i \lt 0$. For $u_i \gt 0$, the derivative is:
+$$u_i - x_i + \lambda = 0$$
+$$u_i = x_i - \lambda.$$
+Since $u_i \gt 0$, this is only valid for $x_i \gt \lambda$. The same logic applies for $u_i \lt 0$, with which we get:
+$$u_i = x_i + \lambda.$$
+and it is only valid for $x_i \lt -\lambda$. For $-\lambda \lt x_i \lt \lambda$, $u_i = 0$ to make the derivative somewhere between $-\lambda$ and $\lambda$. Summing all up:
+$$u_{i}=\begin{cases} x_{i}-\lambda & x_{i}&gt;\lambda\\
+x_{i}+\lambda & x_{i} \lt -\lambda\\
+0 & -\lambda \le x_{i} \le \lambda\end{cases}$$
+This is equivalent to the expression:
+$$u_i = \textrm{prox}_h(x_i) = \max(|x_i| - \lambda, 0) \textrm{sign}(x_i) $$
+<b>This particular case of the proximal operator is known as the shrinkage operator and is used in iterative soft thresholding (IST) algorithms</b>.
+</li>
+<li>
+Consider $h(\mathbf{u}) = \lambda \left\Vert \Sigma\mathbf{u} \right\Vert_1$, where $\Sigma$ is a diagonal matrix with elements $\sigma_i$.
+The minimization function is
+$$\frac{1}{2}\left\Vert\mathbf{u} - \mathbf{x}\right\Vert _2^2 + \lambda \left\Vert \Sigma \mathbf{u} \right\Vert_1$$
+To find the minimum we must solve for the root of the gradient of this function. Since the matrix $\Sigma$ is diagonal, the terms are separable in $\Sigma \mathbf{u}$ and thus we can minimize each element of $\mathbf{u}$ individually. This simplifies the expression to:
+$$\frac{1}{2} (u_i - x_i)^2 + \lambda \sigma_i|u_i|, \forall i$$
+To find the derivative of $|u_i|$, we have two situations: either $u_i \gt 0$ or $u_i \lt 0$. For $u_i \gt 0$, the derivative is:
+$$u_i - x_i + \lambda \sigma_i= 0$$
+$$u_i = x_i - \lambda \sigma_i.$$
+Since $u_i \gt 0$, this is only valid for $x_i \gt \lambda \sigma_i$. The same logic applies for $u_i \lt 0$, with which we get:
+$$u_i = x_i + \lambda \sigma_i.$$
+and it is only valid for $x_i \lt -\lambda \sigma_i$. For $-\lambda \sigma_i \lt x_i \lt \lambda \sigma_i$, $u_i = 0$ to make the derivative somewhere between $-\lambda \sigma_i$ and $\lambda \sigma_i$. Summing all up:
+$$u_{i}=\begin{cases} x_{i}-\lambda \sigma_i & x_{i}&gt;\lambda \sigma_i\\
+x_{i}+\lambda\sigma_i & x_{i} \lt -\lambda\sigma_i\\
+0 & -\lambda\sigma_i \le x_{i} \le \lambda\sigma_i \end{cases}$$
+This is equivalent to the expression:
+$$u_i = \textrm{prox}_h(x_i) = \max(|x_i| - \lambda \sigma_i, 0) \textrm{sign}(x_i) $$
+This expression may be useful when you want to give different costs to each element of $\mathbf{x}$.
+</li>
+<li>
+Consider $h(\mathbf{u}) = I_C(\mathbf{u})$, where:
+$$I_C(\mathbf{u}) = \begin{cases} 0 & \mathbf{u} \in C\\
++\infty & \mathbf{u} \notin C\end{cases}$$
+It is easy to see that if $\mathbf{u}$ does not belong to a certain set C, the cost is infinite and therefore not an option. We can convert this cost function into the proximal operator:
+$$\textrm{prox}_h(\mathbf{x}) = \underset{\mathbf{u}}{\textrm{argmin }} \frac{1}{2}\left\Vert \mathbf{u} - \mathbf{x}\right\Vert _2^2, \mathbf{u} \in C$$
+The closer $\mathbf{u}$ to $\mathbf{x}$ belonging to the set C is just the projection of $\mathbf{x}$ in the set C.
+</li>
+<li>
+Consider $h(\mathbf{u}) = I_{\left\Vert \mathbf{u} \right\Vert_\infty \le \lambda}(\mathbf{u})$, where.
+$$I_{\left\Vert \mathbf{u} \right\Vert_\infty \le \lambda}(\mathbf{u}) = \begin{cases} 0 & \left\Vert\mathbf{u}\right\Vert_\infty = \max(\mathbf{u}) \le \lambda\\ +\infty & \textrm{otherwise}\end{cases}$$
+and $\max(\mathbf{u})$ is the biggest element in $\mathbf{u}$.
+This constraint assures that the largest element of the approximation $\mathbf{u}$ is lower than $\lambda$, otherwise the cost is infinite. The proximal operator for this constraint is:
+$$\mathbf{u} = \textrm{prox}_h(\mathbf{x}) = \min\left(1, \frac{\lambda}{|x_i|}\right) x_i, x_i = \textrm{each element in }\mathbf{x}$$
+Intuitively, the proximal operator leaves any element below $\lambda$ unchanged ($\lambda / |x_i| \gt 1$) and any element above $\lambda$ is shrunk to $\lambda$.
+</li>
+</ul>
+<script type="text/javascript" src="../../pages/typeset.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>MOSFET subthreshold model</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_mosfet.subthreshold/" />
+	<meta name="description" content="The MOSFET subthreshold region is active when the gate-source voltage is below the threshold voltage. The equations for large and small signal change related to the strong inversion case.">
+	<meta name="keywords" content="mosfet, cmos, transistor, small signal, subthreshold, exponential, cgb, slope">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'mosfet.subthreshold.model';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../../p_mosfet.subthreshold/">http://www.onmyphd.com/?p=mosfet.subthreshold.model</a></p><h1>The MOSFET Transistor in subthreshold</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li><a href="../../print.php/p_mosfet/" id="mosfet.model" class="page">MOSFET model</a></li>
+<li>Circuit theory</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+	<li><a href="#h2_whatis">What is the subthreshold operation?</a></li>
+	<li><a href="#h2_saturation">Saturation</a></li>
+	<li><a href="#h2_smallsignal">Small-signal model</a></li>
+	<ul>
+		<li><a href="#h3_ugf">Unity-gain frequency</a></li>
+	</ul>
+	<li><a href="#h2_slope">The subthreshold slope</a></li>
+</ul>
+<h2 id="h2_whatis">What is the subthreshold operation?</h2>
+<p>
+In <a href="../../print.php/p_mosfet/" id="mosfet.model" class="page">MOSFET model</a>, it was assumed that current only flows through the MOSFET channel when $V_{GS}&gt;V_{TH}$. In reality, <b>current flows even when $V_{GS}$ is below the threshold voltage</b>, but it is orders of magnitude weaker than currents in strong inversion. The inversion layer that is seen in strong inversion is barely seen in this case, and this regime can also be called <b>weak inversion</b>.
+<br>
+Under weak inversion, the relation between current and gate-source voltage becomes exponential, according to the following equation for a NMOS:
+$$\begin{equation}I_{DS} = I_S \frac{W}{L}e^{\frac{V_{GB}}{nV_T}}\left(e^{-\frac{V_{SB}}{V_T}} - e^{-\frac{V_{DB}}{V_T}} + \frac{V_{DS}}{V_A}\right)\label{eq:subthresholdeq1}\end{equation}$$
+$I_S$ is a characteristic current that defines the current that leaks through the transistor, $W$ and $L$ are the transistor's width and length, $n$ is the subthreshold slope factor (around 1~1.5) and defines the effect that the gate voltage has on the drain current, and $V_T=kT/q$ is the thermal voltage. $V_A$ is the Early voltage, a fictious voltage that represents the influence that $V_{DS}$ has on the drain-source current.
+For a PMOS, the expression is similar, just replacing the signs in the exponentials:
+$$I_{DS} = I_S \frac{W}{L}e^{-\frac{V_{GB}}{nV_T}}\left(e^{\frac{V_{SB}}{V_T}} - e^{\frac{V_{DB}}{V_T}} + \frac{V_{SD}}{V_A}\right ).$$
+Continuing with the NMOS and considering the usual case that the source is at the same potential as the bulk ($V_S=V_B$), $\eqref{eq:subthresholdeq1}$ simplifies to
+$$\begin{equation}I_{DS} = I_S \frac{W}{L}e^{\frac{V_{GS}}{nV_T}}\left(1 - e^{-\frac{V_{DS}}{V_T}} + \frac{V_{DS}}{V_A}\right)\label{eq:subthresholdeq2}\end{equation}.$$
+<p>
+<h2 id="h2_saturation">Saturation</h2>
+<p>
+Similarly to the strong inversion, the weak inversion has a $V_{DS}$ point after which $V_{DS}$ has a weak influence on the drain current. This point was previously called saturation point. In the weak inversion operation, $V_{DS}$ influence becomes small when the term $e^{-\frac{V_{DS}}{V_T}}$ is close to 0. That happens when $V_{DS} &gt; 4V_T$: considering that $V_T$~26 mV at room temperature, the saturation point is at ~104 mV. This is a big difference between weak and strong inversion, the saturation point does not depend on the gate voltage or any device parameters and it is rather low. The influence thereafter of $V_{DS}$ in $I_{DS}$ becomes proportional to $V_A^{-1}$.
+</p>
+<h2 id="h2_smallsignal">Small-signal model</h2>
+<p>
+The small-signal model in subthreshold is the same as in the strong inversion, although the parameters are calculated differently.
+As a recap:
+</p>
+<center>
+<img src="../../pages/mosfet.subthreshold.model/small.signal.model.svg" width="550" class="svg"/>
+</center>
+<p>
+It follows several parameters:
+$$g_m = \frac{\partial I_{DS}}{\partial V_G} = \frac{I_{DS}}{nV_T}$$
+$$g_{mb} = \frac{\partial I_{DS}}{\partial V_B} = \frac{(n-1)I_{DS}}{nV_T}$$
+$$\frac{1}{r_o} = g_o = \frac{\partial I_{DS}}{\partial V_{DS}} = \frac{I_{DS}}{V_A}$$
+Extrinsic capacitances such as overlap capacitances $C_{ov}$, depletion junction capacitances $C_{sb}$ and $C_{db}$ and oxide capacitance $C_{ox}$ are independent of the drain current and remain equal to the weak inversion case.
+Intrinsic capacitances depend on the bias condition, because they represent a fraction of the gate oxide capacitance $WLC_{ox}$.
+The capacitances from gate to source/drain are only defined by the overlap capacitances, since there is no channel.
+$$C_{gs} = WC_{ov}$$
+$$C_{gd} = WC_{ov}$$
+On the other hand, $C_{gb}$ increases because there is no channel to shield the gate from the substrate (the channel is "floating" and there is a capacitive path between gate and bulk defined by $C_{ox}$ and $C_{dep}$)
+$$C_{gb} = \frac{n-1}{n}WLC_{ox} = \kappa WLC_{ox}$$
+$$C_{ds} = negligible$$
+Therefore, <b>$C_{gb}$ becomes the dominant capacitance in subthreshold operation</b>.
+</p>
+<h3 id="h3_ugf">Unity-gain frequency</h2>
+<p>
+In the weak inversion case, the dominant capacitance is $C_{gb}$ instead of $C_{gs}$. Therefore, the unity-gain frequency is
+$$f_T = \frac{g_m}{2\pi C_{gb}}.$$
+</p>
+<h2 id="h2_slope">The subthreshold slope</h2>
+<p>
+The subthreshold slope $S$ is an important parameter for switches because it defines how much is the ratio between the on and off currents. To get high on/off current ratios, we would like low subthreshold slopes so that the same difference in $V_{GS}$ can decrease the drain current by more decades.<br>
+Returning to $\eqref{eq:subthresholdeq2}$, let's find out how much $V_{GS}$ needs to decrease in order to reduce the drain current by one decade:
+$$S = \frac{\partial V_{GS}}{\partial \log I_{DS}}$$
+$$\frac{1}{S} = \frac{\partial \log I_S \frac{W}{L}e^{\frac{V_{GS}}{nV_T}}\left(1 - e^{-\frac{V_{DS}}{V_T}}\right)}{\partial V_{GS}}$$
+$$\frac{1}{S} = \frac{\partial \log e^{\frac{V_{GS}}{nV_T}}}{\partial V_{GS}}$$
+$$\frac{1}{S} = \frac{\partial \frac{\ln e^{\frac{V_{GS}}{nV_T}}}{\ln 10} }{\partial V_{GS}}$$
+$$\frac{1}{S} = \frac{\partial \frac{V_{GS}}{nV_T} }{\partial V_{GS}\ln 10}$$
+$$\frac{1}{S} = \frac{1}{nV_T\ln 10}$$
+$$S = nV_T\ln 10$$
+For $V_T$ ~26 mV (room temperature) and the ideal case of $n = 1$, the ideal subthreshold slope for MOSFETs is ~60mV/decade. However, the feasible slopes are around 70~80 mV/decade. Furthermore, as temperature increases, so does $V_T$ and the subthreshold slope.
+</p>
+<script type="text/javascript" src="../../pages/mosfet.subthreshold.model.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

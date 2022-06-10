@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Intermodulation</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_intermodulation/" />
+	<meta name="description" content="Intermodulation products (IMP) are frequency components at the sums and differences of the fundamental frequencies and its harmonics of two or more sine waves, when they go through a non-linear system. This topic presents a definition, derivation and a table of the intermodulation products, as well as interactive plot where you can see the effect of the nonlinear components.">
+	<meta name="keywords" content="distortion, nonlinear system, harmonics, multiple sine waves, intermodulation products, IMP">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'intermodulation';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../../p_intermodulation/">http://www.onmyphd.com/?p=intermodulation</a></p><h1>Harmonics</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li><a href="../../print.php/p_harmonics/" id="harmonics" class="page">Harmonics</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What is intermodulation?</a></li>
+<li><a href="#h2_diff">Intermodulation in differential signals</a></li>
+<li><a href="#h2_table">Table of intermodulation products</a></li>
+</ul>
+<h2 id="h2_whatis">What is intermodulation?</h2>
+<p>
+In the <a href="../../print.php/p_harmonics/" id="harmonics" class="page">Harmonics</a> topic, we have seen how nonlinearities in a system can produce harmonics when a perfect sine wave is applied as input. But what happens if more than one sine wave is the input? The result is not just the harmonics of each sine wave, but also components at the sums and differences of the harmonics and the fundamental frequencies. If you have a signal composed of two sine waves with fundamental frequencies $f_1$ and $f_2$ (with $f_1 &gt; f_2$), besides the harmonics of each sine wave ($2f_1$, $2f_2$, $3f_1$, $3f_2$, ...), the components $f_1 \pm f_2$, $2f_1 \pm f_2$, $2f_2 \pm f_1$, $2f_1 \pm 2f_2$, $3f_1 \pm 2f_2$, $3f_2 \pm 2f_1$, ... will show up at the output of a nonlinear system.
+</p>
+<p>
+Let's say that we apply a signal composed of two perfect sinusoides $x(t) = \sin(\omega_1 t) + \sin(\omega_2 t)$ to a certain system ($\omega_x=2\pi f_x$). If the system is linear, the output will have the same perfect sinusoides at its output:
+$$y(t) = b x(t) + a = b(\sin(\omega_1 t) + \sin(\omega_2 t)) + a$$
+where $a$ and $b$ are the parameters of the linear system, $x(t)$ is its input and $y(t)$ is the output.
+</p>
+<p>
+Now let's assume that the system is nonlinear and, like any nonlinear system, can be approximated by a polynomial function $y(t) = a + b x(t) + c x(t)^2 + d x(t)^3 + ...$. How deep we go into the terms of the polynomial function depends on how accurate we want to approximate the system. We apply the same signal and look at the output:
+$$\begin{equation}y(t) = a + b (\sin(\omega_1 t) + \sin(\omega_2 t)) + c (\sin(\omega_1 t) + \sin(\omega_2 t))^2 + d (\sin(\omega_1 t) + \sin(\omega_2 t))^3 + ...\label{eq:nonlinear}\end{equation}$$
+Since this expression can become quite long, let's look at each term of the polynomial individually.
+</p>
+<p>
+For the $x^2$, we have $$\begin{equation}(\sin(\omega_1 t) + \sin(\omega_2 t))^2 = \sin(\omega_1 t)^2 + 2\sin(\omega_1 t)\sin(\omega_2 t) + \sin(\omega_2 t)^2\label{eq:x2}\end{equation}$$
+We make use of the trigonometric properties (you can find them on <a href="http://en.wikipedia.org/wiki/List_of_trigonometric_identities" target="_blank">wikipedia</a>):
+$$ \sin(\theta)^2 = \frac{1-\cos(2\theta)}{2}$$
+$$ \sin(\theta_1)\sin(\theta_2) = \frac{1}{2} \left( \cos(\theta_1 - \theta_2) - \cos(\theta_1 + \theta_2)\right)$$
+Going back to equation $\eqref{eq:x2}$, we get:
+$$(\sin(\omega_1 t) + \sin(\omega_2 t))^2 = \frac{1-\cos(2\omega_1 t)}{2} + \cos((\omega_1 + \omega_2) t) - \cos((\omega_1 - \omega_2) t) + \frac{1-\cos(2\omega_2 t)}{2}.$$
+<b>From the quadratic term we get components at $2f_1$, $2f_2$ (the harmonics) and $f_1 \pm f_2$ (the intermodulation)</b>.
+</p>
+<p> Now let's see the term $x^3$ in $\eqref{eq:nonlinear}$:
+$$(\sin(\omega_1 t) + \sin(\omega_2 t))^3 = (\sin(\omega_1 t) + \sin(\omega_2 t))^2(\sin(\omega_1 t) + \sin(\omega_2 t))$$
+$$=(\sin(\omega_1 t)^2 + 2\sin(\omega_1 t)\sin(\omega_2 t) + \sin(\omega_2 t)^2)(\sin(\omega_1 t) + \sin(\omega_2 t)) $$
+$$\begin{equation}=\sin(\omega_1 t)^3 + 3\sin(\omega_1 t)^2\sin(\omega_2 t) + 3\sin(\omega_1 t)\sin(\omega_2 t)^2 + \sin(\omega_2 t)^3\label{eq:x3}\end{equation}$$
+We make use of the trigonometric identities:
+$$ \sin(\theta)^3 = \frac{3\sin(\theta) - \sin(3\theta)}{4}$$
+$$ \sin(\theta_1)\cos(\theta_2) = \frac{1}{2}\left(\sin(\theta_1 + \theta_2) + \sin(\theta_1 - \theta_2)\right)$$
+Replacing them in each term of $\eqref{eq:x3}$:
+</p>
+<p>First and last term
+$$ \sin(\omega_x t)^3 = \frac{3}{4}\sin(\omega_x t) - \frac{1}{4}\sin(3\omega_x t) $$
+</p>
+<p>
+Second and third term
+$$ 3\sin(\omega_x t)^2 \sin(\omega_y t) = \frac{3}{4} (1 - \cos(2\omega_x t)) \sin(\omega_y t)$$
+$$ = \frac{3}{4}\left[\sin(\omega_y t)  - \frac{1}{2}\left( \sin((\omega_y + 2\omega_x) t) + \sin((\omega_y - 2\omega_x) t) \right) \right] $$
+<p>
+<b>From the cubic term we get components at $3f_1$, $3f_2$ (the harmonics) and $2f_1 \pm f_2$, $f_1 \pm 2f_2$ (the intermodulation)</b>.
+</p>
+<p>
+This process can be repeated to higher-order terms to find the intermodulation products. Later in this topic, you can see a <a href="#h2_table">table with more intermodulation products</a>. In pratice, <b>the harmonics and the intermodulation products show as distortion in the output signal</b>. In audio systems, distortion is a big topic and ideally we would want no components except in the fundamental frequencies.
+</p>
+<center>
+<table><tr>
+<td width="640"><div style="width:600px;height:300px" id="temp_plot"></div></td>
+<td width="40"><div id="amp1" style="height:300px"></div>A1</td>
+<td width="40"><div id="amp2" style="height:300px"></div>A2</td>
+</tr></table>
+<p class="comment">The sliders below control each coefficient of the polynomial function. The sliders on the right control the amplitudes of a sine wave at 5Hz (A1) and another at 6 Hz (A2). In the above plot you can see the original sine wave ($x(t)$) and the output $y(t)$ of the system. As you increase c and d (the nonlinear components), the output signal becomes more distorted.</p>
+<table cellpadding="10">
+<tr><td width="100">b = <span id="b"></span></td><td><div id="b_slider" style="width:450px"></div></td></tr>
+<tr><td width="100">c = <span id="c"></span></td><td><div id="c_slider" style="width:450px"></div></td></tr>
+<tr><td width="100">d = <span id="d"></span></td><td><div id="d_slider" style="width:450px"></div></td></tr>
+</table>
+<div style="width:600px;height:300px" id="freq_plot"></div>
+<p class="comment">The sliders above control each coefficient of the polynomial function. In the plot above you can see the input and output signals in the frequency domain. As you increase c and d (the nonlinear components), the harmonics and the intermodulation components start to show up.</p>
+</center>
+<h2 id="h2_diff">Intermodulation in differential signals</h2>
+<p>
+Often, a signal is transmitted in a differential way, i.e., the difference between two opposed signals represent the analog signal. For example, a signal $x(t)$ can be represented as $x(t) = x^+(t) - x^-(t)$, where $x^+(t) = \sin(\omega_1 t) + \sin(\omega_2 t)$ and $x^-(t) = -(\sin(\omega_1 t) + \sin(\omega_2 t))$. In that case, and assuming both signals pass through the same system, we can easily realize that $x^+(t)^2 = x^-(t)^2$ and the quadratic terms of each signal cancel. In fact, that is true for any power of an even number, such as $x(t)^4, x(t)^6, ...$. In sum,
+<b>the intermodulation products generated from even-order terms cancel out in a differential signal. Only the ones from the odd-order terms remain.</b> However, it must be pointed out that the intermodulation products closer to the fundamental frequencies are generated by odd-order terms.
+</p>
+<h2 id="h2_table">Table of intermodulation products</h2>
+<p>
+This table extends the terms found in the first section to higher-order terms:
+<center>
+<table class="table">
+<tr><th>Order</th><th>Intermodulation products</th><th>Harmonics</th><th>Example frequencies</th></tr>
+<tr><td>1<sup>st</sup></td><td></td><td>$f_1, f_2$</td><td>5,6</td></tr>
+<tr><td>2<sup>nd</sup></td><td>$f_1 \pm f_2$</td><td>$2f_1, 2f_2$</td><td>1,11; 10, 12</td></tr>
+<tr><td>3<sup>rd</sup></td><td>$2f_1 \pm f_2, f_1 \pm 2f_2$</td><td>$3f_1, 3f_2$</td><td>4, 7, 16, 17; 15, 18</td></tr>
+<tr><td>4<sup>th</sup></td><td>$2f_1 \pm 2f_2$</td><td>$4f_1, 4f_2$</td><td>2, 22; 20, 24</td></tr>
+<tr><td>5<sup>th</sup></td><td>$3f_1 \pm 2f_2, 2f_1 \pm 3f_2$</td><td>$5f_1, 5f_2$</td><td>3, 8, 27, 28; 25, 30</td></tr>
+<tr><td>6<sup>th</sup></td><td>$3f_1 \pm 3f_2$</td><td>$6f_1, 6f_2$</td><td>3, 33; 30, 36</td></tr>
+<tr><td>7<sup>th</sup></td><td>$4f_1 \pm 3f_2, 3f_1 \pm 4f_2$</td><td>$7f_1, 7f_2$</td><td>2, 9, 38, 39; 35, 42</td></tr>
+<tr><td colspan="4">...and you get the point</td></tr>
+</table>
+</center>
+</p>
+<script type="text/javascript" src="../../pages/intermodulation.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

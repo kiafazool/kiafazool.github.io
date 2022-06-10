@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Equivalent Noise Bandwidth (ENBW)</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_enbw.equivalent.noise/" />
+	<meta name="description" content="Equivalent Noise Bandwidth is the equivalent bandwidth of a system when converting the transfer function of that system into a 'brickwall' filter">
+	<meta name="keywords" content="noise, transfer function, power, area, bandwidth">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'enbw.equivalent.noise.bandwidth';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../../p_enbw.equivalent.noise/">http://www.onmyphd.com/?p=enbw.equivalent.noise.bandwidth</a></p><script language="javascript" type="text/javascript" src="../../components/js/math.js"></script>
+<h1>Equivalent Noise Bandwidth</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Signal Bandwidth</li>
+<li>Basics of theory of system</li>
+</ul>
+<h2>What is Equivalent Noise Bandwidth (ENBW or NBW)</h2>
+<p>
+Given a system with a transfer function $H(s)$, the spectrum of any input noise will be shaped by it. Under white noise (with equal power over all frequencies), it is convenient to replace the transfer function by a "brickwall" filter, in which the noise power is the same up to a certain frequency $\Delta f$ and after that is zero. That frequency is defined so that the total output noise power is the same for both the system and the brickwall filter. Thus, the area under this rectangle must be the same as the area under the original $H(s)^2$ system (the square means the input and output are powers instead of amplitudes).
+</p>
+<center>
+<div id="enbwplot" style="width:600px;height:300px;"></div>
+</center>
+<p>
+$$ A_{H(s)} = A_{rectangle}$$
+$$ \int_0^\infty \left|H(j\omega)\right|^2 \partial \omega = H_{max}^2 2\pi\Delta f$$
+where $H_{max}$ is the maximum value of $H(s)$.
+$$ \Delta f = \frac{1}{2\pi}\int_0^\infty \frac{\left|H(j\omega)\right|^2}{H_{max}^2} \partial \omega  $$
+</p>
+<p>
+For example, for the 1<sup>st</sup> order low-pass filter
+$$H(j\omega)=\frac{H_{max}}{1+j\frac{\omega}{\omega_{3dB}}}$$
+$$ \left|H(\omega)\right| = \frac{H_{max}}{\sqrt{1+\left(\frac{\omega}{\omega_{3dB}}\right)^2}}$$
+Solving for $\Delta f$:
+$$\Delta f = \frac{1}{2\pi}\int_0^\infty \frac{1}{1+\left(\frac{\omega}{\omega_{3dB}}\right)^2} \partial \omega  $$
+$$\Delta f = \frac{1}{2\pi}\int_0^\infty \frac{1}{1+x^2} \partial x\omega_{3dB}\qquad\qquad\left(x = \frac{\omega}{\omega{3db}}\right)$$
+$$\Delta f = \frac{\omega_{3dB}}{2\pi}\int_0^\infty \frac{1}{1+x^2} \partial x $$
+$$\Delta f = \frac{\omega_{3dB}}{2\pi} \left.\tan^{-1}\frac{\omega}{\omega_{3db}}\right|_0^\infty $$
+$$\Delta f = f_{3dB}\frac{\pi}{2} $$
+</p>
+<p>
+There are some tabulated values for when the systems are low-pass filters of different orders.
+<center>
+<table class="table">
+<tr>
+<td>Order</td><td>$\Delta f$</td>
+</tr>
+<tr>
+<td>1</td><td>1.57 $f_{3dB}$</td>
+</tr>
+<tr>
+<td>2</td><td>1.22 $f_{3dB}$</td>
+</tr>
+<tr>
+<td>3</td><td>1.15 $f_{3dB}$</td>
+</tr>
+<tr>
+<td>4</td><td>1.13 $f_{3dB}$</td>
+</tr>
+<tr>
+<td>5</td><td>1.11 $f_{3dB}$</td>
+</tr>
+</table>
+</center>
+Higher order filters will be closer to the "brickwall" filter, thus the coefficient is closer to 1.
+</p>
+<script type="text/javascript" src="../../pages/enbw.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

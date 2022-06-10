@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Current squarer</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_current/" />
+	<meta name="description" content="The current squarer is a circuit that outputs the square of the input current">
+	<meta name="keywords" content="mosfet, cmos, 3T, circuit, square, current">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'current.squarer';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../../p_current/">http://www.onmyphd.com/?p=current.squarer</a></p><h1>Current squarer</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Circuit theory</li>
+<li><a href="../../print.php/p_mosfet/" id="mosfet.transistor" class="page"> MOSFET transistors</a></li>
+</ul>
+<h2>What is a current squarer?</h2>
+<p>
+It is a circuit that outputs the square value of the input current. It is used has a building block for analog multipliers, rectifiers, etc. There are many ways of designing a current squarer, but all are based on the square-law relation between drain current and gate-source voltage for transistors in strong inversion.
+</p>
+<h2>3T current squarer</h2>
+<p>
+The 3 transistor current squarer is a very compact way of squaring a current.
+</p>
+<center>
+<img src="../../pages/current.squarer/3t.current.squarer.svg" width="300" class="svg"/>
+</center>
+<p>
+The square-law for transistors $M_1$ and $M_2$ is
+$$I_1 = \beta(V_1 - V_{TH})^2$$
+$$I_2 = \beta(V_2 - V_1 - V_{TH})^2$$
+where $\beta=1/2\mu_nC_{ox}W/L$. First, let's work $I_2$ a little bit
+$$I_2 = \beta( (V_2 -2V_{TH}) - (V_1 - V_{TH}))^2$$
+$$I_2 = \beta\left( (V_2 -2V_{TH})^2 - 2(V_2 -2V_{TH})(V_1 - V_{TH}) + (V_1 - V_{TH})^2 \right)$$
+$$I_2 = \beta\left( (V_2 -2V_{TH})^2 - 2(V_2 -2V_{TH})(V_1 - V_{TH}) + \frac{I_1}{\beta}\right)$$
+$$\frac{I_2}{\beta} = (V_2 -2V_{TH})^2 - 2(V_2 -2V_{TH})(V_1 - V_{TH}) + \frac{I_1}{\beta}$$
+$$V_1 - V_{TH} = \frac{(V_2 -2V_{TH})^2 + \frac{I_1}{\beta} - \frac{I_2}{\beta}}{2(V_2 -2V_{TH})}.$$
+Now we place the expression above in $I_1$:
+$$\begin{equation}I_1 = \beta \left(\frac{(V_2 -2V_{TH})^2 + \frac{I_1}{\beta} - \frac{I_2}{\beta}}{2(V_2 -2V_{TH})}\right)^2\label{eq:eq1}\end{equation}$$
+Looking at the circuit above and noting that $I_1 = I_3$, we see that:
+$$I_{out} = I_1 + I_2$$
+$$I_{in} = I_1 - I_2$$
+Turning the variables around, we get:
+$$I_1 = \frac{I_{out} + I_{in}}{2}$$
+$$I_2 = \frac{I_{out} - I_{in}}{2}$$
+Replacing $I_1$ and $I_2$ in $\eqref{eq:eq1}$, we get:
+$$ \frac{I_{out} + I_{in}}{2} = \beta\left(\frac{(V_2 -2V_{TH})^2 + \frac{I_{out} + I_{in}}{2\beta} - \frac{I_{out} - I_{in}}{2\beta}}{2(V_2 -2V_{TH})}\right)^2$$
+$$ \frac{I_{out} + I_{in}}{2} = \beta\left(\frac{(V_2 -2V_{TH})^2 + \frac{I_{in}}{\beta}}{2(V_2 -2V_{TH})}\right)^2$$
+$$ \frac{I_{out} + I_{in}}{2} = \beta\left(\frac{V_2 -2V_{TH}}{2} + \frac{ I_{in}}{2\beta(V_2 -2V_{TH})}\right)^2$$
+$$ I_{out} + I_{in} = 2\beta\left(\frac{(V_2 -2V_{TH})^2}{4} + \frac{I_{in}}{2\beta} + \frac{I_{in}^2}{4\beta^2(V_2 -2V_{TH})^2}\right)$$
+$$ I_{out} = 2\beta\left(\frac{(V_2 -2V_{TH})^2}{4} + \frac{I_{in}^2}{4\beta^2(V_2 -2V_{TH})^2}\right)$$
+$$ I_{out} = \beta\left(\frac{(V_2 -2V_{TH})^2}{2} + \frac{I_{in}^2}{2\beta^2(V_2 -2V_{TH})^2}\right)$$
+By defining a current $I_b = \beta(\frac{V_2}{2} - V_{TH})^2$ , we get:
+$$ I_{out} = 2I_b + \frac{I_{in}^2}{8I_b}$$
+The output current $I_{out}$ has a constant term (only depends on $V_2$) and a term that depends on the square of the input current $I_{in}$.
+</p>
+<h3>Dynamic range of input current</h3>
+<p>
+When the input current reaches $4I_b$, the output current is also $4I_b$. According to the expression $I_2 = \frac{I_{out} - I_{in}}{2}$, that means that $I_2 = 0$, and above this value the circuit does not work. In the case of negative input current (flowing in the opposite direction), the same boundary applies because $I_1 = \frac{I_{out} + I_{in}}{2} = 0$. Therefore,  $|I_{in}| \le 4I_b$ for the circuit to work.
+</p>
+<h3>Non-idealities</h3>
+<p>
+Non-idealities in the transistors affect the accuracy of the squarer. Namely:
+<ol type="a">
+<li> Mismatches and process variations between transistors make some terms not to cancel perfectly, which leads to an error term</li>
+<li> $M_2$ suffers from body effect, making its $V_{TH}$ dependent on $V_1$. Using a flipped version with only PMOS can solve this problem, because the bulk of each PMOS transistors can be tied to any node, including its own source terminal</li>
+<li> Channel length modulation makes the voltage at the output node affect the square-law relation</li>
+</ol>
+The errors can be introduced in the expression as:
+$$I_{out} = 2I_b + e_1 + \frac{(I_{in}+e_2)^2}{8I_{b}}$$
+where $e_1$ is the error associated to the output and $e_2$ is the error associated to the input.
+</p>
+<script type="text/javascript" src="../../pages/current.squarer.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

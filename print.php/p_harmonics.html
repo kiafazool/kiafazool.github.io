@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Harmonics</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_harmonics/" />
+	<meta name="description" content="Harmonics are components at multiples of the fundamental frequency, caused by nonlinearities of a system. In the time domain, they are seen as distortion of a perfect sine wave.">
+	<meta name="keywords" content="harmonics, nonlinearity, distortion, differential signal, multiples of fundamental frequency">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'harmonics';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../../p_harmonics/">http://www.onmyphd.com/?p=harmonics</a></p><h1>Harmonics</h1>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What are harmonics?</a></li>
+<li><a href="#h2_diff">Harmonics in differential signals</a></li>
+<li><a href="#h2_intermodulation">Intermodulation</a></li>
+</ul>
+<h2 id="h2_whatis">What are harmonics?</h2>
+<p>
+If you have a signal with a fundamental frequency $f$ (like a sinusoidal with frequency $f$), harmonics are every other sinusoidal components at frequencies multiples of the fundamental frequency ($2f$, $3f$, ...). These harmonics are important because they can be seen at the output of a system with some nonlinearity. The power in the harmonics represent how nonlinear the system is.
+</p>
+<p>
+Let's say that we apply a perfect sinusoid $x(t) = \sin(2\pi f t)$ to a certain system. If the system is linear, the output will have a perfect sinusoid at its output:
+$$y(t) = b x(t) + a = b\sin(2\pi f t) + a$$
+where $a$ and $b$ are the parameters of the linear system, $x(t)$ is its input and $y(t)$ is the output.
+</p>
+<p>
+Now let's assume that the system is nonlinear and, like any nonlinear system, can be approximated by a polinomial function $y(t) = a + b x(t) + c x(t)^2 + d x(t)^3 + ...$. How deep we go into the terms of the polinomial function depends on how accurate we want to approximate the system. We apply the same perfect sinusoid and look at the output:
+$$\begin{equation}y(t) = a + b \sin(2\pi f t) + c \sin(2\pi f t)^2 + d \sin(2\pi f t)^3 + ...\label{eq:nonlinear}\end{equation}$$
+We make use of the trigonometric properties (you can find them on <a href="http://en.wikipedia.org/wiki/List_of_trigonometric_identities" target="_blank">wikipedia</a>):
+$$ \sin(\theta)^2 = \frac{1-\cos(2\theta)}{2}$$
+$$ \sin(\theta)^3 = \frac{3\sin(\theta) - \sin(3\theta)}{4}$$
+Replacing them in $\eqref{eq:nonlinear}$:
+$$y(t) = a + b \sin(2\pi f t) + c \frac{1-\cos(2\cdot 2\pi f t)}{2} + d \frac{3\sin(2\pi f t) - \sin(3\cdot 2\pi f t)}{4} + ...$$
+$$y(t) = a + \frac{c}{2} + \left(b + \frac{3d}{4}\right)\sin(2\pi f t) -  \frac{c}{2}\cos(2\pi (2f) t) -  \frac{d}{4}\sin(2\pi (3f) t) + ...$$
+As you can see, the <b>nonlinear terms of the polinomial generate sine waves at integer multiples of the input frequency</b>.
+</p>
+<p>
+In pratice, <b>the harmonics show as distortion in the output signal</b>. In audio systems, distortion is a big topic and ideally we would want no harmonics.
+</p>
+<center>
+<div style="width:600px;height:300px" id="temp_plot"></div>
+<p class="comment">The sliders below control each coefficient of the polinominal function. In the above plot you can see the original sine wave ($x(t)$) and the output $y(t)$ of the system. As you increase c and d (the nonlinear components), the output signal becomes more distorted</p>
+<table cellpadding="10">
+<tr><td width="100">b = <span id="b"></span></td><td><div id="b_slider" style="width:450px"></div></td></tr>
+<tr><td width="100">c = <span id="c"></span></td><td><div id="c_slider" style="width:450px"></div></td></tr>
+<tr><td width="100">d = <span id="d"></span></td><td><div id="d_slider" style="width:450px"></div></td></tr>
+</table>
+<div style="width:600px;height:300px" id="freq_plot"></div>
+<p class="comment">The sliders above control each coefficient of the polinominal function. In the plot above you can see the input and output signals in the frequency domain. As you increase c and d (the nonlinear components), the harmonics start to show up</p>
+</center>
+<p>
+To measure how nonlinear a system is, the metric <a href="/" id="thd" class="page">Total Harmonic Distortion</a> is  used. It measures the power in the harmonics and compares it to the power in the fundamental frequency. 
+</p>
+<h2 id="h2_diff">Harmonics in differential signals</h2>
+<p>
+Often, a signal is transmitted in a differential way, i.e., the difference between two opposed signals represent the analog signal. For example, a signal $x(t)$ can be represented as $x(t) = x^+(t) - x^-(t)$, where $x^+(t) = \sin(2\pi f t)$ and $x^-(t) = -\sin(2\pi f t)$. In that case, and assuming both signals pass through the same system, each output becomes:
+$$y^+(t) = a + b \sin(2\pi f t) + c \sin(2\pi f t)^2 + d \sin(2\pi f t)^3 + ...$$
+$$y^+(t) = a + \frac{c}{2} + \left(b + \frac{3d}{4}\right)\sin(2\pi f t) -  \frac{c}{2}\cos(2\pi (2f) t) -  \frac{d}{4}\sin(2\pi (3f) t) + ...$$
+$$y^-(t) = a - b \sin(2\pi f t) + c (-\sin(2\pi f t))^2 + d (-\sin(2\pi f t))^3 + ...$$
+$$y^-(t) = a + \frac{c}{2} - \left(b + \frac{3d}{4}\right)\sin(2\pi f t) -  \frac{c}{2}\cos(2\pi (2f) t) + \frac{d}{4}\sin(2\pi (3f) t) + ...$$
+The output is $y(t) = y^+(t) - y^-(t)$:
+$$y(t) = 2\left(b + \frac{3d}{4}\right) \sin(2\pi f t) - \frac{d}{2}sin(2\pi(3f)t) + ...$$ 
+<b>The even harmonics cancel out in a differential signal. Only the odd harmonics remain.</b>
+</p>
+<h2 id="h2_intermodulation">Intermodulation</h2>
+<p>
+And what if two or more sine waves at different frequencies were applied to a nonlinear system? Would only be generated harmonics at integer multiples of the frequency of each sinusoidal? In fact, although the principle is the same, interactions between the several sine waves will also generate components at the sum and difference of all the harmonics and fundamentals. These interactions are so proeminent that the phenomenon has its own name, <a href="../../print.php/p_intermodulation/" id="intermodulation" class="page">intermodulation</a>.
+</p>
+<script type="text/javascript" src="../../pages/harmonics.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

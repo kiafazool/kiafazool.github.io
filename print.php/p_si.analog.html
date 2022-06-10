@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Switched-Current (SI) analog memory</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_si.analog/" />
+	<meta name="description" content="The switched-current analog memories are a set of analog memories that sample and hold currents in the form a gate voltage">
+	<meta name="keywords" content="mosfet, cmos, switched-current, sample, hold, analog, memory, SI, S2I, S3I, class A, class AB">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'si.analog.memory';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../../p_si.analog/">http://www.onmyphd.com/?p=si.analog.memory</a></p><h1>Switched-current analog memories</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Circuit theory</li>
+<li><a href="../../print.php/p_mosfet/" id="mosfet.transistor" class="page"> MOSFET transistors</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What is a switched-current memory?</a></li>
+<li><a href="#h2_classAS2I">Class A S<sup>2</sup>I analog memory</a></li>
+<li><a href="#h2_classABS2I">Class AB S<sup>2</sup>I analog memory</a></li>
+<li><a href="#h2_S3I">S<sup>3</sup>I or seamless S<sup>2</sup>I swiched-current</a></li>
+<li><a href="#h2_accurate">Accurate analog memory</a></li>
+<li><a href="#h2_enhancements">Other enhancement techniques</a></li>
+<ul>
+<li><a href="#h3_output_switch_comp">Output switch compensation</a></li>
+<li><a href="#h3_cap_cancelling">Cancelling capactive coupling in differencial signal</a></li>
+<li><a href="#h3_ds_cap_discharge">Drain-substrate capacitance discharge</a></li>
+<li><a href="#h3_dummy_switch_comp">Dummy switches</a></li>
+</ul>
+</ul>
+<h2 id="h2_whatis">What is a switched-current memory?</h2>
+<p>
+The switched-current memory (for short SI memory) is a memory that stores an analog value represented by a current in a capacitor and uses the $I_D-V_{GS}$ relation of a MOS transistor to do the conversion between current and voltage. Suppose you have a diode-connected transistor and is collecting a current $I_{in}$. It develops a gate-source voltage according to 
+</p>
+$$ I_{in} = \beta\left(V_{GS} - V_{TH}\right)^2 $$
+<center>
+<img src="../../pages/si.analog.memory/si.analog.memory.svg" width="300" class="svg"/>
+</center>
+<p>
+where $\beta=1/2\mu_n C_{ox}W/L$. If the connection between gate and drain is broken, the charge in the gate has nowhere to go and remains constant. If now the transistor is working as a current source, it will produce the same current as it collected. The MOS transistor converted the current into voltage and stored it. Afterwards, it converts the gate voltage into the same current and supplies it.
+</p>
+<h3 id="h3_problems">Problems with switched-current memory</h3>
+There are a few problems with the simple approach described above.
+<ol type="a">
+<li>The drain and gate must be connected by a switch. Real switches inject charge during switching into the gate that depends on the voltage at its terminals. That introduces an error in the stored charge. </li>
+<li>The drain current is lightly dependent on the drain-source voltage $V_{DS}$. During storage, $V_{DS}$ is equal to $V_{GS}$ (signal dependent), but during current supply it is unknown. Any difference in $V_{DS}$ between writing and reading the current will cause a difference between $I_{in}$ and $I_{out}$.</li>
+</ol>
+<h2 id="h2_classAS2I">Class A S<sup>2</sup>I analog memory</h2>
+<p>
+To overcome some of these problems, in S<sup>2</sup>I the storage of current is done in two steps. In the first step, the current $I_{ref} + I_{in}$ is stored in an NMOS transistor, as before. In the second step, a PMOS transistor captures the current error $\Delta I$ caused by the charge injection in the NMOS gate and also by the change in $V_{DS}$. The PMOS also suffers from charge injection when the second step ends, but the error is much less signal dependent because it only depends on $\Delta I$, which is usually small. It is like we are capturing the signal and adding a part of it in the NMOS, and then we are capturing that part and adding a part of that in the PMOS. During the read of the current, both NMOS and PMOS supply their currents and the $I_{ref} + \Delta I$ term is cancelled by each other, leaving the term $I_{out} + \delta I$.
+</p>
+<center>
+<img src="../../pages/si.analog.memory/s2i.analog.memory.svg" width="700" class="svg"/>
+</center>
+<p>
+The complete circuit, including switches, is shown next.
+</p>
+<center>
+<img src="../../pages/si.analog.memory/s2i.analog.memory.circuit.svg" width="200" class="svg"/>
+</center>
+<p>
+So the benefits of using S<sup>2</sup>I cells is that the charge injection errors are reduced and $V_{DS}$ during the end of the second phase is very close to $V_{ref}$ whatever the signal $I_{in}$ may be. If the next stage follows the same procedure, the error caused by the output conductance is also very small. 
+</p>
+<h3>Problems with S<sup>2</sup>I class A memories</h3>
+<p>
+There are still some problems with this S<sup>2</sup>I analog memory.
+<ol type="a">
+<li>Even if the input current is zero, this memory still consumes $I_{ref}$ during each write and read.</li>
+<li>The input current is limited to $I_{ref}$.</li>
+<li>As the input current changes, the transconductance of the PMOS transistor $g_{mp}$ is fixed, but the transconductance of the NMOS transistor $g_{mn}$ changes. During write, $g_{mn}$ and $g_{mp}$ make part of the input conductance, which makes the bandwidth of the memory signal dependent.</li>
+</ol>
+</p>
+<h2 id="h2_classABS2I">Class AB S<sup>2</sup>I analog memory</h2>
+<p>
+So the previous type of S<sup>2</sup>I memory is class A. That is because there is a constant supply of current. The class AB type uses a NMOS and PMOS composite to store current in each step.
+</p>
+<center>
+<img src="../../pages/si.analog.memory/s2i.classab.analog.memory.svg" width="800" class="svg"/>
+</center>
+<p>
+During the first step, the composite of the left side stores the input current $I_{in}$ plus the current coming from the right side $I_{ref}$. $I_{ref}$ is the difference of currents coming from the PMOS and NMOS of the right side. At the end of the first step, a charge is injected when the gates and drains of the transistors in the left side are disconnected. The charge is injected to both transistors, but let us simplify by pushing all the charge injected to the NMOS. During the second step, the right side becomes diode-connected and stores $I_{in}$ plus the current stored previously on the left side. Due to charge injection, the current has an error term $\Delta I$. The current now stored in the right side is equal to the original term $I_{ref}$ plus the error term $\Delta I$. During read, both sides are supplying currents and the result is $I_{ref} + \delta I$, where $\delta I$ is the error term from the charge injected in the right side. All other terms are cancelled.
+</p>
+<h3>Advantages of class AB memories</h3>
+<h4>The input current can be 4 times the quiescent current</h4>
+<p>
+The class A can only store $I_{in} &gt; -I_{ref}$. In the limit condition of $I_{in} = -I_{ref}$, the NMOS has zero current. However, the class AB can store $ -4J \lt I_{in} \lt 4J$, where $J$ is the current flowing through the stacked NMOS and PMOS, if they were alone. Why is that? Consider that the transistors were sized such that they have the same overdrive voltage. Then
+$$ J = \frac{\beta_p}{2}  \Delta V_{SG_p}^2 $$
+$$ J = \frac{\beta_n}{2}  \Delta V_{GS_n}^2 $$
+For any input current, while one gate-source voltage increases, the other decreases, because the input current is being distributed by both transistors. The limit case is when one transistor is switched off ($\Delta V_{GS}$ or $\Delta V_{SG} = 0$) and the other doubled its overdrive voltage. To double the overdrive voltage is to drive 4x more current.
+</p>
+<center>
+<img src="../../pages/si.analog.memory/s2i.analysis.svg" width="100" class="svg"/>
+</center>
+<h4>The bandwidth is signal independent</h4>
+Suppose transistors are sized to have the same transconductance.
+$$g_{m_p} = \beta_p \Delta V_{SG}$$
+$$g_{m_n} = \beta_n \Delta V_{GS}$$
+For any input current, the changes in $\Delta V_{SG}$ or $\Delta V_{GS}$ are going to change the transconductance of each transistor by this linear relation. However, since when one increases, the other decreases accordingly, the total transconductance $G_m = g_{m_n} + g_{m_p}$ remains constant. Since transconductance is the input conductance during write, the bandwith is signal independent.
+<h2 id="h2_S3I">S<sup>3</sup>I or seamless S<sup>2</sup>I swiched-current</h2>
+<p>
+There is still another type of switched-current memory called S<sup>3</sup>I because it has added benefits compared to S<sup>2</sup>I, or called seamless S<sup>2</sup>I because it uses the same clock sequence.
+</p>
+<h2 id="h2_accurate">Accurate analog memory</h2>
+<p>
+This memory is not based on making the charge injection signal independent, but instead aims to cancel charge injection altogether.
+</p>
+<center>
+<img src="../../pages/si.analog.memory/accurate.analog.memory.svg" width="800" class="svg"/>
+</center>
+<p>
+There are two capacitors that store the gate voltage of the memory transistor. When $S_2$ is turned off, clock feedthrough transfers a charge $\Delta Q$ from each terminal of the switch $S_2$. The charge is removed from $C_2$ because it is floating, while in $C_1$ is assimilated because $S_1$ is still on. When $S_1$ turns off, the same happens, and $\Delta Q$ is transferred from $C_1$. In the final step, when $S_2$ turns on, $\Delta Q$ is transferred to each side of $S_2$, cancelling the original loss.
+</p>
+<h2 id="h2_enhancements">Other enhancement techniques</h2>
+<h3 id="h3_output_switch_comp">Output switch compensation</h3>
+<p>
+During sampling, the drain node is forced to $V_{ref}$ by the PMOS that is receiving the same current it supplied ($I_{ref}$). During hold, the next stage forces its drain node to $V_{ref}$ the same way, but the output switch resistance has a voltage drop that sets the drain voltage of the hold memory to $V_{ref} - I_{in}r_s$. The memory has a different drain voltage between sample and hold and that causes an error due to channel length modulation.
+</p>
+<center>
+<img src="../../pages/si.analog.memory/si.output.switch.compensation.svg" width="500" class="svg"/>
+</center>
+<p>
+One way to solve this is to add a resistance of the same value as the output switch between the input and the drain node. This can be a switch always turned on equal to the output switch . Then, a voltage $V_{ref}$ at the gate of the PMOS will lead to $V_{ref} - I_{in}r_s$ in the drain node. During hold, this resistance has no effect, and the same voltage will show up at the drain node.
+</p>
+<h3 id="h3_cap_cancelling">Cancelling capactive coupling in differencial signal</h3>
+<p>
+The gate-drain capacitance of the memory transistors let charge be transferred between drain and gate through capactive coupling when the drain voltage changes. Differential circuits can use a technique that cancels the capacitive coupling by creating a counter capacitive coupling.
+</p>
+<center>
+<img src="../../pages/si.analog.memory/si.cgd.coupling.cancellation.svg" width="500" class="svg"/>
+</center>
+<p>
+In the figure above, the drain node of one side affects the gates of the other side through capacitive coupling. Capacitances are sized such that $C_p = C_{gd_p}$ and $C_n = C_{gd_n}$. Why? Let's say that the drain voltage of the left side changes by $\Delta V_{ds}$. $C_{gd}$ coupling changes the gate voltage on the same side and that changes the current by
+$$ \Delta I_n = g_{m_n} \frac{C_{gd_n}}{C_{gd_n} + C_{g_n}} \Delta V_{ds}.$$
+$$ \Delta I_p = g_{m_p} \frac{C_{gd_p}}{C_{gd_p} + C_{g_p}} \Delta V_{ds}.$$
+However, the newly added capacitances $C_p$ and $C_n$ also change the current at the right side by
+$$ \Delta I_n = g_{m_n} \frac{C_n}{C_n + C_{g_n}} \Delta V_{ds}.$$
+$$ \Delta I_p = g_{m_p} \frac{C_p}{C_p + C_{g_p}} \Delta V_{ds}.$$
+If $C_p = C_{gd_p}$ and $C_n = C_{gd_n}$, the change of current is equal on both sides and the differential current remains the same. For convenience, the capacitances are made of the same transistors as the memory transistors to make the capacitances match more easily.
+</p>
+<h3 id="h3_ds_cap_discharge">Drain-substrate capacitance discharge</h3>
+<p>
+This enhancement is not done to increase accuracy or reduce error, but instead it makes the memory settle faster. The problem in S<sup>2</sup>I memories is that during the coarse phase (when the NMOS is diode-connected) the drain-substrate capacitance $C_{db}$ is charged to some voltage $V_{db}$ that depends on the input current. At the beginning of the fine phase (when the PMOS is diode-connected) $C_{db}$ discharges to the gate of PMOS, developing a peak as shown below. The peak delays the settling, which in turn makes the memory slower than conventional SI memories.
+</p>
+<center>
+<img src="../../pages/si.analog.memory/si.cdb.discharge.svg" width="700" class="svg"/>
+</center>
+<p>
+To counter this effect, a switch controlled by a short pulse $\phi_d$ is connected to the common drain node and $V_{ref}$. At the beginning of step $\phi_{1b}$ this switch turns on for a short time to discharge $C_{db}$ quickly and then it turns off. This way, the peak is supressed and the memory settles faster.
+</p>
+<h3 id="h3_dummy_switch_comp">Dummy switches</h3>
+<p>
+Dummy switches are used to cancel the clock-feedthrough of the already existing switches. As the name says, they really do not connect or disconnect part of the circuits, because their drain and source are connected together. They just inject or remove charge through their parasitic capacitances, when the effective switch is doing the opposite. So, when the clock at the gate of the effective switch rises, the clock at the gate of the dummy switch falls, and vice-versa.
+</p>
+<center>
+<img src="../../pages/si.analog.memory/si.dummy.switch.svg" width="400" class="svg"/>
+</center>
+<p>
+Since both terminals of the dummy switch are connected to a certain node in the circuit, while the effective switch only has one, the dummy transistors are usually half the size of the switch transistor. That way, the total coupling capacitance is the same for both transistors.
+</p>
+<script type="text/javascript" src="../../pages/si.analog.memory.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

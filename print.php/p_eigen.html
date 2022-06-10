@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Eigenvalues, eigenvectors and eigendecomposition</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_eigen/" />
+	<meta name="description" content="Eigendecomposition is the method to decompose a square matrix into its eigenvalues and eigenvectors. An eigenvector of a matrix is a vector that, when left-multiplied by that matrix, results in a scaled version of the same vector, with the scaling factor equal to its eigenvalue. Eigendecomposition is useful because the eigenvalues matrix is diagonal and algebra operations on it are simple.">
+	<meta name="keywords" content="eigendecomposition, eigenvalue, eigenvector, diagonalizable, diagonal matrix, characteristic polinomial">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'eigen.decomposition';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../../p_eigen/">http://www.onmyphd.com/?p=eigen.decomposition</a></p><h1>Eigenvalues, eigenvectors and eigendecomposition</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basics of linear algebra</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_eigenwhat">Eigenwhat?</a></li>
+<li><a href="#h2_eigendecomposition">Eigendecomposition</a></li>
+<ul>
+<li><a href="#h3_example">An example</a></li>
+</ul>
+<li><a href="#h2_why">Why is eigendecomposition useful?</a></li>
+<ul>
+<li><a href="#h3_eigeninverse">Matrix inverse</a></li>
+<li><a href="#h3_eigenpower">Power of a matrix</a></li>
+</ul>
+<li><a href="#h2_properties">Properties of eigendecomposition</a></li>
+<li><a href="#h2_compute">How to compute eigendecomposition?</a></li>
+<ul>
+<li><a href="#h3_poweriteration">Power iteration</a></li>
+<li><a href="#h3_QRalgorithm">QR algorithm</a></li>
+</ul>
+</ul>
+<h2 id="h2_eigenwhat">Eigenwhat?</h2>
+<p>
+Eigen means own or self. In linear algebra, eigenvalue, eigenvector and eigendecomposition are terms that are intrinsically related. Eigendecomposition is the method to decompose a square matrix into its eigenvalues and eigenvectors. For a matrix $A$, if
+$$\begin{equation}A\mathbf{v}=\lambda \mathbf{v}\label{eq:Avlv}\end{equation}$$
+then $\mathbf{v}$ is an eigenvector of matrix $A$ and $\lambda$ is the corresponding eigenvalue. That is, if matrix $A$ is multiplied by a vector and the result is a scaled version of the same vector, then it is an eigenvector of $A$ and the scaling factor is its eigenvalue.
+</p>
+<h2 id="h2_eigendecomposition">Eigendecomposition</h2>
+<p>
+So how do we find the eigenvectors of a matrix? From $\eqref{eq:Avlv}$:
+$$A\mathbf{v}-\lambda I \mathbf{v} = 0$$
+$$\begin{equation}(A -\lambda I) \mathbf{v} = 0\label{eq:AlI}\end{equation},$$
+where $I$ is the identity matrix. The values of $\lambda$ where $\eqref{eq:AlI}$ holds are the eigenvalues of $A$. It turns out that this equation is equivalent to:
+$$\begin{equation}det(A-\lambda I) = 0,\label{eq:detAlI}\end{equation}$$
+where det() is the determinant of a matrix.
+</p>
+<p>
+<a href="#" id="proofdetctrl">Proof that $det(A-\lambda I) \equiv (A-\lambda I) \mathbf{v}=0$</a>
+<div id="proofdet" style="margin-left: 2em;">
+First, you must know that a matrix is non-invertible if and only if its determinant is zero. So, for the values of $\lambda$ that $\eqref{eq:detAlI}$ holds, $A-\lambda I$ is non-invertible (singular). In those cases, you cannot left-multiply both sides of $\eqref{eq:AlI}$ by $(A-\lambda I)^{-1}$ (since there is no inverse) to get:
+$$\mathbf{v} = 0,$$
+which means that in those cases, the solution for $\eqref{eq:Avlv}$ is different from $\mathbf{v} = 0$ and $\lambda$ is an eigenvalue of $A$.
+</div>
+</p>
+<h3 id="h3_example">An example</h3>
+<p>
+Let's see the eigendecomposition for the matrix:
+$$A=\left[\begin{array}{cc}1 & 0\\1 & 3\\\end{array}\right]$$
+From $\eqref{eq:detAlI}$:
+$$det\left(\left[\begin{array}{cc}1-\lambda & 0\\1 & 3-\lambda\\\end{array}\right]\right) = 0$$
+$$(1-\lambda)(3-\lambda) = 0$$
+we get directly $\lambda_1 = 1$ and $\lambda_2 = 3$. The above expression is usually referred as the <b>characteristic polinomial</b> or <b>characteristic equation</b> of a matrix.
+<br/>
+Plugging $\lambda_1$ into $\eqref{eq:Avlv}$, we get:
+$$\left[\begin{array}{cc}1 & 0\\1 & 3\\\end{array}\right]\left[\begin{array}{c}v_{11}\\v_{12}\\\end{array}\right]= 1 \left[\begin{array}{c}v_{11}\\v_{12}\\\end{array}\right]$$
+from which we get $v_{11} = -2v_{12}$. That is, any vector $\mathbf{v_1} = [v_{11}, v_{12}]$ where $v_{11} = -2v_{12}$ is an eigenvector of $A$ with eigenvalue 1.
+<br/>
+Plugging $\lambda_2$ into $\eqref{eq:Avlv}$, we get:
+$$\left[\begin{array}{cc}1 & 0\\1 & 3\\\end{array}\right]\left[\begin{array}{c}v_{21}\\v_{22}\\\end{array}\right]= 3 \left[\begin{array}{c}v_{21}\\v_{22}\\\end{array}\right]$$
+from which we get $v_{21} = 0$ and $v_{22} \in \mathbb{R}$. That is, any vector $\mathbf{v_2} = [v_{21}, v_{22}]$ where $v_{21} = 0$ is an eigenvector of $A$ with eigenvalue 3.
+</p>
+<h2 id="h2_why">Why is eigendecomposition useful?</h2>
+<p>
+Referring to our previous example, we can join both eigenvectors and eigenvalues in a single matrix equation:
+$$A\left[\mathbf{v_1 v_2}\right] = \left[\begin{array}{cc}1 & 0\\1 & 3\\\end{array}\right]\left[\begin{array}{cc}v_{11} & v_{21}\\v_{12} & v_{22}\\\end{array}\right] =\left[\begin{array}{cc}v_{11} & v_{21}\\v_{12} & v_{22}\\\end{array}\right]\left[\begin{array}{cc}\lambda_1 & 0\\0 & \lambda_2\\\end{array}\right] =\left[\mathbf{v_1 v_2}\right]\left[\begin{array}{cc}\lambda_1 & 0\\0 & \lambda_2\\\end{array}\right]$$
+If we replace:
+$$\Lambda = \left[\begin{array}{cc}\lambda_1 & 0\\0 & \lambda_2\\\end{array}\right]$$
+$$V = \left[\mathbf{v_1 v_2}\right]$$
+it is also true that:
+$$AV = V\Lambda$$
+$$\begin{equation}A = V\Lambda V^{-1}\label{eq:AVLV}\end{equation}$$
+<b>Eigendecomposition decomposes a matrix $A$ into a multiplication of a matrix of eigenvectors $V$ and a diagonal matrix of eigenvalues $\Lambda$.</b> This can only be done if a matrix is <b>diagonalizable</b>. In fact, the definition of a diagonalizable matrix $A \in \mathbb{R}^{n \times n}$ is that it can be eigendecomposed into $n$ eigenvectors, so that $V^{-1}AV = \Lambda$.
+</p>
+<h3 id="h3_eigeninverse">Matrix inverse with eigendecomposition</h3>
+<p>
+From $\eqref{eq:AVLV}$:
+$$A^{-1} = V \Lambda^{-1}V^{-1}$$
+The inverse of $\Lambda$ is just the inverse of each diagonal element (the eigenvalues).
+</p>
+<h3 id="h3_eigenpower">Power of a matrix with eigendecomposition</h3>
+<p>
+From $\eqref{eq:AVLV}$:
+$$A^2 = V \Lambda V^{-1} V \Lambda V^{-1} = V \Lambda^{2} V^{-1}$$
+$$A^n = V \Lambda^n V^{-1}$$
+The power of $\Lambda$ is just the power of each diagonal element. This becomes much simpler than multiplications of A.
+</p>
+<h2 id="h2_properties">Properties of eigendecomposition</h2>
+<ul>
+<li>$det(A)=\prod_{i=1}^{n}\lambda_i$ (the determinant of A is equal to the product of its eigenvalues)</li>
+<li>$tr(A)=\sum_{i=1}^{n}\lambda_i$ (the trace of A is equal to the sum of its eigenvalues)</li>
+<li>The eigenvalues of $A^{-1}$ are $\lambda_i^{-1}$</li>
+<li>The eigenvalues of $A^{n}$ are $\lambda_i^{n}$</li>
+<li>In general, the eigenvalues of $f(A)$ are $f(\lambda_i)$</li>
+<li>The eigenvectors of $A^{-1}$ are the same as the eigenvectors of $A$.</li>
+<li>if $A$ is hermitian (its conjugate transpose is equal to itself) and full-rank (all rows or columns are linearly independent), then the eigenvectors are mutually orthogonal (the dot-product between any two eigenvectors is zero) and the eigenvalues are real.</li>
+<li>$A$ is invertible if all its eigenvalues are different from zero and vice-versa.</li>
+<li>If the eigenvalues of matrix $A$ are distinct (not repeated), then A can be eigendecomposed.</li>
+</ul>
+<h2 id="h2_compute">How to compute eigendecomposition?</h2>
+<p>
+Calculating the characteristic polinomial and then solving it with the respect to the eigenvalues becomes impractical as the size of the matrix increases. In practice, iterative algorithms are used to eigendecompose a matrix.
+</p>
+<h3 id="h3_poweriteration">Power iteration</h3>
+<p>
+Power iteration is an iterative method to calculate the highest eigenvalue and its associated eigenvector. Only the highest value/vector is found, so this method as limited use.
+</p>
+<p>
+First, we start with some vector $b_0$, which can be an educated guess of the dominant eigenvector or a random vector. Then, iterate through the following equation:
+$$b_{k+1} = \frac{A b_k}{\left\Vert A b_k \right\Vert}.$$
+At each iteration, the vector is left-multiplied by matrix $A$ and normalized, converging to the dominant eigenvector. This method only works if:
+<ul>
+<li>$A$ has an eigenvalue greater or equal to all others.</li>
+<li>Vector $b_0$ has a nonzero component in the direction of the dominant eigenvector (i.e. their dot-product is different from zero)</li>
+</ul>
+</p>
+<p>
+Using our example matrix $A$ and initial vector:
+$$b_0 = \left[\begin{array}{c}1\\1\\\end{array}\right]$$
+For the first step:
+$$b_1 = \frac{\left[\begin{array}{cc}1 & 0\\1 & 3\\\end{array}\right]\left[\begin{array}{c}1\\1\\\end{array}\right]}{\left\Vert\left[\begin{array}{cc}1 & 0\\1 & 3\\\end{array}\right]\left[\begin{array}{c}1\\1\\\end{array}\right]\right\Vert}= \frac{\left[\begin{array}{c}1\\4\\\end{array}\right]}{5} = \left[\begin{array}{c}0.2\\0.8\\\end{array}\right]$$
+For the next steps, reuse the last $b$ and:
+$$b_2= \left[\begin{array}{c}0.07\\0.93\\\end{array}\right], b_3= \left[\begin{array}{c}0.02\\0.98\\\end{array}\right], b_4=\left[\begin{array}{c}0.01\\0.99\\\end{array}\right], b_5= \left[\begin{array}{c}0\\1\\\end{array}\right]$$
+and
+$$ \left\Vert A b_5 \right\Vert = 2.99$$ 
+If you recall, the highest eigenvalue of $A$ is 3 and its eigenvector is $\mathbf{v} = [ v_{21}, v_{22}]$, where $v_{21} = 0$ and $v_{22}$ can have any value.
+</p>
+<h3 id="h3_QRalgorithm">QR algorithm</h3>
+<p>
+The QR algorithm uses the <a href="http://en.wikipedia.org/wiki/QR_decomposition" target="_blank">QR decomposition</a> iteratively to make the eigendecomposition. Recall that the QR decomposition decomposes a matrix $A$ into an orthogonal matrix $Q$ and an upper triangular matrix $R$ as $A = QR$.
+</p>
+<script type="text/javascript" src="../../pages/eigen.decomposition.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

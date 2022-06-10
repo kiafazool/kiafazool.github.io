@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Flip-flops</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_flip/" />
+	<meta name="description" content="Flip-flops are the basic data storage element of synchronous logic. They are an electronic circuit that stores digital information, i.e., a single bit, when an edge of a clock signal is detected. Strict designing requires to take into account timing parameters such as setup time, hold time and clock to queue time.">
+	<meta name="keywords" content="flip-flop, synchronous logic, setup time, hold time, clock to queue time, metastability">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'flip.flop';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../../p_flip/">http://www.onmyphd.com/?p=flip.flop</a></p><h1>Flip-flops</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basics of digital logic</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What is a Flip-flop?</a></li>
+	<ul>
+		<li><a href="#h3_latch">What is the difference between Flip-flops and latches?</a></li>
+	</ul>
+<li><a href="#h2_types">Types of Flip-flops</a></li>
+	<ul>	
+	<li><a href="#h3_ffd">Flip-flop D</a></li>
+	<li><a href="#h3_fft">Flip-flop T</a></li>
+	<li><a href="#h3_ffjk">Flip-flop JK</a></li>
+	</ul>
+<li><a href="#h2_clk2q_setup_hold">Clock to Queue, Setup and Hold times</a></li>
+<li><a href="#h2_metastability">Metastability</a></li>
+<li><a href="#h2_design">Flip-flop designs</a></li>
+</ul>
+<h2 id="h2_whatis">What is a Flip-flop?</h2>
+<p>
+<b>A Flip-flop (FF) is an electronic circuit that stores digital information</b>, i.e., a single bit, when a specific type of edge (rising or falling) of a clock signal is detected. The pins of a FF are divided in 3 parts:
+<ul>
+<li><b>Inputs</b> - one or more inputs containing the data to be stored</li>
+<li><b>Clock</b> - a specific edge (rising or falling) triggers the storage of the information</li>
+<li><b>Outputs</b> - one output (and maybe its complement) that depends on the inputs and optionally on the current state</li>
+</ul>
+The following figure shows the signal relations of a general flip-flop that transfers the input bit to the output during a rising edge of the clock signal. Note that the output signal does not change when the input does, but only when the clock signal is asserted.
+</p>
+<center>
+<img src="../../pages/flip.flop/ff.signals.svg" width="500" class="svg"/>
+</center>
+<p>
+<b>Together with latches, they are the basic data storage element of synchronous logic</b>, i.e., logic that changes the signal at times synchronized by a clock signal.
+</p>
+<h3 id="h3_latch">What is the difference between Flip-flops and latches?</h3>
+<p>
+The main difference between flip-flops and latches is that latches are asynchronous while flip-flops are synchronous. A latch becomes "transparent" while the input clock is high. In this state, a change in its inputs takes immediate effect at its output. When the input clock is low, the output of the latch does not change. In latches, the clock is also known as Enable. The most simple latches are transparent all the time. On the other hand, a flip-flop takes a snapshot of its inputs only when a transition of the input clock occurs. Some examples of latches and their signals:
+</p>
+<h4>SR Latch (NOR type always transparent)</h4>
+<table width="100%">
+<tr>
+<td width="250"><img src="../../pages/flip.flop/latch.SR.svg" width="125" class="svg"/><p class="comment">SR Latch with two NORs</p></td>
+<td><img src="../../pages/flip.flop/latch.SR.signals.svg" width="300" class="svg"/><p class="comment">Timing diagram of SR Latch</p></td>
+<td>
+<table class="table">
+<tr><th>State</th><th>S</th><th>R</th><th></th><th>Q</th></tr>
+<tr><td>hold</td>       <td>0</td><td>0</td></td><td><td>$Q_{prev}$</td></tr>
+<tr><td>reset</td>      <td>0</td><td>1</td><td></td><td>0</td></tr>
+<tr><td>set</td>        <td>1</td><td>0</td><td></td><td>1</td></tr>
+<tr><td>not allowed</td><td>1</td><td>1</td><td></td><td>???</td></tr>
+</table>
+<p class="comment">Truth table of SR Latch</p></td>
+</tr>
+</table>
+<h4>Gated SR Latch (transparent when E=1)</h4>
+<table width="100%">
+<tr>
+<td width="250"><img src="../../pages/flip.flop/latch.SR.gated.svg" width="200" class="svg"/><p class="comment">SR Latch with enable</p></td>
+<td><img src="../../pages/flip.flop/latch.SR.gated.signals.svg" width="350" class="svg"/><p class="comment">Timing diagram of SR Latch with enable</p></td>
+<td>
+<table class="table">
+<tr><th>State</th><th>S</th><th>R</th><th>E</th><th></th><th>Q</th></tr>
+<tr><td>hold</td>       <td>X</td><td>X</td><td>0</td></td><td><td>$Q_{prev}$</td></tr>
+<tr><td>hold</td>       <td>0</td><td>0</td><td>1</td></td><td><td>$Q_{prev}$</td></tr>
+<tr><td>reset</td>      <td>0</td><td>1</td><td>1</td><td></td><td>0</td></tr>
+<tr><td>set</td>        <td>1</td><td>0</td><td>1</td><td></td><td>1</td></tr>
+<tr><td>not allowed</td><td>1</td><td>1</td><td>1</td><td></td><td>???</td></tr>
+</table>
+<p class="comment">Truth table of Gated SR Latch</p></td>
+</td>
+</tr>
+</table>
+<h2 id="h2_types">Types of Flip-flops</h2>
+<p>
+There are 3 types of flip-flops:
+<ul>
+<ul>
+	<li><a href="#h3_ffd">Flip-flop D</a></li>
+	<li><a href="#h3_fft">Flip-flop T</a></li>
+	<li><a href="#h3_ffjk">Flip-flop JK</a></li>
+</ul>
+</p>
+<h3 id="h3_ffd">Flip-flop D</h3>
+<p>
+The flip-flop type D (from <b>D</b>ata) is the most widely used flip-flop. During a rising edge of the clock, its input $D$ is tranferred to the flip-flop's output $Q$. The output $\overline{Q}$ is always the complement of $Q$. The symbol and truth table of this flip-flop are shown below.
+</p>
+<table width="100%">
+<tr><td>
+<img src="../../pages/flip.flop/ffd.svg" width="200" class="svg"/>
+</td><td>
+<table class="table">
+<tr><th>State</th><th>D</th><th>CLK</th><th></th><th>Q</th><th><span style="text-decoration:overline">Q</span></th></tr>
+<tr><td>no clock</td><td>X</td><td>not rising edge</td></td><td><td>$Q_{prev}$</td><td>$\overline{Q}_{prev}$</td></tr>
+<tr><td>reset</td><td>0</td><td>rising edge</td><td></td><td>0</td><td>1</td></tr>
+<tr><td>set</td><td>1</td><td>rising edge</td><td></td><td>1</td><td>0</td></tr>
+</table>
+</td>
+</tr>
+</table>
+<p>
+Any flip-flop can be designed to capture the input only at the falling edge of the clock instead. It is much more common, though, to design them to be triggered at the rising edge.
+</p>
+<h3 id="h3_fft">Flip-flop T</h3>
+<p>
+The flip-flop T gets its name from the fact that, during a rising clock edge, it toggles the output if its input $T$ is high, and keeps the output unchanged if its input is low. The symbol and truth table of this flip-flop are shown below.
+</p>
+<table width="100%">
+<tr><td>
+<img src="../../pages/flip.flop/fft.svg" width="200" class="svg"/>
+</td><td>
+<table class="table">
+<tr><th>State</th><th>T</th><th>CLK</th><th></th><th>Q</th><th><span style="text-decoration:overline">Q</span></th></tr>
+<tr><td>no clock</td><td>X</td><td>not rising edge</td></td><td><td>$Q_{prev}$</td><td>$\overline{Q}_{prev}$</td></tr>
+<tr><td>hold</td><td>0</td><td>rising edge</td><td></td><td>$Q_{prev}$</td><td>$\overline{Q}_{prev}$</td></tr>
+<tr><td>toggle</td><td>1</td><td>rising edge</td><td></td><td>$\overline{Q}_{prev}$</td><td>$Q_{prev}$</td></tr>
+</table>
+</td>
+</tr>
+</table>
+<p>
+Looking at the truth table, we can see that this flip-flop can be compactly described by the characteristic equation:
+$$Q=T\overline{Q}_{prev} + \overline{T}Q_{prev}$$
+You may be asking how is the output defined in the first place. It may be that is does not matter: if this flip-flop toggles the output at each rising edge of the input clock, the output is also a clock with half the period of the input clock. It then works as a clock divider and it doesn't really matter how it started in the first place. If the initial output matters, any flip-flop can be equipped with asynchronous set or reset, that is, inputs that set or reset the output independently of the clock signal.
+</p>
+<h3 id="h3_ffjk">Flip-flop JK</h3>
+<p>
+The Flip-flip JK combines the functionalty of flip-flops D and T, because it can set/reset and hold/toggle the output. The symbol and truth table of this flip-flop are shown below. When $J = K$, they can be used to keep or toggle the output. When they are different, $Q$ follows $J$ and $\overline{Q}$ follows $K$.
+In that sense, the flip-flop D is a particular case of this one, when $K$ is always the complement of $J$ and the flip-flop T is another particular case, when $J$ and $K$ are connected together.
+</p>
+<table width="100%">
+<tr><td>
+<img src="../../pages/flip.flop/ffjk.svg" width="200" class="svg"/>
+</td><td>
+<table class="table">
+<tr><th>State</th><th>J</th><th>K</th><th>CLK</th><th></th><th>Q</th></tr>
+<tr><td>no clock</td><td>X</td><td>X</td><td>not rising edge</td><td></td><td>$Q_{prev}$</td></tr>
+<tr><td>hold</td><td>0</td><td>0</td><td>rising edge</td><td></td><td>$Q_{prev}$</td></tr>
+<tr><td>reset</td><td>0</td><td>1</td><td>rising edge</td><td></td><td>0</td></tr>
+<tr><td>set</td><td>1</td><td>0</td><td>rising edge</td><td></td><td>1</td></tr>
+<tr><td>toggle</td><td>1</td><td>1</td><td>rising edge</td><td></td><td>$\overline{Q}_{prev}$</td></tr>
+</table>
+</td>
+</tr>
+</table>
+<p>
+Looking at the truth table, we can see that this flip-flop can be compactly described by the characteristic equation:
+$$Q = J\overline{Q}_{prev} + \overline{K}Q_{prev}$$
+</p>
+<h2 id="h2_clk2q_setup_hold">Clock to Queue, Setup and Hold times</h2>
+<p>
+It seems that the way flip-flops work is pretty simple and not much problems can come from them. However, things get complicated when the period of the clock signal is of the same order of magnitude as the timings of the flip-flop itself.
+</p>
+<p>
+The example circuit below is made of two flip-flops synchronized by the same clock <i>clk</i> and with some combinatorial logic in between. Each of these flip-flops has the following properties:
+<ul>
+<li><b>Clock to Queue</b> or <b>Clock to Output</b> $t_{ckq}$: The time the flip-flop takes to change its output after a (rising) clock edge</li>
+<li><b>Setup time</b> $t_{s}$: the time during which the input must not change before a (rising) clock edge</li>
+<li><b>Hold time</b> $t_{h}$: the time during which the input must not change after a (rising) clock edge</li>
+</ul>
+</p>
+<p>
+The setup and hold time combined define a band around the edge of a clock in which the input signal of the flip-flop cannot change. The idea is that a flip-flop needs some time to setup before the edge of the clock and some time after the clock to hold the input signal. If this is not guaranteed, neither is the output of the flip-flop after the clock edge. Both times vary strongly with process, voltage and temperature (PVT). The combinatorial logic also has its own propagation delay $t_d$, which means that <i>i2</i> is delayed with respect to <i>o1</i>.
+</p>
+<center>
+<img src="../../pages/flip.flop/ff.circuit.svg" class="svg" width="500"/>
+<p class="comment">Circuit used to show flip-flop timing requirements</p>
+</center>
+<p>
+To help us undestand how these timing properties constrain the synchronous logic, the interactive plot below lets you configure the clock period, the hold/setup and clock to queue times of the flip-flops (we assume they are equal) and the propagation delay of the combinatorial circuit.
+</p>
+<p>Now, lets take it in parts, like Jack the Ripper. You can see the left and right red bands around each rising edge of the clock, representing the setup and hold times. After each clock edge, the gray band represents the clock to queue period. After this period, you see the change in <i>o1</i>. After that, the blue band represents the propagation delay of the combinatorial circuit. At the end of this band, the input of FF2 changes. So, the next clock edge must be at least one setup time after the end of this band. The extra time above this lower bound $t_{ss}$ is called <b>setup time slack</b>. If the delay of the combinatorial logic and/or the clock to queue time is increased, the FF2 will end up violating its setup time. If they are decreased, <i>i2</i> may change too soon, violating the hold time of FF2. As in the setup, the slack between the end of the hold band and the input change is called <b>hold time slack</b>. So, for the same clock period, there is a compromise between setup and hold time slacks.
+ Play
+around and see when the setup and hold band are violated, making the bands live red.
+</p>
+<center>
+<p>
+<div style="width:600px;height:400px" id="plot_ff_timings"></div>
+<div style="background-color: #E8E8E8;" class="smallbox"></div> Clock to Queue
+<div style="background-color: #E8FFFF;" class="smallbox"></div> Propagation delay
+<div style="background-color: #FFE8E8;" class="smallbox"></div> Setup/hold times
+<div style="background-color: #FF0000;" class="smallbox"></div> Violation of Setup/hold times
+</p>
+<table class="table">
+<tr><th width="100">Parameter</th><th>Symbol</th><th>Value</th><th>Slider</th></tr>
+<tr><td width="100">Clock period</td><td>$t_{clk}$</td><td><span id="tclk"></span></td><td><div class="slider_ff" id="tclk_slider" style="width:450px"></div></td></tr>
+<tr><td width="100" style="background-color: #E8E8E8;">Clock to Queue</td><td>$t_{ckq}$</td><td><span id="tckq"></span></td><td><div class="slider_ff" id="tckq_slider" style="width:450px"></div></td></tr>
+<tr><td width="100" style="background-color: #E8FFFF;">Propagation Delay</td><td>$t_d$</td><td><span id="td"></span></td><td><div class="slider_ff" id="td_slider" style="width:450px"></div></td></tr>
+<tr><td width="100" style="background-color: #FFE8E8;">Required Setup time</td><td>$t_s$</td><td><span id="ts"></span></td><td><div class="slider_ff" id="ts_slider" style="width:450px"></div></td></tr>
+<tr><td width="100" style="background-color: #FFE8E8;">Required Hold time</td><td>$t_h$</td><td><span id="th"></span></td><td><div class="slider_ff" id="th_slider" style="width:450px"></div></td></tr>
+</table>
+</center>
+<p>
+What we see from the experiment is that the clock period $t_{clk}$ must be larger than $t_{ckq} + t_d + t_s$. Whatever time remains is the setup time slack:
+$$t_{ss} = \textrm{(setup time available) - (setup time required)} = (t_{clk} - t_{ckq} - t_d) - t_s$$
+</p>
+<p>
+Regarding the hold time slack, we can see that when FF1 and FF2 are triggered, the input of FF2 stays steady for $t_{ckq} + t_{d}$. This is the available hold time. The hold time slack is:
+$$t_{hs} = \textrm{(hold time available) - (hold time required)} = (t_{ckq} + t_{d}) - t_h$$
+The worst case scenario is when two flip-flops are connected one next to the other (no combinatorial logic in between), which makes $t_d = 0$. That case imposes the design constraint $t_{ckq} &gt; t_h$.
+</p>
+<h3 id="h3_clock_skew">Clock skew</h3>
+<p>
+There is another aggravation, this time related to the clock. The clock signal may take a different route to each flip-flop, each one with a different propagation delay. This causes the clock edge to arrive at different times for each flip-flop. This mismatch $\Delta t$ is known as <b>clock skew</b>. In the example below, say $\Delta t &gt; 0$ when clock arrives later at FF2 than at FF1 and $\Delta t &lt; 0$ otherwise.
+</p>
+<center>
+<img src="../../pages/flip.flop/ff.circuit.clock.skew.svg" class="svg" width="500"/>
+</center>
+<p>
+The signals diagram below is different from the first because <i>clk1</i> and <i>clk2</i> are no longer aligned. The slider for parameter <i>clock skew</i> lets you control the amount of disalignment between the clocks reaching both flip-flops. The clock arriving at FF2 (<i>clk2</i>) is delayed (positive clock skew) or advanced (negative clock skew) in comparison to the clock arriving at FF1 (<i>clk1</i>). By playing around with the clock skew, you will soon realize that a clock in FF2 in advance of the clock in FF1 injures the setup time slack of FF2, while a delayed clock in FF2 injured its hold time slack.
+</p>
+<center>
+<p>
+<div style="width:600px;height:400px" id="plot_ff_timings_clock_skew"></div>
+<div style="background-color: #E8E8E8;" class="smallbox"></div> Clock to Queue
+<div style="background-color: #E8FFFF;" class="smallbox"></div> Propagation delay
+<div style="background-color: #FFE8E8;" class="smallbox"></div> Setup/hold times
+<div style="background-color: #FF0000;" class="smallbox"></div> Violation of Setup/hold times
+</p>
+<table class="table">
+<tr><th width="100">Parameter</th><th>Symbol</th><th>Value</th><th>Slider</th></tr>
+<tr><td width="100">Clock period</td><td>$t_{clk}$</td><td><span id="tclk_cs"></span></td><td><div id="tclk_cs_slider" style="width:450px" class="slider_ff_cs"></div></td></tr>
+<tr><td width="100">Clock skew</td><td>$t_{cs}$</td><td><span id="tclkskew"></span></td><td><div id="tclkskew_slider" style="width:450px" class="slider_ff_cs"></div></td></tr>
+<tr><td width="100" style="background-color: #E8E8E8;">Clock to Queue</td><td>$t_{ckq}$</td><td><span id="tckq_cs"></span></td><td><div class="slider_ff_cs" id="tckq_cs_slider" style="width:450px"></div></td></tr>
+<tr><td width="100" style="background-color: #E8FFFF;">Propagation Delay</td><td>$t_d$</td><td><span id="td_cs"></span></td><td><div id="td_cs_slider" class="slider_ff_cs" style="width:450px"></div></td></tr>
+<tr><td width="100" style="background-color: #FFE8E8;">Required Setup time</td><td>$t_s$</td><td><span id="ts_cs"></span></td><td><div id="ts_cs_slider" class="slider_ff_cs" style="width:450px"></div></td></tr>
+<tr><td width="100" style="background-color: #FFE8E8;">Required Hold time</td><td>$t_h$</td><td><span id="th_cs"></span></td><td><div id="th_cs_slider" class="slider_ff_cs" style="width:450px"></div></td></tr>
+</table>
+</center>
+<p>
+In other words, the clock skew, defined here as the difference of clock arrival between FF2 and FF1, adds to the setup time slack and substracts to the hold time slack. Accounting with clock skew, we get the following slack times:
+$$t_{ss} = t_{clk} - t_{ckq} - t_d - t_s + t_{cks}$$
+$$t_{hs} = t_{ckq} + t_{d} - t_h - t_{cks}$$
+The clock skew gives to one slack what takes from the other. If we slow down the clock (increasing its period), we can increase the setup time slack. However, there is no way the hold time slack can be changed without changing the design.
+</p>
+<h2 id="h2_metastability">Metastability</h2>
+<p>
+What happens when the input changes close enough to the clock edge so that it violates the setup or hold times? It happens a condition known as <b>metastability</b>, where the flip-flop cannot decide what input changed first and its output lingers in an undefined state for a while, until it settles in a certain state. Since there is not a bounded time for the flip-flop to decide on the result, the circuit that uses the result can get garbage in the next clock edge (assuming it is another synchronized block).
+</p>
+<p>
+When the input is synchronized with the clock (as in FF2 in the examples above), we have the knowledge of when it can change and proper design can guarantee that metastability never happens. However, it is common to have flip-flops that capture an input that is unrelated to the clock signal and the edges of both clock and input can be arbitrarily close together. Therefore, there is no way to avoid entirely the metastability problem in such cases. A common solution is to chain two or more flip-flops synchronized by the same clock. This will increase the time the first flip-flop has to leave metastability, since only after $N$ clock cycles (with $N + 1$ chained flip-flops) will the last flip-flop capture the change in the input of the first flip-flop. The more flip-flops you chain, the more time metastability is allowed and the more robust the circuit is. So, the solution just reduces the probability of metastability, but it never eliminates it.
+</p>
+<h2 id="h2_design">Flip-flop design</h2>
+<p>
+For IC designers, this section goes in depth about flip-flop design. There are a lot of design approaches, so we will go through some diverse options. We will focus on the flip-flop D, although similar considerations can be made to other flip-flops.
+</p>
+<h3 id="h4_ffd_dynamic_master_slave">Dynamic master-slave flip-flop D</h3>
+<center>
+<table>
+<tr>
+<td><img src="../../pages/flip.flop/ffd.dynamic.master.slave.svg" class="svg" width="300"/></td>
+<td><img src="../../pages/flip.flop/ffd.dynamic.master.slave.signals.svg" class="svg" width="350"/></td>
+</tr>
+</table>
+</center>
+<p>
+This is a very simple to understand flip-flop. It is called dynamic because in some situations the nodes are floating and the charge is stored in the node's capacitance. As a result, if the clock does not change frequently enough, the node may discharge due to transistor leakage and the state may change. You may recognize each stage of this flip-flop as a dynamic latch D, gated by the clock signal. It is also called master-slave because the second latch in the series only changes in response to a change in the first (master) latch. When <i>clk</i> is low, the first stage captures the input <i>D</i>. When the clock is asserted, the intermediate node is transferred to the output. During the clock transitions and due to the inverter delay (the one that inverts the clock signal), for brief moments both <i>clk</i> and its complement have the same value. Is this a problem? 
+</p>
+<center>
+<img src="../../pages/flip.flop/ffd.dynamic.master.slave.overlap.svg" class="svg" width="400"/>
+</center>
+<p>
+From the above figure, we can see that it is not. The left situation is when the second latch is becoming transparent, while the first one is losing transparency. During this period, only the the pull-down transistors are active. The right situation is when the first latch is becoming transparent, while the second one is losing transparency. In this case, only the pull-up transistors are active. Both represent a similar situation: if input <i>D</i> is able to drive the middle node <i>a</i> (e.g. D=1 in the left example or D=0 in the right example), that node will not be able to drive the output node. If the examples are switched (D=0 in the left example or D=1 in the right example), not even the internal node can be driven. Therefore, the output does not change either way. Only a combination of pull-up and pull-down stages could change the output. This could eventually happen if the clock rise/fall times (clock slew) were too slow. However, it is easy to design the clocks to rise or fall faster than the propagation delay of the flip-flop.
+</p>
+<h3 id="h4_ffd_static_master_slave">Static master-slave flip-flop D</h3>
+<center>
+<img src="../../pages/flip.flop/ffd.static.master.slave.svg" class="svg" width="500"/>
+</center>
+<p>
+This flip-flop is similar to the previous design because it is also made of two type D latches. However, it is static because both latches are static in the sense that the nodes are always being driven. When <i>clk</i> is low, the first stage captures the input <i>D</i>, while the second stage has two cross-coupled inverters to keep regenerating the output nodes. When the clock is asserted, the intermediate node is transferred to the output and the nodes of the first stage are regenerated by another two cross-coupled inverters. The main problem with this design is that overlap of <i>clk</i> and its complement will:
+<ul>
+<li>open node <i>a</i> to nodes <i>D</i> and <i>b</i> simultaneously, potentially setting node <i>a</i> to an undefined value</li>
+<li>create a direct path from the input to the output during both clock edges</li>
+</ul>
+</p>
+<center>
+<img src="../../pages/flip.flop/ffd.static.master.slave.overlap.svg" class="svg" width="500"/>
+</center>
+<p>
+Even if the clocks had exact timing by design, clock skew and clock slew (rise/fall times) would always generate a certain overlap. The solution to this problem is to have two non-overlapping clocks, even accounting with all possible clock skew and slew. 
+</p>
+<center>
+<img src="../../pages/flip.flop/ffd.pseudostatic.master.slave.svg" class="svg" width="500"/>
+</center>
+<p>
+In this case, a significant portion of time both clocks are off, which leaves the internal nodes floating. For this reason, this is called a pseudostatic flip-flop.
+</p>
+<h3 id="h4_ffd_edgetriggered">Positive-edge triggered dynamic D flip-flop</h3>
+<center>
+<img src="../../pages/flip.flop/ffd.dynamic.svg" class="svg" width="400"/>
+</center>
+<p>
+This flip-flop is also called dynamic for the same reason as the first one. The advantage of this type of flip-flops is the high speed and low-power consumption. Unlike the first one, it is not made of two latches. Instead, it follows a complicated logic that depends on its two internal nodes <i>a</i> and <i>b</i>.
+</p>
+<p>
+To follow the state of this flip-flop, we need to keep track of the transitions of its inputs and also its previous state. There are only two conditions, both when clock is low, that set the internal states of this flip-flop into known values, shown in the left truth-table. In these conditions, the output keeps its previous value. When the clock rises, some internal states keep unchanged while others change, leading to an output that captures the input (shown in the middle truth table). Finally, with clock high, if the inputs change, the node <i>b</i> stays steady, which in turn does not change the output (shown in the right truth table). When the clock goes low again, we go back to one of the first two conditions, which do not change the output.
+</p>
+<table class="table">
+<tr>
+<th>D</th><th>CLK</th><th></th><th>a</th><th>b</th><th><span style="text-decoration:overline">Q</span></th>
+<th>CLK rises</th>
+<th>D</th><th>CLK</th><th></th><th>a</th><th>b</th><th><span style="text-decoration:overline">Q</span></th>
+<th>D switches</th>
+<th>D</th><th>CLK</th><th></th><th>a</th><th>b</th><th><span style="text-decoration:overline">Q</span></th>
+</tr>
+<tr>
+<td>0</td><td>0  </td><td></td><td>1</td><td>1</td><td>$\overline{Q}_{prev}$</td>
+<td></td>
+<td>0</td><td>1  </td><td></td><td>$a_{prev}$=1</td><td>0</td><td>1</td>
+<td></td>
+<td>1</td><td>1  </td><td></td><td>0</td><td>$b_{prev}$=0</td><td>1</td>
+</tr>
+<tr>
+<td>1</td><td>0  </td><td></td><td>0</td><td>1</td><td>$\overline{Q}_{prev}$</td>
+<td></td>
+<td>1</td><td>1  </td><td></td><td>0</td><td>$b_{prev}$=1</td><td>0</td>
+<td></td>
+<td>0</td><td>1  </td><td></td><td>$a_{prev}$=0</td><td>$b_{prev}$=1</td><td>0</td>
+</tr>
+</table>
+<p>
+</p>
+<script type="text/javascript" src="../../pages/flip.flop.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

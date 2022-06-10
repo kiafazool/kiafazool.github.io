@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Invertible, singular and ill-conditioned matrix</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_invertible.singular.ill.conditioned/" />
+	<meta name="description" content="In this topic, we will cover what is the inverse of a matrix and what is an invertible, a singular or an ill-conditioned matrix. These concepts are very much related: if $\mathbf{B}$ is the inverse of matrix $\mathbf{A}$, then $\mathbf{BA = AB = I}$, where $\mathbf{I}$ is the identity matrix. The inverse can be found, for example, with the Gauss-Jordan elimination method. An invertible matrix can be inverted to cancel the original matrix in a multiplication, a singular matrix is a matrix that cannot be inverted, and an ill-conditioned matrix is invertible, but can numerically run into problems.">
+	<meta name="keywords" content="inverse of matrix, invertible matrix, singular matrix, ill-conditioned matrix, Gauss-Jordan">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'invertible.singular.ill.conditioned.matrix';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../../p_invertible.singular.ill.conditioned/">http://www.onmyphd.com/?p=invertible.singular.ill.conditioned.matrix</a></p><h1>Invertible, singular and ill-conditioned matrix</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basic algebra</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_inverse">What is the inverse of a matrix?</a></li>
+<li><a href="#h2_gaussjordan">How to calculate the inverse of a matrix: the Gauss-Jordan elimination method</a></li>
+<li><a href="#h2_singular">What is a singular or noninvertible matrix?</a></li>
+<li><a href="#h2_illconditioned">What is an ill-conditioned matrix?</a></li>
+</ul>
+<p>
+In this topic, we will cover what is the inverse of a matrix and what is an invertible, a singular or an ill-conditioned matrix. These concepts are very much related: if $\mathbf{B}$ is the inverse of matrix $\mathbf{A}$, then $\mathbf{BA = AB = I}$, where $\mathbf{I}$ is the identity matrix. The inverse can be found, for example, with the Gauss-Jordan elimination method. An invertible matrix can be inverted to cancel the original matrix in a multiplication, a singular matrix is a matrix that cannot be inverted, and an ill-conditioned matrix is invertible, but can numerically run into problems.
+</p>
+<h2 id="h2_inverse">What is the inverse of a matrix?</h2>
+<p>
+Let's say we have the following system of linear equations:
+$$\begin{array}{ccccc}
+x_{1} & +x_{2} & -x_{3} & = & 1\\
+x_{1} & -2x_{2} & +3x_{3} & = & -2\\
+-x_{1} & 2x_{2} & -x_{2} & = & 3
+\end{array}$$
+This can be represented in matrix form as:
+$$\mathbf{Ax=b},$$
+where
+$$\mathbf{A}=\left[\begin{array}{ccc}
+1 & 1 & -1\\
+1 & -2 & 3\\
+-1 & 2 & -1
+\end{array}\right],\qquad\mathbf{x}=\left[\begin{array}{c}
+x_{1}\\
+x_{2}\\
+x_{3}
+\end{array}\right],\qquad\mathbf{b}=\left[\begin{array}{c}
+1\\
+-2\\
+3
+\end{array}\right].$$
+To find $\mathbf{x}$, one needs to do the equivalent to divide $\mathbf{b}$ by $\mathbf{A}$. Since $\mathbf{A}$ is a matrix, we cannot simply divide by it. Instead, we make use of the notion of inverse of a matrix. The inverse of a matrix $\mathbf{A}$ is a matrix such that, when one is multiplied by the other, the result is the identity matrix $\mathbf{I}$ (a special matrix with 1's in the diagonal and 0's everywhere else):
+$$\mathbf{A^{-1}A=AA^{-1}=I}$$
+In our original problem, we can then premultiply each side of the equation by the inverse of $\mathbf{A}$ to get:
+$$\mathbf{A^{-1}Ax=x=A^{-1}b}$$
+To find this inverse, we need to find each element in the matrix $\mathbf{A^{-1}}$ that, when multiplied by the matrix $\mathbf{A}$, will produce the identity matrix. To do that, we can use the widely known Gauss-Jordan elimination method.
+</p>
+<h2 id="gaussjordan">How to calculate the inverse of a matrix: the Gauss-Jordan elimination method</h2>
+<p>
+We will use a joint matrix $\left[\mathbf{A|I}\right]$ by concatenating the columns of $\mathbf{A}$ and $\mathbf{I}$. Then, we perform a set of operations that converts $\mathbf{A}$ into $\mathbf{I}$. In the process, $\mathbf{I}$ is converted into $\mathbf{A^{-1}}$, concluding the joint matrix $\left[\mathbf{I|A^{-1}}\right]$. For our example:
+$$\mathbf{A}=\left[\begin{array}{ccc}
+1 & 1 & -1\\
+1 & -2 & 3\\
+-1 & 2 & -1
+\end{array}\left|\begin{array}{ccc}
+1 & 0 & 0\\
+0 & 1 & 0\\
+0 & 0 & 1
+\end{array}\right.\right]$$
+We can do the following operations to the joint matrix:
+<ol>
+<li>Swap two rows</li>
+<li>Multiply a row by a non-zero scalar</li>
+<li>Sum two rows and replace one of them with the result</li>
+</ol>
+Now let us apply these operations to our joint matrix.
+</p>
+<p>
+<b>Operation 3:</b> Sum rows 2 and 3 and store the result in row 3:
+$$\mathbf{A}=\left[\begin{array}{ccc}
+1 & 1 & -1\\
+1 & -2 & 3\\
+0 & 0 & 2
+\end{array}\left|\begin{array}{ccc}
+1 & 0 & 0\\
+0 & 1 & 0\\
+0 & 1 & 1
+\end{array}\right.\right]$$
+<b>Operations 2 and 3:</b> Multiply row 1 by -1, sum with row 2 and store result in 2:
+$$\mathbf{A}=\left[\begin{array}{ccc}
+1 & 1 & -1\\
+0 & -3 & 4\\
+0 & 0 & 2
+\end{array}\left|\begin{array}{ccc}
+1 & 0 & 0\\
+-1 & 1 & 0\\
+0 & 1 & 1
+\end{array}\right.\right]$$ 
+<b>Operations 2 and 3:</b> Multiply row 3 by -2, sum with row 2 and store result in 2:
+$$\mathbf{A}=\left[\begin{array}{ccc}
+1 & 1 & -1\\
+0 & -3 & 0\\
+0 & 0 & 2
+\end{array}\left|\begin{array}{ccc}
+1 & 0 & 0\\
+-1 & -1 & -2\\
+0 & 1 & 1
+\end{array}\right.\right]$$
+<b>Operation 2:</b> Multiply row 2 by -1/3 and row 3 by 1/2:
+$$\mathbf{A}=\left[\begin{array}{ccc}
+1 & 1 & -1\\
+0 & 1 & 0\\
+0 & 0 & 1
+\end{array}\left|\begin{array}{ccc}
+1 & 0 & 0\\
+1/3 & 1/3 & 2/3\\
+0 & 1/2 & 1/2
+\end{array}\right.\right]$$
+<b>Operations 2 and 3:</b> Mutiply row 2 by -1 and sum to row 1, then sum row 3 to row 1:
+$$\mathbf{A}=\left[\begin{array}{ccc}
+1 & 0 & 0\\
+0 & 1 & 0\\
+0 & 0 & 1
+\end{array}\left|\begin{array}{ccc}
+2/3 & 1/6 & -1/6\\
+1/3 & 1/3 & 2/3\\
+0 & 1/2 & 1/2
+\end{array}\right.\right]$$
+We end with the inverse:
+$$\mathbf{A^{-1}}=\left[\begin{array}{ccc}
+2/3 & 1/6 & -1/6\\
+1/3 & 1/3 & 2/3\\
+0 & 1/2 & 1/2
+\end{array}\right]$$
+Now we can solve the system of equations at the beginning by $\mathbf{x=A^{-1}b}$. We could have solved the original problem by joining $\mathbf{A}$ and $\mathbf{b}$, and solving with the same method $\left[\mathbf{A|b}\right]$ (we would end up with $\left[\mathbf{I|x}\right]$). One of the benefit of calculating the inverse of $\mathbf{A}$ is that, in case we change $\mathbf{b}$, we only need to apply again $\mathbf{x=A^{-1}b}$ to solve the new system of equations.
+</p>
+<h2 id="h2_singular">What is a singular or noninvertible matrix?</h2>
+<p>
+There might be cases where the matrix is not invertible and then the system cannot be solved. Consider the new linear system of equations:
+$$\mathbf{A}=\left[\begin{array}{ccc}
+1 & 1 & -1\\
+1 & -2 & 3\\
+2 & -1 & 2
+\end{array}\right],\qquad\mathbf{b}=\left[\begin{array}{c}
+1\\
+-2\\
+3
+\end{array}\right]$$
+where only the last element of $\mathbf{A}$ changed. Let us try to apply the Gauss-Jordan elimination here:
+$$\mathbf{A}=\left[\begin{array}{ccc}
+1 & 1 & -1\\
+1 & -2 & 3\\
+2 & -1 & 2
+\end{array}\left|\begin{array}{ccc}
+1 & 0 & 0\\
+0 & 1 & 0\\
+0 & 0 & 1
+\end{array}\right.\right]$$
+<b>Operations 2 and 3:</b> Multiply row 1 by -1 and sum to row 2:
+$$\mathbf{A}=\left[\begin{array}{ccc}
+1 & 1 & -1\\
+0 & -3 & 4\\
+2 & -1 & 2
+\end{array}\left|\begin{array}{ccc}
+1 & 0 & 0\\
+-1 & 1 & 0\\
+0 & 0 & 1
+\end{array}\right.\right]$$
+<b>Operations 2 and 3:</b> Multiply row 1 by -2 and sum to row 3:
+$$\mathbf{A}=\left[\begin{array}{ccc}
+1 & 1 & -1\\
+0 & -3 & 4\\
+0 & -3 & 4
+\end{array}\left|\begin{array}{ccc}
+1 & 0 & 0\\
+-1 & 1 & 0\\
+-2 & 0 & 1
+\end{array}\right.\right]$$
+ Hmm, two rows are equal on the left side... Multiply row 2 by -1 and sum to row 3:
+$$\mathbf{A}=\left[\begin{array}{ccc}
+1 & 1 & -1\\
+0 & -3 & 4\\
+0 & 0 & 0
+\end{array}\left|\begin{array}{ccc}
+1 & 0 & 0\\
+-1 & 1 & 0\\
+-1 & -1 & 1
+\end{array}\right.\right]$$
+What?? We lost one row? No matter the path we take, we will always have a zero-ed row in this case and cannot make the left side equal to the identity matrix. The reason for this is that any row in this matrix can be made by a linear combination of the other two (e.g. sum rows 1 and 2 of $\mathbf{A}$ and you get row 3). In other words, the system is really made from two equations and the other is generated by the original two rows. Then we have more variables than equations and the system cannot be solved. The fact that the matrix $\mathbf{A}$ cannot be inverted is a sign that the system is not solvable. In those situations, it is said <b>the matrix is noninvertible or singular</b>. We can also state that <b>the rows of the matrix are linearly dependent</b>, because we can make one by a linear combination of the others.
+</p>
+<p>
+Now a piece of important trivia regarding matrix inversion:
+<ul>
+<li>If a matrix is non-invertible, its transpose is non-invertible too</li>
+<li>From the previous, the columns of a non-invertible matrix are linearly dependent</li>
+<li>If the determinant of a matrix is zero, then the matrix is not invertible</li>
+<li>The rank of an invertible matrix of size $n\times n$ is $n$ (full rank)</li>
+<li>The eigenvalues of the an invertible matrix are all different from zero</li>
+</ul>
+</p>
+<h2 id="h2_illconditioned">What is an ill-conditioned matrix?</h2>
+<p>
+Ok, we have an invertible matrix, so the system is solvable. Are we off the hook now? Can there be any more problems? Well, consider that the vector $\mathbf{b}$ is data collected by some sensors. This data comes with some error $\Delta\mathbf{b}$ attached to it. Our solution to the problem will be:
+$$\mathbf{x=A^{-1}(b+\Delta b)=A^{-1}b+A^{-1}\Delta b}=\mathbf{x^{\star}+A^{-1}\Delta b}$$
+where $\mathbf{x^{\star}}$ is the true solution. The error of our solution caused by the error in the data is
+$$\mathbf{\Delta x=x-x^{\star}=A^{-1}\Delta b}$$
+The error in $\mathbf{\Delta b}$ may get amplified by $\mathbf{A^{-1}}$ and produce a large error in $\mathbf{x}$. In those situations (where large error is a subjective criterion), we say <b>the problem is ill-posed or ill-conditioned</b>. Otherwise, the matrix is well-posed or well-conditioned. To make it simple, you can imagine $\mathbf{A}$ as a scalar $A$. If $A$ is very small, then its inverse is very large. Then, even a small error in the data gets amplified by the large inverse of $A$, producing a large deviation in the solution. For a pratical example:
+$$\mathbf{A}=\frac{1}{2}\left[\begin{array}{cc}
+1 & 1\\
+1+10^{-10} & 1-10^{-10}
+\end{array}\right],\qquad\mathbf{A^{-1}}=\left[\begin{array}{cc}
+1-10^{10} & 10^{10}\\
+1+10^{10} & -10^{10}
+\end{array}\right]$$
+The problem with this matrix is that it is very close to being singular, although it is not. This is a condition of the problem and nothing can be done to solve it.
+</p>
+<p>
+This condition is so important that a measure for it was defined, the so called <b>condition number</b>: low condition number means well-conditioned problems and high condition number means ill-conditioned problems. The condition number is the maximum ratio of the relative error in $\mathbf{x}$ by the relative error in $\mathbf{b}$:
+$$\kappa(\mathbf{A})=\sup\left({\frac{\left\Vert \mathbf{\Delta x}\right\Vert }{\left\Vert \mathbf{x}\right\Vert }}/{\frac{\left\Vert \mathbf{\Delta b}\right\Vert }{\left\Vert \mathbf{b}\right\Vert }}\right)=\sup\left(\frac{\left\Vert \mathbf{\Delta x}\right\Vert \left\Vert \mathbf{b}\right\Vert }{\left\Vert \mathbf{\Delta b}\right\Vert \left\Vert \mathbf{x}\right\Vert }\right)$$
+Taking advantage of the fact that $\left\Vert \mathbf{\Delta x}\right\Vert =\left\Vert \mathbf{A^{-1}\Delta b}\right\Vert \le\left\Vert \mathbf{A^{-1}}\right\Vert \left\Vert \mathbf{\Delta b}\right\Vert$ and $\left\Vert \mathbf{b}\right\Vert =\left\Vert \mathbf{Ax}\right\Vert \le\left\Vert \mathbf{A}\right\Vert \left\Vert \mathbf{x}\right\Vert $, the above equation becomes:
+$$\kappa(\mathbf{A})=\sup\left(\frac{\left\Vert \mathbf{\Delta x}\right\Vert \left\Vert \mathbf{b}\right\Vert }{\left\Vert \mathbf{\Delta b}\right\Vert \left\Vert \mathbf{x}\right\Vert }\right)\le\frac{\left\Vert \mathbf{A^{-1}}\right\Vert \left\Vert \mathbf{\Delta b}\right\Vert \left\Vert \mathbf{A}\right\Vert \left\Vert \mathbf{x}\right\Vert }{\left\Vert \mathbf{\Delta b}\right\Vert \left\Vert \mathbf{x}\right\Vert }=\left\Vert \mathbf{A^{-1}}\right\Vert \left\Vert \mathbf{A}\right\Vert.$$
+Now we have a very neat way of measuring the condition of the problem. The value, however, depends on the norm used. For the $\ell_{2}$-norm, the condition number amounts to:
+$$\kappa(\mathbf{A})=\frac{\sigma_{max}(\mathbf{A})}{\sigma_{min}(\mathbf{A})}$$
+where $\sigma_{max}(\mathbf{A})$ and $\sigma_{min}(\mathbf{A})$ are the maximum and minimum singular values of $\mathbf{A}$.
+<!-- If the norm is the $\ell_{\infty}$-norm, the condition number is 
+$$\kappa(\mathbf{A})=\frac{\max_{i}(\left|A_{ii}\right|)}{\min_{i}(\left|A_{ii}\right|)}$$
+which is really easy to calculate, although it returns larger values for the condition number.-->
+</p>
+<script type="text/javascript" src="../../pages/typeset.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

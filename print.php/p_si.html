@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Sources of errors in Switched-Current (SI)</title>
+	<link rel="canonical" href="http://onmyphd.com/print.php/p_si/" />
+	<meta name="description" content="The switched-current analog memories have several sources of errors, related to loss of signal and injection of unwanted signal">
+	<meta name="keywords" content="mosfet, cmos, switched-current, output-input conductance, charge injection, clock feedthrough, dummy, switches, noise, settling">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'si.errors';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../../p_si/">http://www.onmyphd.com/?p=si.errors</a></p><h1>Sources of errors in SI</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li><a href="../../print.php/p_si.analog/" id="si.analog.memory" class="page">Switched-current techniques</a></li>
+<li><a href="../../print.php/p_mosfet/" id="mosfet.transistor" class="page">MOSFET transistors</a></li>
+<li><a href="../../print.php/p_noise/" id="noise.thermal" class="page">Thermal noise</a></li>
+<li><a href="../../print.php/p_noise/" id="noise.flicker" class="page">Flicker noise</a></li>
+</ul>
+<p>
+The switched-current technique is used to sample and hold analog values. This technique has some sources of errors that reduce its accuracy. In this topic, we will talk about some of them.
+</p>
+<center>
+<img src="../../pages/si.errors/si.analog.memory.svg" width="300" class="svg"/>
+</center>
+<h2>Output-input conductance ratio</h2>
+<p>
+During sampling, $V_{GS} = V_{DS}$ because the memory transistor is diode-connected. During hold, the drain voltage will probably change which will cause a change in current by two reasons.<br>
+a) As you know, <a href="../../print.php/p_small.signal/" id="small.signal.model" class="page">MOSFET transistors</a> have a finite output conductance, which means that the drain-source voltage has some influence on the drain current. This can be modeled by a conductance
+$$g_{ds} = \frac{\partial I_{DS}}{\partial V_{DS}} = \lambda I_{DS}.$$
+b) In a switched-current configuration the gate is floating, and when the drain voltage changes, part of the signal is injected to the gate by $C_{gd}$.
+</p>
+<center>
+<img src="../../pages/si.errors/si.gd.coupling.svg" width="200" class="svg"/>
+</center>
+<p>
+The amount of signal being injected is defined by the capacitive divider formed by $C_{gs}$ and $C_{gd}$, and then the injected signal influences the transistor's current.
+$$\partial I_D = g_m \frac{C_{gd}}{C_{gs} + C_{gd}} \partial V_{DS}.$$
+a) and b) can be joined and it is like the output conductance in switched-current techniques becomes
+$$g_{ds}' = \frac{\partial I_D}{\partial V_{DS}} = g_{ds} + \frac{C_{gd}}{C_{gs} + C_{gd}} g_m.$$
+</p>
+<a id="siiocondtoggle" href="#siiocond">Click here to know how this affects the value transfer.</a>
+<div id="siiocond" style="margin-left:2em;">
+<p>
+Let's say that we are sampling a current in one cell and transferring the same current to another cell. We are going to evaluate the effect of this error in the current copying. First, since the memories are of the same type, it is reasonable to assume that $g_{m1} = g_{m2} = g_m$ and $g_{o1} = g_{o2} = g_o$. $M_1$ is being biased at a current $J$, thereby developing a voltage $V_{GS}$ at its gate. A small current $i_{in}$ is superimposed on this DC operating point, shifting the gate voltage to $v_{GS_1} = V_{GS} + v_{gs_1} = V_{GS} + i_{in}/(g_m+g_o)$.<br>
+During the sample phase, the small-signal current sampled is
+$$i_1 = i_{in} - i_{g_{o1}}$$
+$$i_1 = i_{in} - v_{ds_1} g_o = i_{in} - v_{gs_1} g_o$$
+$$i_1 = i_{in} - \frac{i_{in}}{g_m+g_o} g_o$$
+$$i_1 = i_{in} \left( 1 - \frac{g_o}{g_m + g_o} \right) $$
+$$i_1 = i_{in} \left( \frac{g_m}{g_m + g_o} \right) $$
+</p>
+<center>
+<img src="../../pages/si.errors/si.iocond.analog.transfer.svg" width="600" class="svg"/>
+</center>
+<p>
+If the condition $v_{DS_1} = v_{GS_1}$ was kept during hold, the small-signal current transferred would be $i_1 + i_{g_{o1}} = i_{in}$ and the original current would be restored. However, if $v_{DS_1} = v_{GS_2}$ during the hold phase, the current transferred to the next stage is just
+$$i_{out} = i_1 + i_{g_{o1}}$$
+$$i_{out} = i_{in} \left ( \frac{g_m}{g_m + g_o} \right) + v_{ds_1} g_o$$
+$$i_{out} = i_{in} \left ( \frac{g_m}{g_m + g_o} \right) - \frac{i_{out} g_o}{g_m + g_o}$$
+$$i_{out} = \frac{i_{in} \frac{g_m}{g_m + g_o} }{1 + \frac{g_o}{g_m + g_o}}$$
+$$i_{out} = \frac{i_{in}} { 1 + \frac{2 g_o}{g_m} }$$
+So the the signal is reduced by $ (1+ 2g_o/g_m)^{-1}$ due to input-output conductance ratio error.
+</p>
+</div>
+<h2>Settling errors</h2>
+<h3>Without switch resistance</h3>
+<p>
+First, let's consider the settling time without the switched resistance. The transistor resistances and  capacitances delay the settling of the gate voltage. The memory must be fast enough to settle down before the sampling period ends. Any current that remained to settle results in error.
+</p>
+</p>
+<center>
+<img src="../../pages/si.errors/si.settling.nores.svg" width="600" class="svg"/>
+</center>
+<p>
+The small-signal model of the switched-current memory is shown above, where $C_g$ is the gate-source capacitance and $C_d$ is the drain-source capacitance.
+To find out the transfer function $H(s) = i(s)/i_{in}(s)$:
+$$i_{in} = i + v_g sC_g + v_d g_o + v_g sC_d$$
+By replacing $v_g = i/g_m$
+$$i_{in} = i + i \frac{g_o}{g_m} + i \frac{s(C_g + C_d)}{g_m}$$
+$$i_{in} = i \left(1 + \frac{g_o + s(C_g + C_d)}{g_m} \right)$$
+$$\frac{i}{i_{in}} = \frac{1}{1 + \frac{g_o}{g_m} + \frac{s(C_g + C_d)}{g_m}}$$
+$$\frac{i}{i_{in}} = \frac{{1}\bigg/\left(1 + \frac{g_o}{g_m}\right)}{1 + {\frac{s(C_g + C_d)}{g_m}}\bigg/\left(1 + \frac{g_o}{g_m}\right)}$$
+$$\frac{i}{i_{in}} = \frac{\frac{g_m}{g_m + g_o}}{1 + \frac{s(C_g + C_d)}{g_m + g_o}}.$$
+It can be seen that $i$ settles to $\frac{g_m}{g_m+g_o}i_{in}$ with time constant $\frac{g_m + g_o}{C_d + C_g}\approx\frac{g_m}{C_d + C_g}$.
+</p>
+<h3>With switch resistance</h3>
+<p>
+The switch resistance delays even more the settling of the gate voltage.
+</p>
+<center>
+<img src="../../pages/si.errors/si.settling.svg" width="600" class="svg"/>
+</center>
+<p>
+The small-signal model of the switched-current memory is shown above, where $g_s$ is the conductance of the switch, $C_g$ is the gate-source capacitance and $C_d$ is the drain-source capacitance. The gate-drain capacitance $C_{gd}$ is negligible in this case because of $g_s$.
+To find out the transfer function $H(s) = i(s)/i_{in}(s)$:
+$$i_{in} = i + v_g sC_g + v_d g_o + v_d sC_d$$
+To take $v_d$ out of the equation, we note that:
+$$v_g sC_g = (v_d - v_g) g_s$$
+$$v_d = \frac{sC_g + g_s}{g_s}v_g$$
+Then
+$$i_{in} = i + v_g sC_g + \frac{sC_g + g_s}{g_s}v_g ( g_o + sC_d)$$
+By replacing $v_g = i/g_m$
+$$i_{in} = i + i \frac{sC_g}{g_m} + \frac{sC_g + g_s}{g_s g_m} i ( g_o + sC_d)$$
+$$i_{in} = i \left(1 + s\frac{C_g}{g_m} + \frac{sC_g + g_s}{g_s g_m} g_o + \frac{sC_g + g_s}{g_s g_m} sC_d \right)$$
+$$i_{in} = i \left(1 + \frac{g_o}{g_m} + s \left(\frac{C_g}{g_m} \left( 1+\frac{g_o}{g_s}\right) + \frac{C_d}{g_m} \right) + s^2\frac{C_d C_g}{g_s g_m} \right)$$
+Just to make it more simple, lets assume that $g_o \ll g_m$ and $g_o \ll g_s$. Then
+$$H(s) = \frac{i}{i_{in}} = \frac{1}{ 1 + s \frac{C_g + C_d}{g_m} + s^2\frac{C_d C_g}{g_s g_m}}$$
+This is a second-order low-pass filter with natural frequency
+$$\omega_o = \sqrt{\frac{g_m g_s}{C_g C_d}}$$
+and Q-factor
+$$Q = \frac{\sqrt{\frac{g_m}{g_s}C_g C_d}}{C_g C_d}$$
+As the switch conductance decreases, the memory gets slower and may even become underdamped ($Q &gt; 0.5$) and have ringing, but usually $g_s$ is high enough that it does not reach that point.
+</p>
+<h2>Charge injection errors</h2>
+<p>
+When the gate voltage of the switch transistor $M_s$ falls down, the switch turns off. During the turn off, charge is transferred from/to $C_{gs_1}$ by two mechanisms:<br>
+a) the charge in the channel of $M_s$ is transferred to the terminals of the switch. Some goes to the drain, some goes to the source.<br>
+b) the capacitive coupling of $C_{gs_s}$ and $C_{gs_1}$ transfers charge from the gate of $M_1$ to the gate of $M_s$.
+</p>
+<center>
+<img src="../../pages/si.errors/si.charge.injection.svg" width="250" class="svg"/>
+</center>
+<p>
+Lets take a look in more detail at what happens during switch turn-off. While $V_{GS_s}$ is above the threshold voltage $V_{TH}$ of $M_s$, the switch is still turned on and the circuit can be depicted as the left figure below.
+</p>
+<center>
+<img src="../../pages/si.errors/si.switch.turnoff.svg" width="800" class="svg"/>
+</center>
+<p>
+Both $C_{gs_s}$ and $C_{gd_s}$ have the same value ($=WLC_{ox}/2+WC_{ov}$) because the MOS switch is in triode. While $V_{GS_S}$ is falling, two transient currents flow into the gate of $M_s$
+$$i_d = i_s = \frac{\partial V_{GS_s}}{\partial t}\left(WLC_{ox}/2 + WC_{ov}\right).$$
+That current removes charge from $C_{gs_1}$, causing the current drawn by $M_1$ to reduce. To compensate this reduction, the difference between $i_{in}$ and ${i_1}$ is again used to charge $C_{gs_1}$, effectively creating a negative feedback loop. However, the loop is not fast enough and only partially compensates.
+When the switch turns off (right figure), $g_s$ tends to 0 and there is no more channel of $M_s$. $C_{gs_s}$ and $C_{ds_s}$ become just $WC_{ov}$. The gate of $M_1$ is now floating and the charge is transferred uniquely by capacitive coupling
+$$i_d = i_s = \frac{\partial V_{GS_s}}{\partial t}WC_{ov}.$$
+The total charge $q$ removed from $C_{gs_1}$ is the integral of $i_s$. That influences the original current by $\partial i = -g_m q /C_{gs_1}$.
+It should be noted that the following things influence $\partial i$:<br>
+<ol type="1">
+<li>The <b>rate $\frac{\partial V_{GS_s}}{\partial t}$ has a linear influence on the charge removed</b>. Not only a fast switch off prevents the charge from the channel from being transferred to the terminals, it also affects the effect of the feedback loop described above.</li>
+<li>The voltage $V_{GS_1}$ influences when the switch turns off, making the <b>charge injection signal dependent</b>. Not only it determines when the capacitances change value, but also when the charge in the channel stops being transferred to the terminals.</li>
+</ol>
+</p>
+<h2>Noise errors</h2>
+<p>
+The noise in the switched-current configuration is dominated by thermal and flicker noises. In the figure below, $M_2$ represents all transistors that are supplying current, $M_1$ is the memory transistor and $g_s$ is the conductance of the switch. Current source ending with (t) represent thermal noise, while voltage sources ending with (f) represent flicker noise.
+</p>
+<center>
+<img src="../../pages/si.errors/si.noise.svg" width="350" class="svg"/>
+</center>
+<p>
+The MOS switch is working on the linear region, therefore it has a homogeneous resistance and its thermal noise is
+$$v_{ns(t)}^2 = \frac{4kT}{g_s}\Delta f.$$
+Both $M_1$ and $M_2$ are in saturation and their thermal noise is
+$$i_{n(t)}^2 = \frac{8kTg_{m1}}{3}\Delta f$$
+$$i_{n2(t)}^2 = \frac{8kTg_{m2}}{3}\Delta f.$$
+There is no flicker noise in the switch (it is not flowing any DC current), but both $M_1$ and $M_2$ have the following flicker noises
+$$v_{n(f)}^2 = \frac{K_f}{W_1L_1C_{ox}|f|}\Delta f$$
+$$v_{n2(f)}^2 = \frac{K_f}{W_2L_2C_{ox}|f|}\Delta f$$
+The flicker voltages can be converted to currents by the transconductance of each transistor
+$$i_{n(f)}^2 = g_{m1}^2v_{n(f)}^2 = g_{m1}^2\frac{K_f}{W_1L_1C_{ox}|f|}\Delta f$$
+$$i_{n2(f)}^2 = g_{m2}^2v_{n2(f)}^2 = g_{m2}^2\frac{K_f}{W_2L_2C_{ox}|f|}\Delta f$$
+The switch thermal noise is much smaller compared to the other noises and can be neglected. Since each noise source is uncorrelated, the total noise power is now the sum of each individual power
+$$i_N^2 = i_{n(f)}^2 + i_{n2(f)}^2 + i_{n2(t)}^2 + i_{n(t)}^2$$
+$$i_N^2 = \left(\frac{K_f}{|f|}\left(\frac{g_{m1}^2}{W_1L_1C_{ox}} + \frac{g_{m2}^2}{W_2L_2C_{ox}}\right) + \frac{8kT}{3}(g_{m1} + g_{m2})\right)\Delta f$$
+The noise model during sampling simplifies to
+</p>
+<center>
+<img src="../../pages/si.errors/si.noise.simple.svg" width="350" class="svg"/>
+</center>
+<p>
+The noise will be filtered by the low-pass filter created by the bandwidth of the circuit. From above, the bandwidth is around:
+$$\omega_o = \frac{g_m + g_o}{C_g + C_d}.$$
+For the simple case of a first-order low-pass filter, the <a href="../../print.php/p_enbw.equivalent.noise/" id="enbw.equivalent.noise.bandwidth" class="page">Equivalent Noise Bandwidth</a> is
+$$\frac{\pi}{2}\omega_o = \frac{\pi}{2}\frac{g_m + g_o}{C_g + C_d}.$$
+</p>
+<p>
+However, in sampled systems, any signal lying in any frequency above half the sampling frequency (Nyquist frequency) gets replicated back to the base band. So, in simple terms, most of the noise power gets concentrated in the base band frequency.
+</p>
+<script type="text/javascript" src="../../pages/si.errors.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>
