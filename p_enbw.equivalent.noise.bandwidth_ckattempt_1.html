@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<a href="https://plus.google.com/106183157602618292373?rel=author">Google</a>
+	<a href="https://plus.google.com/106183157602618292373" rel="publisher">Find us on Google+</a>
+	<title>Equivalent Noise Bandwidth (ENBW)</title>
+	<link rel="canonical" href="http://onmyphd.com/p_enbw.equivalent.noise.bandwidth_ckattempt_1/" />
+	<meta name="google-site-verification" content="qS-ONqo-b5-NzkWSBgPnv5l5gN7ddcorKuN6ZAfnAoI"/>
+	<meta name="description" content="Equivalent Noise Bandwidth is the equivalent bandwidth of a system when converting the transfer function of that system into a 'brickwall' filter">
+	<meta name="keywords" content="noise, transfer function, power, area, bandwidth">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>
+	<!-- Auto ads by google -->
+	<!-- end -->
+	<script>
+	// Google Analytics
+	</script>
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+ var page = 'enbw.equivalent.noise.bandwidth';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.async = true;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<input id="searchbox" class="searchempty" type="text" value="Search..."/>
+</div>
+<div id="top"></div>
+<div id="pages">
+<script language="javascript" type="text/javascript" src="../components/js/math.js"></script>
+<h1>Equivalent Noise Bandwidth</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Signal Bandwidth</li>
+<li>Basics of theory of system</li>
+</ul>
+<h2>What is Equivalent Noise Bandwidth (ENBW or NBW)</h2>
+<p>
+Given a system with a transfer function $H(s)$, the spectrum of any input noise will be shaped by it. Under white noise (with equal power over all frequencies), it is convenient to replace the transfer function by a "brickwall" filter, in which the noise power is the same up to a certain frequency $\Delta f$ and after that is zero. That frequency is defined so that the total output noise power is the same for both the system and the brickwall filter. Thus, the area under this rectangle must be the same as the area under the original $H(s)^2$ system (the square means the input and output are powers instead of amplitudes).
+</p>
+<center>
+<div id="enbwplot" style="width:600px;height:300px;"></div>
+</center>
+<p>
+$$ A_{H(s)} = A_{rectangle}$$
+$$ \int_0^\infty \left|H(j\omega)\right|^2 \partial \omega = H_{max}^2 2\pi\Delta f$$
+where $H_{max}$ is the maximum value of $H(s)$.
+$$ \Delta f = \frac{1}{2\pi}\int_0^\infty \frac{\left|H(j\omega)\right|^2}{H_{max}^2} \partial \omega  $$
+</p>
+<p>
+For example, for the 1<sup>st</sup> order low-pass filter
+$$H(j\omega)=\frac{H_{max}}{1+j\frac{\omega}{\omega_{3dB}}}$$
+$$ \left|H(\omega)\right| = \frac{H_{max}}{\sqrt{1+\left(\frac{\omega}{\omega_{3dB}}\right)^2}}$$
+Solving for $\Delta f$:
+$$\Delta f = \frac{1}{2\pi}\int_0^\infty \frac{1}{1+\left(\frac{\omega}{\omega_{3dB}}\right)^2} \partial \omega  $$
+$$\Delta f = \frac{1}{2\pi}\int_0^\infty \frac{1}{1+x^2} \partial x\omega_{3dB}\qquad\qquad\left(x = \frac{\omega}{\omega{3db}}\right)$$
+$$\Delta f = \frac{\omega_{3dB}}{2\pi}\int_0^\infty \frac{1}{1+x^2} \partial x $$
+$$\Delta f = \frac{\omega_{3dB}}{2\pi} \left.\tan^{-1}\frac{\omega}{\omega_{3db}}\right|_0^\infty $$
+$$\Delta f = f_{3dB}\frac{\pi}{2} $$
+</p>
+<p>
+There are some tabulated values for when the systems are low-pass filters of different orders.
+<center>
+<table class="table">
+<tr>
+<td>Order</td><td>$\Delta f$</td>
+</tr>
+<tr>
+<td>1</td><td>1.57 $f_{3dB}$</td>
+</tr>
+<tr>
+<td>2</td><td>1.22 $f_{3dB}$</td>
+</tr>
+<tr>
+<td>3</td><td>1.15 $f_{3dB}$</td>
+</tr>
+<tr>
+<td>4</td><td>1.13 $f_{3dB}$</td>
+</tr>
+<tr>
+<td>5</td><td>1.11 $f_{3dB}$</td>
+</tr>
+</table>
+</center>
+Higher order filters will be closer to the "brickwall" filter, thus the coefficient is closer to 1.
+</p>
+<script type="text/javascript" src="../pages/enbw.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<table>
+<tr>
+<td width="100"><!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=enbw.equivalent.noise.bandwidth" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></div>
+</td>
+<td width="100"><!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+</td>
+<td width="100"><!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+</td>
+<td width="100"><!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=enbw.equivalent.noise.bandwidth" data-counter="right"></script>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="sidebar" style="position:absolute;width:250px;top:50px;left:940px;"></div>
+<!-- <div id="poll1" style="position:absolute;width:250px;top:140px;left:940px;"></div>
+<div id="poll2" style="position:absolute;width:250px;top:380px;left:940px;"></div>-->
+<div id="menu">
+<a id="mn_contents" class="page" href="../p_contents/">Contents</a> |
+<a id="mn_resources" class="page" href="../p_resources/">Resources</a>
+<!--<a id="mn_plot" class="page" href="?p=plot">Plot a chart</a>--> ||
+<a id="mn_print" class="page" href="../print_p_enbw_equivalent_noise_bandwidth/">Print</a>
+</div>
+<div id="socialfixed"><b>Show your love:</b><br/><!-- Facebook -->
+<span id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=enbw.equivalent.noise.bandwidth" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></span>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=enbw.equivalent.noise.bandwidth" data-counter="right"></script>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/
+	// search box
+	$('#searchbox')
+	.focus( function () {
+		if ( $(this).hasClass('searchempty') )
+			$(this).val('').removeClass('searchempty')
+	})
+	.blur( function () {
+		if ( $(this).val() == '' )
+			$(this).val('Search...').addClass('searchempty');
+	})
+	.on('keydown', function (e) {
+		if (e.which == 13) {
+			window.open('http://www.google.com/search?sitesearch=onmyphd.com&q=' + $(this).val(), '_blank');
+		}
+    });
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

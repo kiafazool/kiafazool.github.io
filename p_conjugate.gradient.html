@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<a href="https://plus.google.com/106183157602618292373?rel=author">Google</a>
+	<a href="https://plus.google.com/106183157602618292373" rel="publisher">Find us on Google+</a>
+	<title>Conjugate Gradient Method</title>
+	<link rel="canonical" href="http://onmyphd.com/p_conjugate.gradient/" />
+	<meta name="google-site-verification" content="qS-ONqo-b5-NzkWSBgPnv5l5gN7ddcorKuN6ZAfnAoI"/>
+	<meta name="description" content="The conjugate Gradient method finds the solution of a linear system of equations by stepping to the solution in conjugate directions. The theory, derivations to the fast implementation and an interactive example are found here.">
+	<meta name="keywords" content="conjugate gradient, solution of linear system of equations, conjugate directions, residual">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>
+	<!-- Auto ads by google -->
+	<!-- end -->
+	<script>
+	// Google Analytics
+	</script>
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+ var page = 'conjugate.gradient.method';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.async = true;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<input id="searchbox" class="searchempty" type="text" value="Search..."/>
+</div>
+<div id="top"></div>
+<div id="pages">
+<h1>Conjugate gradient method</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li><a href="../p_gradient/" class="page">Gradient descent</a></li>
+<li>Orthogonality of vectors and the notion of a basis</li>
+<li>Projection operator</li>
+<li>Quadratic program</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_what">What is the conjugate gradient method?</a></li>
+<li><a href="#h2_iteration">Conjugate gradient by iteration</a></li>
+<li><a href="#h2_algorithm">Conjugate gradient in practice</a></li>
+<ul>
+<li><a href="#h3_resorthdir">The residual is orthogonal to all previous directions</a></li>
+<li><a href="#h3_resorthres">The residual is orthogonal to all previous residuals</a></li>
+<li><a href="#h3_gradres">The gradient step size based on residuals</a></li>
+<li><a href="#h3_orthdir">The orthogonalization step that only depends on the previous search direction</a></li>
+<li><a href="#h3_pseudocode">The pseudocode</a></li>
+<li><a href="#h3_example">An example</a></li>
+</ul>
+</ul>
+<h2 id="h2_what">What is the conjugate gradient method?</h2>
+<p>
+Conjugate gradient method is a method used to find the solution $\b{x}$ of
+$$\b{b} = A\b{x}$$
+or the root of 
+$$A\b{x} - \b{b}$$
+in the cases where $A$ is a symmetric ($A = A^T$) and positive-definite ($\b{x^T}A\b{x} &gt; 0$ for any non-zero $\b{x}$) matrix. In case $A$ is not symmetric, we can always pre-multiply both sides of the equation by $A^T$ to solve:
+$$A^T\b{b} = A^TA\b{x}$$
+$$\b{b'} = A'\b{x}$$
+In this case $A'=A^TA$ is symmetric and $\b{b'}=A^T\b{b}$.
+</p>
+<p>
+First, I will introduce the concept of conjugate vectors. Let's define the operator
+$$\lt\b{u}, \b{v}\gt_A = \b{u}^TA\b{v}.$$
+<b>If the result is 0, the vectors are orthogonal under this inner product and we say the two vectors are conjugate with respect to $A$ or A-orthogonal</b>. Considering $A \in \mathbb{R}^{n \times n}$, we can find a set $\{\b{p}_1,...,\b{p}_n\}$ of conjugate vectors that form a basis of $\mathbb{R}^n$. Then, we can always represent the solution as a function of that basis:
+$$\b{x} = \sum_{i=1}^n \alpha_i \b{p}_i.$$
+Working on the original formulation of the problem:
+$$\b{b} = A\b{x}$$
+$$\b{p}_k^T\b{b} = \b{p}_k^TA\b{x}$$
+$$\b{p}_k^T\b{b} = \b{p}_k^TA\sum_{i=1}^n \alpha_i \b{p}_i$$
+Since all $\b{p}_i$ are conjugate of $\b{p}_k$ with respect to $A$, except for $i=k$, only this term remains
+$$\b{p}_k^T\b{b} = \alpha_k \b{p}_k^TA\b{p}_k$$
+$$\alpha_k =  \frac{\b{p}_k^T\b{b}}{\b{p}_k^TA\b{p}_k}$$
+What this all means is that, after we know the conjugate basis set, we can find the coefficients for the solution just by using the last equation. However, finding a conjugate basis is not a trivial thing.
+</p>
+<h2 id="h2_iteration">Conjugate gradient by iteration</h2>
+<p>
+In practice, the conjugate gradient is computed as an iterative method. Starting with an initial guess of the solution, we calculate the <a href="../p_gradient/" class="page">gradient</a> to find a first direction to move. During the next iterations, the directions have to be conjugate to the previous ones, thereby assuring the conditions of the previous section.
+</p>
+<p>
+First, let's convert our problem into a minimization problem. The derivative of the quadratic program
+$$ \underset{\b{x}}{\arg\min} \frac{1}{2}\b{x}^TA\b{x} - \b{x}^T\b{b}$$
+with respect to $\b{x}$ is $A\b{x} - \b{b}$. <b>If A is positive-definite and symmetric, the minimization function is convex and its only minimum is found where its derivate is zero</b>, hence the solution for $\b{b} = A\b{x}$ is also the solution for this quadratic program. Now that we have a minimization problem, we can do gradient descent on it to find the minimum, but with the twist introduced by conjugate gradient, i.e., every gradient direction must be conjugate to the previous ones.
+</p>
+<p>
+As in gradient descent, we start with a guess $\b{x_0}$ for $\b{x}$ and calculate the gradient at that point, which will be $A\b{x}_0 - \b{b}$. We take the first conjugate vector $\b{p}_1$ in the opposite direction and make the step
+$$\b{x}_1 = \b{x}_0 + \alpha_1 \b{p}_1$$
+From now on we have to guarantee that the next steps are in conjugate directions to the previous. Hence, for every residual
+$$\b{r}_k = \b{b} - A\b{x}_k$$
+we need to build the conjugate by making it orthogonal to the previous ones (this is done by removing any projection of the current residual in the previous conjugate vectors)
+$$\begin{equation}\b{p}_{k+1} = \b{r}_{k} - \sum_{i \le k} \beta_{ik}\b{p}_i\label{eq:orthostep}\end{equation}$$
+where 
+$$\begin{equation}\beta_{ik} = \frac{\b{r}_k^TA\b{p}_{i}}{\b{p}_{i}^TA\b{p}_{i}}\label{eq:beta}\end{equation}$$
+is the projector operator of $\b{r}_k$ on $\b{p}_i$. After that, we make the step in the direction of the new conjugate vector
+$$\begin{equation}\b{x}_{k+1} = \b{x}_k + \alpha_{k+1} \b{p}_{k+1}\label{eq:stepsol}\end{equation}.$$
+As shown in the previous section the step size is defined by 
+$$\alpha_k =  \frac{\b{p}_k^T\b{b}}{\b{p}_k^TA\b{p}_k}$$
+Still, the orthogonalization step in $\eqref{eq:orthostep}$ is heavy and can be simplified.
+<h2 id="h2_algorithm">Conjugate gradient in practice</h2>
+<p>
+To make clear what simplications can be done, first we define the error (difference between optimal solution and current solution)
+$$ \begin{equation}\b{e}_k = \b{x} - \b{x}_k = \sum_{i=1}^n \alpha_i \b{p}_i - \sum_{i=1}^k \alpha_i \b{p}_i = \sum_{i=k+1}^n \alpha_i \b{p}_i\label{eq:error}\end{equation}$$
+and how it relates to the residual:
+$$ \b{r}_k = \b{b} - A\b{x}_k = A\b{x} - A\b{x}_k = A\b{e}_k$$
+</p>
+<h3 id="h3_resorthdir">The residual is orthogonal to all previous directions</h3>
+From $\eqref{eq:error}$:
+$$\b{e}_k = \sum_{i=k+1}^n \alpha_i \b{p}_i$$
+$$\b{p}_j^TA\b{e}_k = \sum_{i=k+1}^n \alpha_i \b{p}_j^TA\b{p}_i$$
+$$\b{p}_j^T\b{r}_k = \sum_{i=k+1}^n \alpha_i \b{p}_j^TA\b{p}_i$$
+For every $j \le k$, the terms $\b{p}_j^TA\b{p}_i$ will always have $i \gt j$ and will be zero because they are A-orthogonal (then the right-hand side of the expression is zero). Hence, we also have that for every $k \ge j$, $\b{p}_j^T\b{r}_k = 0$. This statement says that any residual $\b{r}_k$ is orthogonal to every previous search directions ($\b{p}_j, j \le k$).
+<h3 id="h3_resorthres">The residual is orthogonal to all previous residuals</h3>
+<p>
+If the search directions form a basis and if the residuals are orthogonal to them, then the residuals must form a basis too. That also means that any residual is orthogonal to all previous residuals. In case of doubt, from $\eqref{eq:orthostep}$:
+$$\b{p}_{k+1} = \b{r}_k + \sum_{i\le k} \beta_{ik} \b{p}_i$$
+$$\b{p}_{k+1}^T\b{r}_j = \b{r}_k^T\b{r}_j + \sum_{i\le k} \beta_{ik} \b{p}_i^T\b{r}_j$$
+From the previous section, we know that $\b{p}_i^T\b{r}_j = 0$ for $i \le j$. Then, according to the previous equation, as long as $k+1 \le j$ or $k \lt j$, we are left with:
+$$0 = \b{r}_k^T\b{r}_j + 0$$
+and it is proven that any residual is orthogonal to the previous ones, hence they form a basis.
+At this point you might be thinking how can there be two orthogonal basis that are orthogonal to each other. In fact, at each iteration, the residuals are only orthogonal to the previous residuals and search directions. The search direction and residual of the same step are not orthogonal. I hope this next picture sheds some light into this possible confusion.
+</p>
+<center>
+<img src="../pages/conjugate.gradient.method/residual.conjugate.svg" class="svg" alt="orthogonal residual and search directions" width="250"/>
+</center>
+<p class="comment">The residuals and the search directions form two orthogonal basis (in this example, with 3 dimensions). The residuals are always orthogonal to previous residuals and previous search directions. However, in the same step (e.g. $p_1$ and $r_0$ are not orthogonal).</p>
+<h3 id="h3_gradres">The gradient step size based on residuals</h3>
+<p>
+We can also make the numerator of the step size $\alpha$ be dependent only on the residuals. The reason for doing this is that the numerator is then used in another part of the algorithm, as it will be seen later, therefore saving some calculations. From the previous section: 
+</p>
+$$\b{r}_{k+1}^T\b{r}_k = 0$$
+$$(\b{b} - A\b{x}_{k+1})^T\b{r}_k = 0$$
+From $\eqref{eq:stepsol}:$
+$$(\b{b} - A(\b{x}_{k} + \alpha_{k+1}\b{p}_{k+1}))^T\b{r}_k = 0$$
+$$(\b{b} - A\b{x}_{k})^T\b{r}_k - \alpha_{k+1}(A\b{p}_{k+1})^T\b{r}_k= 0$$
+$$\b{r}_k^T\b{r}_k - \alpha_{k+1}(A\b{p}_{k+1})^T\b{r}_k= 0$$
+$$\alpha_{k+1}(A\b{p}_{k+1})^T\b{r}_k = \b{r}_k^T\b{r}_k $$
+$$\alpha_{k+1} = \frac{\b{r}_k^T\b{r}_k}{\b{p}_{k+1}^TA\b{r}_k}$$
+A is symmetric, so $A^T = A$. Replacing $\b{r}_{k}$ with $\eqref{eq:orthostep}$ and remembering that search directions are A-orthogonal to each other, we get:
+$$\begin{equation}\alpha_{k+1} = \frac{\b{r}_k^T\b{r}_k}{\b{p}_{k+1}^TA\b{p}_{k+1}}\label{eq:step1}\end{equation}$$
+<h3 id="h3_orthdir">The orthogonalization step that only depends on the previous search direction</h3>
+<p>
+Now that we know that the residual can be used as an orthogonal basis, let's use it. The step in the solution $\eqref{eq:stepsol}$:
+$$\b{x}_{k+1} = \b{x}_k + \alpha_{k+1} \b{p}_{k+1}$$
+can be changed to (multiplying by $-A$ and adding $\b{b}$ in each side):
+$$ \b{b} - A\b{x}_{k+1} = \b{b} - A\b{x}_k - \alpha_{k+1} A\b{p}_{k+1}$$
+$$\begin{equation}\b{r}_{k+1} = \b{r}_k - \alpha_{k+1} A\b{p}_{k+1}\label{eq:step3}\end{equation}$$
+We proceed into using this equation to find the value for $\beta_{jk}$. First, we pre-multiply by $\b{r}_j^T$:
+$$\b{r}_j^T\b{r}_{k+1} = \b{r}_j^T\b{r}_k - \alpha_{k+1} \b{r}_j^TA\b{p}_{k+1}$$
+$$\alpha_{k+1} \b{r}_j^TA\b{p}_{k+1} = -\b{r}_j^T\b{r}_{k+1} + \b{r}_j^T\b{r}_k$$
+From $\eqref{eq:beta}$:
+$$\alpha_{k+1} \beta_{k+1,j}\b{p}_{k+1}^TA\b{p}_{k+1} = -\b{r}_j^T\b{r}_{k+1} + \b{r}_j^T\b{r}_k$$
+Replacing $\alpha_{k+1}\b{p}_{k+1}^TA\b{p}_{k+1}$ with $\eqref{eq:step1}$:
+$$\beta_{k+1,j}\b{r}_{k}^T\b{r}_{k} = -\b{r}_j^T\b{r}_{k+1} + \b{r}_j^T\b{r}_k$$
+$$\beta_{k+1,j} = \frac{-\b{r}_j^T\b{r}_{k+1} + \b{r}_j^T\b{r}_k}{\b{r}_k^T\b{r}_k}$$
+To make more sense from the above equation, let's just replace $k$ with $k-1$ (this does not make the equation less true):
+$$\beta_{k,j} = \frac{-\b{r}_j^T\b{r}_{k} + \b{r}_j^T\b{r}_{k-1}}{\b{r}_{k-1}^T\b{r}_{k-1}}$$
+The $\beta_{kj}$ will be useful for $k \le j$ in $\eqref{eq:orthostep}$. For $k \lt j$, the dot-products in the numerator are zero (the residuals are orthogonal), hence $\beta_{kj} = 0$. For $j = k$, $\b{r}_j^T\b{r}_{k-1} = 0$ and:
+$$\begin{equation}\beta_{kk} = -\frac{\b{r}_{k}^T\b{r}_{k}}{\b{r}_{k-1}^T\b{r}_{k-1}}.\label{eq:step4}\end{equation}$$
+The expression $\eqref{eq:orthostep}$ simplifies to:
+$$\begin{equation}\b{p}_{k+1} = \b{r}_{k} - \beta_{kk}\b{p}_k.\label{eq:step5}\end{equation}$$
+</p>
+Now we have some very simple equations that only depend on previous residuals and search directions.
+</p>
+<h3 id="h3_pseudocode">The pseudocode</h3>
+After these simplications, the pseudo-code is something like this:<br/>
+$ \b{r}_0 = \b{b} - A\b{x}_0$<br/>
+$ \b{p}_1 = \b{r}_0$<br/>
+$k = 1$<br/>
+$ \textrm{repeat}$<br/>
+$ \alpha_k = \frac{\b{r}_{k-1}^T\b{r}_{k-1}}{\b{p}_k^TA\b{p}_k}$ $\eqref{eq:step1}$<br/>
+$ \b{x}_{k} = \b{x}_{k-1} + \alpha_k\b{p}_k$ $\eqref{eq:stepsol}$<br/>
+$ \b{r}_{k} = \b{r}_{k-1} - \alpha_kA\b{p}_k$ $\eqref{eq:step3}$<br/>
+$ \beta_k = \frac{\b{r}_{k}^T\b{r}_{k}}{\b{r}_{k-1}^T\b{r}_{k-1}}$ $\eqref{eq:step4}$<br/>
+$ \b{p}_{k+1} = \b{r}_{k} + \beta_{kk} \b{p}_k$ $\eqref{eq:step5}$<br/>
+$ k = k + 1$<br/>
+$ \textrm{until } \b{r}_{k-1} \lt \epsilon$<br/>
+$ \textrm{return } \b{x}_{k-1}$<br/>
+</p>
+<h3 id="h3_example">An example</h3>
+<p>
+Let's see how the conjugate gradient method behaves in a simple example. The function to be minimized must be quadratic, hence the elliptical contours.
+</p>
+<center>
+<div style="width:600px;height:300px" id="eg_plot"></div>
+</center>
+<p class="comment">Click in the contour plot above to select the initial point for the conjugate gradient method. If infinite precision was used to calculate the steps, the method would achieve the minimum in two steps (the same size as the dimension of the problem). However, the algorithm can continue to improve its estimate if more steps are done.</p>
+<script type="text/javascript" src="../components/js/math.js"></script>
+<script type="text/javascript" src="../components/js/math.types.js"></script>
+<script type="text/javascript" src="../components/js/math.charts.js"></script>
+<script type="text/javascript" src="../pages/conjugate.gradient.method.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<table>
+<tr>
+<td width="100"><!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=conjugate.gradient.method" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></div>
+</td>
+<td width="100"><!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+</td>
+<td width="100"><!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+</td>
+<td width="100"><!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=conjugate.gradient.method" data-counter="right"></script>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="sidebar" style="position:absolute;width:250px;top:50px;left:940px;"></div>
+<!-- <div id="poll1" style="position:absolute;width:250px;top:140px;left:940px;"></div>
+<div id="poll2" style="position:absolute;width:250px;top:380px;left:940px;"></div>-->
+<div id="menu">
+<a id="mn_contents" class="page" href="../p_contents/">Contents</a> |
+<a id="mn_resources" class="page" href="../p_resources/">Resources</a>
+<!--<a id="mn_plot" class="page" href="?p=plot">Plot a chart</a>--> ||
+<a id="mn_print" class="page" href="../print_p_conjugate_gradient_method/">Print</a>
+</div>
+<div id="socialfixed"><b>Show your love:</b><br/><!-- Facebook -->
+<span id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=conjugate.gradient.method" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></span>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=conjugate.gradient.method" data-counter="right"></script>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/
+	// search box
+	$('#searchbox')
+	.focus( function () {
+		if ( $(this).hasClass('searchempty') )
+			$(this).val('').removeClass('searchempty')
+	})
+	.blur( function () {
+		if ( $(this).val() == '' )
+			$(this).val('Search...').addClass('searchempty');
+	})
+	.on('keydown', function (e) {
+		if (e.which == 13) {
+			window.open('http://www.google.com/search?sitesearch=onmyphd.com&q=' + $(this).val(), '_blank');
+		}
+    });
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

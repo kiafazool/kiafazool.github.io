@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<a href="https://plus.google.com/106183157602618292373?rel=author">Google</a>
+	<a href="https://plus.google.com/106183157602618292373" rel="publisher">Find us on Google+</a>
+	<title>Dynamic Range (DR)</title>
+	<link rel="canonical" href="http://onmyphd.com/p_dynamic/" />
+	<meta name="google-site-verification" content="qS-ONqo-b5-NzkWSBgPnv5l5gN7ddcorKuN6ZAfnAoI"/>
+	<meta name="description" content="The Dynamic Range is the Signal-Noise Ratio for the maximum possible signal">
+	<meta name="keywords" content="dynamic range, DR, signal-noise ratio, SNR, noise floor, high dynamic range">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>
+	<!-- Auto ads by google -->
+	<!-- end -->
+	<script>
+	// Google Analytics
+	</script>
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+ var page = 'dynamic.range';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.async = true;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<input id="searchbox" class="searchempty" type="text" value="Search..."/>
+</div>
+<div id="top"></div>
+<div id="pages">
+<h1>Dynamic Range (DR)</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li><a href="../p_snr.signal.noise/" class="page" id="snr">Signal-Noise Ratio</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What is the Dynamic Range?</a></li>
+<li><a href="#h2_examples">Examples of Dynamic Range</a></li>
+<li><a href="#h2_hdr">High Dynamic Range</a></li>
+</ul>
+<h2 id="h2_whatis">What is the Dynamic Range?</h2>
+<p>
+<p>
+The Signal-Noise Ratio (SNR) is a measure of how strong the signal is compared to the noise. The Dynamic Range is just the SNR for the maximum possible signal. By possible I mean whatever is defined as possible. For instance, the maximum signal for an opamp may be the rail-to-rail voltage, the maximum signal for an <a href="../p_analog.digital/" id="adc" class="page">ADC</a> may be its voltage reference, for a general system may be the one that does not cause distortion above a certain level, or for a wireless signal is limited by the power of the emitter, and for a digital camera may be the maximum number of photons that can be acquired in a period of time, and for an audio system is the loudest undistorted sine wave, etc. Then, by definition:
+$$ DR = \frac{P_{signal_{max}}}{P_{noise}}$$
+or in dB
+$$ DR = 10\log_{10}\left(\frac{P_{signal_{max}}}{P_{noise}}\right)=20\log_{10}\left(\frac{A_{signal_{max}}}{A_{noise}}\right)$$
+</p>
+<h2 id="h2_examples">Examples of Dynamic Range</h2>
+<p>
+<h4>Opamp</h4>
+<p>
+For an Opamp with input range of $2V$ and an input-referred noise of $20\mu V$, its DR is:
+$$DR = 20\log_{10}\left(\frac{2}{20\mu V}\right) = 100 dB$$
+</p>
+<h4>Digitally represented signal</h4>
+<p>
+For a digital representation of a signal with N bits, the DR is:
+$$DR = 6.02N + 1.76 dB$$
+(find out why <a href="../p_quantization.noise/" class="page">here</a>)
+</p>
+<h4>Wireless</h4>
+<p>
+A wireless signal with power $100\mu W$ (-10dBm) is received and the input-referred noise of the receiver is $1\mu W$ (-30 dBm). The DR is:
+$$DR = 10 \log_{10}\left(\frac{100\mu W}{1 \mu W}\right) = 20 dB$$
+Note: Power (dBm) = $10\log_{10}$( Power (mW) )
+</p>
+<h2 id="h2_hdr">High Dynamic Range</h2>
+<p>
+You may often see the term High Dynamic Range (HDR) photographies, in which a big range of illuminance is captured. Commonly, the image is captured in a single shot: either with low sensitivity and the darkest parts of the image get emerged in the noise (either photon noise or from the camera itself), or with high sensitivity and the brightest parts of the image get saturated and cannot be detected above a certain value. This is due to the limited dynamic range of the camera. High Dynamic Range can be obtained by compressing the input range prior to capture: brightest parts get darker and darkest parts get brighter. Although the dynamic range of the camera is the same, the photographers match the input signal to the dynamic range of the camera by compressing it. In practice, neutral density filters are used to control the illuminance that reaches the camera.
+</p>
+<p>
+<script type="text/javascript" src="../pages/dr.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<table>
+<tr>
+<td width="100"><!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=dynamic.range" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></div>
+</td>
+<td width="100"><!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+</td>
+<td width="100"><!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+</td>
+<td width="100"><!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=dynamic.range" data-counter="right"></script>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="sidebar" style="position:absolute;width:250px;top:50px;left:940px;"></div>
+<!-- <div id="poll1" style="position:absolute;width:250px;top:140px;left:940px;"></div>
+<div id="poll2" style="position:absolute;width:250px;top:380px;left:940px;"></div>-->
+<div id="menu">
+<a id="mn_contents" class="page" href="../p_contents/">Contents</a> |
+<a id="mn_resources" class="page" href="../p_resources/">Resources</a>
+<!--<a id="mn_plot" class="page" href="?p=plot">Plot a chart</a>--> ||
+<a id="mn_print" class="page" href="../print_p_dynamic_range/">Print</a>
+</div>
+<div id="socialfixed"><b>Show your love:</b><br/><!-- Facebook -->
+<span id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=dynamic.range" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></span>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=dynamic.range" data-counter="right"></script>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/
+	// search box
+	$('#searchbox')
+	.focus( function () {
+		if ( $(this).hasClass('searchempty') )
+			$(this).val('').removeClass('searchempty')
+	})
+	.blur( function () {
+		if ( $(this).val() == '' )
+			$(this).val('Search...').addClass('searchempty');
+	})
+	.on('keydown', function (e) {
+		if (e.which == 13) {
+			window.open('http://www.google.com/search?sitesearch=onmyphd.com&q=' + $(this).val(), '_blank');
+		}
+    });
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

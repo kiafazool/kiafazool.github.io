@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<a href="https://plus.google.com/106183157602618292373?rel=author">Google</a>
+	<a href="https://plus.google.com/106183157602618292373" rel="publisher">Find us on Google+</a>
+	<title>Body effect</title>
+	<link rel="canonical" href="http://onmyphd.com/p_body/" />
+	<meta name="google-site-verification" content="qS-ONqo-b5-NzkWSBgPnv5l5gN7ddcorKuN6ZAfnAoI"/>
+	<meta name="description" content="Body effect in MOSFET transistors is the influence of source-bulk voltage in the current due to change of the threshold voltage by the source-bulk voltage">
+	<meta name="keywords" content="mosfet, cmos, transistor, source, bulk, threshold voltage, pn junction">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>
+	<!-- Auto ads by google -->
+	<!-- end -->
+	<script>
+	// Google Analytics
+	</script>
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+ var page = 'body.effect';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.async = true;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<input id="searchbox" class="searchempty" type="text" value="Search..."/>
+</div>
+<div id="top"></div>
+<div id="pages">
+<h1>Body effect</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li><a href="../p_mosfet/" id="mosfet.transistor" class="page">The MOSFET operation</a></li>
+<li><a href="../p_mosfet/" id="mosfet.model" class="page">The MOSFET model</a></li>
+</ul>
+<h2>What is the body effect?</h2>
+<p>
+You might have forgotten, but a transistor is a 4-terminal device. Gate, drain and source are the 3 terminals that are used to control the transistor, but the bulk or body, if not properly biased, may put the transistor inoperable.
+</p>
+<center>
+<img src="../pages/body.effect/mos.pn.junctions.svg" width="200" class="svg"/>
+<p class="comment">PN junctions are diodes</p>
+</center>
+<p>
+<b>The pn junctions defined by source-bulk and drain-bulk</b>, which are basically two diodes, <b>must be reverse-biased</b> to stop them from leaking current from the source/drain to the substrate. That means that the source potential must always be equal or greater than the bulk potential. Since drain voltage is always greater or equal than source voltage, we don't even consider the drain-bulk junction.<br>
+</p>
+<center>
+<img src="../pages/body.effect/body.effect.svg" width="500" class="svg"/>
+<p class="comment">The body effect</p>
+</center>
+<p>
+When $V_S &gt; V_B$, the depletion width of the pn junction increases (<a id="mosfet.transistor" href="../p_mosfet/" class="page">remember the pn junction depletion region?</a>). That makes it more difficult to create a channel with the same $V_{GS}$, effectively reducing the channel depth. In order to return to the same channel depth, $V_{GS}$ needs to increase accordingly.<br>
+<b>The body effect can be seen as a change in threshold voltage</b> and it is modeled as just that:
+$$V_{TH} = V_{T0_n} + \gamma \left( \sqrt{2\phi_f+V_{SB}} - \sqrt{2\phi_f} \right)$$
+where $V_{T0_n}$ is the threshold voltage when $V_{SB} = 0$, $\phi_f$ is a physical parameter ($2\phi_f \approx 0.6V$ for NMOS and $0.75V$ for PMOS) and $\gamma$ is a process parameter called <b>body-effect parameter</b> ($\gamma \approx 0.4 V^{1/2}$ for NMOS and $-0.5 V^{1/2}$ for PMOS).<br>
+For PMOS, the bulk voltage should always be higher than the source because the pn junction is in the opposite direction (source $p^+$ and bulk $n^-$). Then, the threshold voltage should be rewritten as:
+$$V_{TH} = V_{T0_p} + \gamma \left( \sqrt{2\phi_f+V_{BS}} - \sqrt{2\phi_f} \right)$$
+</p>
+<p>
+If you want to see what is the influence of the body effect in the small signal model, you should check <a href="../p_small.signal/" id="small.signal.model" class="page">the small signal model</a> topic.
+</p>
+<h2>Difference between NMOS and PMOS</h2>
+<p>
+NMOS transistors share the same the substrate. For that reason, the bulk of all NMOS transistors need to be connected to the same voltage, usually the lowest voltage in the circuit.
+</p>
+<center>
+<img src="../pages/body.effect/nmos.bulk.svg" width="500" class="svg"/>
+<p class="comment">NMOS share the same bulk</p>
+</center>
+<p>
+However, PMOS transistors are created inside wells that can be separated from each other. Each well, which is the bulk of the PMOS transistors inside it, can be biased to a different voltage. That way, if we want to avoid the body effect for a particular PMOS by connecting the bulk and the source together, all we need to do is isolate it in a n-well, and connect that n-well to the source of the PMOS.
+</p>
+<center>
+<img src="../pages/body.effect/pmos.bulk.svg" width="700" class="svg"/>
+<p class="comment">PMOS can be created in different n-wells with independent voltages for the bulks</p>
+</center>
+<p>
+</p>
+<script type="text/javascript" src="../pages/body.effect.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<table>
+<tr>
+<td width="100"><!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=body.effect" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></div>
+</td>
+<td width="100"><!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+</td>
+<td width="100"><!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+</td>
+<td width="100"><!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=body.effect" data-counter="right"></script>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="sidebar" style="position:absolute;width:250px;top:50px;left:940px;"></div>
+<!-- <div id="poll1" style="position:absolute;width:250px;top:140px;left:940px;"></div>
+<div id="poll2" style="position:absolute;width:250px;top:380px;left:940px;"></div>-->
+<div id="menu">
+<a id="mn_contents" class="page" href="../p_contents/">Contents</a> |
+<a id="mn_resources" class="page" href="../p_resources/">Resources</a>
+<!--<a id="mn_plot" class="page" href="?p=plot">Plot a chart</a>--> ||
+<a id="mn_print" class="page" href="../print_p_body_effect/">Print</a>
+</div>
+<div id="socialfixed"><b>Show your love:</b><br/><!-- Facebook -->
+<span id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=body.effect" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></span>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=body.effect" data-counter="right"></script>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/
+	// search box
+	$('#searchbox')
+	.focus( function () {
+		if ( $(this).hasClass('searchempty') )
+			$(this).val('').removeClass('searchempty')
+	})
+	.blur( function () {
+		if ( $(this).val() == '' )
+			$(this).val('Search...').addClass('searchempty');
+	})
+	.on('keydown', function (e) {
+		if (e.which == 13) {
+			window.open('http://www.google.com/search?sitesearch=onmyphd.com&q=' + $(this).val(), '_blank');
+		}
+    });
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

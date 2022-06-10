@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<a href="https://plus.google.com/106183157602618292373?rel=author">Google</a>
+	<a href="https://plus.google.com/106183157602618292373" rel="publisher">Find us on Google+</a>
+	<title>Bandgap voltage reference - tutorial of precision voltage reference with circuit examples</title>
+	<link rel="canonical" href="http://onmyphd.com/p_bandgap/" />
+	<meta name="google-site-verification" content="qS-ONqo-b5-NzkWSBgPnv5l5gN7ddcorKuN6ZAfnAoI"/>
+	<meta name="description" content="Bandgap references are widely used circuits that produce a voltage that is PVT (Process, Voltage, Temperature) independent. It is temperature independent by generating and adding two voltages with opposite temperature coefficients that cancel out at the output. The Bipolar Junction Transistor is able to provide both of these voltages.">
+	<meta name="keywords" content="bandgap, BJTs, temperature coefficient, voltage reference">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>
+	<!-- Auto ads by google -->
+	<!-- end -->
+	<script>
+	// Google Analytics
+	</script>
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+ var page = 'bandgap.reference';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.async = true;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<input id="searchbox" class="searchempty" type="text" value="Search..."/>
+</div>
+<div id="top"></div>
+<div id="pages">
+<h1>Bandgap voltage reference</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basics of electronic circuits</li>
+<li>Opamp principle of operation</li>
+<li>Bipolar Junction Transistor basics</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What is a bandgap voltage reference?</a></li>
+<li><a href="#h2_bjt">Things to know about the BJT</a></li>
+<li><a href="#h2_ntc">Creating the NTC voltage</a></li>
+<li><a href="#h2_ptc">Creating the PTC voltage</a></li>
+<li><a href="#h2_ntcptc">Summing the NTC and PTC voltages</a></li>
+<li><a href="#h2_examples">Examples</a></li>
+<li><a href="#h2_pv">Some thoughts about other dependencies</a></li>
+</ul>
+<h2 id="h2_whatis">What is a bandgap voltage reference?</h2>
+<p>
+Many circuits, including <a href="../p_voltage/" class="page">voltage regulators</a>, <a href="../p_analog.digital/" class="page">analog-digital</a> and digital-analog converters, require a voltage reference that is as precise as possible. Their precision depends on it. That means that the voltage reference would ideally be PVT independent:
+<ul>
+<li><b>P:</b> manufacturing process variations</li>
+<li><b>V:</b> supply voltage</li>
+<li><b>T:</b> temperature</li>
+</ul>
+Bandgap reference circuits cancel out two opposing variations caused by temperature. That is, if we have two references, one producing voltage $V_1$ with temperature coefficient
+$$\frac{\partial V_1}{\partial T} = \alpha$$
+and the other producing voltage $V_2$ with temperature coefficient
+$$\frac{\partial V_2}{\partial T} = -\alpha$$
+The following operation
+$$V_{out} = V_1 + V_2$$
+will produce a temperature-independent voltage:
+$$\frac{\partial V_{out}}{\partial T} = \frac{\partial V_1}{\partial T} + \frac{\partial V_2}{\partial T} = \alpha - \alpha = 0$$
+Of course in order to cancel out, the temperature coefficients must have opposing signs, one negative (NTC) and one positive (PTC). A Bipolar Junction Transistor (BJT) can provide both the NTC and the PTC voltages. Thus, let us review a bit the BJT.
+</p>
+<h2 id="h2_bjt">Things to know about the BJT</h2>
+<p>
+The BJT collector current is defined as:
+$$I_c = I_Se^{V_{be}/V_t}$$
+where $V_{be}$ is the base-emitter voltage. $V_t = kT/q$ is the thermal voltage, which is virtually insensitive to process variations and is defined by the Boltzmann constant $k$, the charge of an electron $q$ and the temperature $T$. $I_S$ is a parameter that is process and temperature dependent:
+$$I_S = I_0 e^{\frac{-V_{G0}}{V_t}}$$
+$$I_0 = I_S e^{\frac{V_{G0}}{V_t}}$$
+where $I_0$ is a device parameter and $V_{G0}$ gives the name to this reference circuit. It is the bandgap voltage of silicon, the energy necessary to free an electron from the outer shell of the silicon atom. The bandgap itself is temperature dependent, so $V_{G0}$ is $V_G(T)$ extrapolated from 300ºK to 0ºK. It has the theoretical value of 1.205V. The collector current can also be expressed as:
+$$I_c = I_0e^{-\frac{V_{G0} - V_{be}}{Vt}}$$
+which makes it simpler to relate to the bandgap voltage.
+</p>
+<h2 id="h2_ntc">Creating the NTC voltage</h2>
+<p>
+The negative temperature coefficient is produced by a PN junction. The base-emitter junction of the Bipolar Junction Transistor (BJT) is a common PN junction used in bandgap references. Using the collector current of the BJT, the base-emitter voltage is:
+$$V_{be} =V_{G0} - \frac{kT}{q} \log \frac{I_0}{I_c}$$
+So, how does $V_{be}$ depends on temperature? Assuming that $I_c$ does not depend on temperature:
+$$\frac{\partial V_{be}}{\partial T} = -\frac{k}{q}\log \frac{I_0}{I_c}$$
+Given that $I_0$ is much larger than $I_c$, the $\log$ term is not greatly affected by the BJT current. Normally, the temperature coefficient is around $-2mV$:
+$$\frac{\partial V_{be}}{\partial T} \approx -2mV/ºC$$
+</p>
+<h2 id="h2_ptc">Creating the PTC voltage</h2>
+<p>
+The positive temperature coefficient is produced by the thermal voltage $V_t$. Say we take the difference between two base-emitter junctions of BJTs:
+$$V_{be1} - V_{be2} = V_t \log \frac{I_{c1}}{I_{S1}} - V_t \log \frac{I_{c2}}{I_{S2}}$$
+$$\Delta V_{be} = V_t \log \frac{I_{c1} I_{S2}}{I_{c2} I_{S1}}$$
+Simple enough, $\Delta V_{be}$ gives us a voltage proportional to $V_t$, as well as some scaling of that voltage, if we like. But still... we want the voltage to be referenced to ground, so we have to elaborate a bit more.
+</p>
+<center>
+<img src="../pages/bandgap/PTC.svg" class="svg" width="200"/>
+</center>
+<p>
+Let us find the voltages across the two resistances
+$$V_{R1} = V_B - V_{be2} - (V_B - V_{be1}) =  V_{be1} - V_{be2} = \Delta V_{be}$$
+$$V_{R2} = R_2\cdot 2I_c = R_2 \cdot 2\frac{V_{R1}}{R_1} = 2\frac{R_2}{R_1}\Delta V_{be}$$
+Voilá, $V_{R2}$ is proportional to $\Delta V_{be}$ and referenced to ground!! We can also replace the $V_{be}$'s as:
+$$V_{R2} = 2\frac{R_2}{R_1}V_t \log \frac{I_{c}I_{S2}}{I_c I_{S1}} = 2\frac{R_2}{R_1}V_t \log \frac{I_{S2}}{I_{S1}} = KV_t$$
+Since $k$ and $q$ are constants, $V_t$ is only proportional to temperature, with temperature coefficient:
+$$\frac{\partial V_t}{\partial T} \approx +0.085mV/ºC$$
+The thing is, the terms $I_S$ are proportional to the area of the transistor and very similar for nearby transistors (in terms of layout). Therefore, the following is pretty accurate:
+$$\frac{I_{S2}}{I_{S1}}\approx\frac{A_2}{A_1}$$
+where $A$ represents the area of the transistor. Then:
+$$V_{R2}= 2\frac{R_2}{R_1}\log \frac{A_2}{A_1}V_t$$
+Finally, it is curious that $V_B$ already is the sum of a voltage proportional to $V_t$ (PTC) and a $V_{be}$ (NTC):
+$$V_B = V_{R2} + V_{be1} =2\frac{R_2}{R_1}\log \frac{A_2}{A_1}V_t + V_{be1}$$
+How $V_B$ is biased and how we implement the current sources are questions that will be answered next...
+</p>
+<h2 id="h2_ntcptc">Summing the NTC and PTC voltages</h2>
+<p>
+So our main idea is to produce two voltages, one PTC and another NTC, which cancel each other in terms of temperature variations. The diagram would look something like this:
+</p>
+<center>
+<img src="../pages/bandgap/diagram.svg" width="600" class="svg"/>
+</center>
+<p>
+The sum of the two voltages would be:
+$$V_{be} + KV_t = V_{G0} - \frac{kT}{q} \log \frac{I_0}{I_c} + K\frac{kT}{q} = V_{G0} + \frac{kT}{q} \left( K - \log \frac{I_0}{I_c} \right)$$
+As we have seen when creating the PTC voltage, $K$ will probably come from a ratio of resistances and/or areas of transistors, and with value $2/0.085\approx23.5$. Before moving on, note that after the temperature dependent terms cancel, the reference will stay at the bandgap $V_{G0}$. If you ever see a voltage reference with a value close to 1.2V, it comes from here! The next obvious question is: how do we implement this with real circuits?
+</p>
+<p>
+There are several ways, but the main recipe is the following:
+<ol>
+<li>Generate two currents to bias two different BJTs</li>
+<li>Create a branch involving two BJTs and one resistance (or equivalent resistance)</li>
+<li>Find a path that adds a PTC and a NTC voltages</li>
+<li>Tweak the sizes of the transistors and/or resistances to give the right $K$</li>
+<li>Add a startup circuit, or else the circuit may stabilize at zero current every time</li>
+</ol>
+</p>
+<h2 id="h2_examples">Examples</h2>
+<h3>Widlar bandgap</h3>
+<p>
+<center>
+<img src="../pages/bandgap/widlar.bandgap.svg" width="200" class="svg"/>
+</center>
+The output is:
+$$ V_{out} = I_2 R_2 + V_{be3}$$
+From the bottom branch:
+$$V_{be1} = V_{be2} + I_2R_3$$
+$$I_2 = \frac{V_{be1} - V_{be2}}{R_3}$$
+From the $\Delta V_{be}$ expression:
+$$I_2 = \frac{V_t}{R_3}\log\left(\frac{I_1I_{S1}}{I_2I_{S2}} \right)$$
+Then:
+$$ V_{out} = \frac{R_2}{R_3} V_t\log\left(\frac{I_1I_{S1}}{I_2I_{S2}}\right) + V_{be3}$$
+The circuit is sized such that $I_1=I_2$, resulting in:
+$$ V_{out} = \frac{R_2}{R_3} V_t\log\left(\frac{I_{S1}}{I_{S2}}\right) + V_{be3}$$
+</p>
+<h3>Brokaw bandgap</h3>
+<p>
+<center>
+<img src="../pages/bandgap/brokaw.bandgap.svg" width="400" class="svg"/>
+</center>
+The output is:
+$$ V_{out} = V_{be1} + 2I_c R_1$$
+By virtue of the opamp feedback, the two inputs are at the same voltage, therefore the upper resistances have the same voltage across them. Since they are equal, the same current must flow by them and converge in $R_1$.
+From the middle branch:
+$$V_{be1} = V_{be2} + I_cR_2$$
+$$I_c = \frac{V_{be1} - V_{be2}}{R_2}$$
+From the $\Delta V_{be}$ expression:
+$$I_c = \frac{V_t}{R_2}\log\left(\frac{I_cI_{S1}}{I_cI_{S2}} \right)$$
+Then:
+$$V_{out} = 2\frac{R_1}{R_2} V_t\log\left(\frac{I_{S1}}{I_{S2}}\right) + V_{be1}$$
+</p>
+<h3>With PNP transistors</h3>
+<p>
+<center>
+<img src="../pages/bandgap/pnp.bandgap.svg" width="400" class="svg"/>
+</center>
+The output is:
+$$V_{out} = V_{eb2} + V_{R2} + V_{R} $$
+Since the opamp feedback is forcing both inputs to be equal, we have:
+$$V_{eb1} = V_{R2} + V_{eb2}$$
+$$V_{R2} = V_{eb1} - V_{eb2}$$
+and
+$$V_{R} = R \frac{V_{R2}}{R_2}$$
+and
+$$I_1 = I_2$$
+From the $\Delta V_{be}$ expression, which is exactly the same for $\Delta V_{eb}$:
+$$V_{R2} = V_t\log\left(\frac{I_1I_{S1}}{I_2I_{S2}} \right) = V_t\log\left(\frac{I_{S1}}{I_{S2}} \right)$$
+Then:
+$$V_{out} = V_{eb2} + \left(1+ \frac{R}{R_2}\right) V_t\log\left(\frac{I_{S1}}{I_{S2}}\right) $$
+</p>
+<h2 id="h2_pv">Some thoughts about other dependencies</h2>
+<h3>Process variations</h3>
+<p>
+As mentioned, the voltage reference should be insensitive to process variations as well. This is usually coped with by making the output dependent on a ratio of values (pair of resistances, pair of BJTs, etc.). Taking special care when laying out these devices, their values will be very similar during fabrication and depend very similarly on other parameters, such as temperature. As you can see, the gain $K$ is such a case in all bandgap references. 
+</p>
+<h3>Power supply</h3>
+<p>
+If you need a precision voltage reference, that means you do not have one already, right? So, the power supply to the reference will not be precise and the reference should be insensitive to it. The way to solve this is by differential circuits. In the bandgap examples, if the power supply changed, the currents of both branches would be affected equally. Therefore, the assumption of equal currents would still hold and effects of power supply variations would cancel at the output voltage.
+</p>
+<h3>Temperature</h3>
+<p>
+Still, not every temperature dependent effects can be cancelled. For instance:
+<ul>
+<li>Temperature changes resistance values, resistance changes collector current and collector current changes the sensitivity of $V_{be}$ to temperature slightly</li>
+<li>Temperature changes the offset voltage of the opamp, which in turn changes the voltages across the transistors/resistances and unbalances the collector current of both transistors.</li>
+</ul>
+</p>
+<h2>References</h2>
+<ul>
+<li><a href="../_sanchez/607 Lect 4 Bandgap-2009.pdf">Lecture notes of Prof. Edgar Sanchez-Sinencio</a>, Advanced Analog Circuits, Texas A & M University</li>
+</ul>
+<script type="text/javascript" src="../pages/typeset.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<table>
+<tr>
+<td width="100"><!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=bandgap.reference" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></div>
+</td>
+<td width="100"><!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+</td>
+<td width="100"><!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+</td>
+<td width="100"><!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=bandgap.reference" data-counter="right"></script>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="sidebar" style="position:absolute;width:250px;top:50px;left:940px;"></div>
+<!-- <div id="poll1" style="position:absolute;width:250px;top:140px;left:940px;"></div>
+<div id="poll2" style="position:absolute;width:250px;top:380px;left:940px;"></div>-->
+<div id="menu">
+<a id="mn_contents" class="page" href="../p_contents/">Contents</a> |
+<a id="mn_resources" class="page" href="../p_resources/">Resources</a>
+<!--<a id="mn_plot" class="page" href="?p=plot">Plot a chart</a>--> ||
+<a id="mn_print" class="page" href="../print_p_bandgap_reference/">Print</a>
+</div>
+<div id="socialfixed"><b>Show your love:</b><br/><!-- Facebook -->
+<span id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=bandgap.reference" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></span>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=bandgap.reference" data-counter="right"></script>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/
+	// search box
+	$('#searchbox')
+	.focus( function () {
+		if ( $(this).hasClass('searchempty') )
+			$(this).val('').removeClass('searchempty')
+	})
+	.blur( function () {
+		if ( $(this).val() == '' )
+			$(this).val('Search...').addClass('searchempty');
+	})
+	.on('keydown', function (e) {
+		if (e.which == 13) {
+			window.open('http://www.google.com/search?sitesearch=onmyphd.com&q=' + $(this).val(), '_blank');
+		}
+    });
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>
