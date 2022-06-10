@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<a href="https://plus.google.com/106183157602618292373?rel=author">Google</a>
+	<a href="https://plus.google.com/106183157602618292373" rel="publisher">Find us on Google+</a>
+	<title>Slew Rate (SR) - Definition, Examples (opamp, sine wave, datasheets)</title>
+	<link rel="canonical" href="http://onmyphd.com/p_slew/" />
+	<meta name="google-site-verification" content="qS-ONqo-b5-NzkWSBgPnv5l5gN7ddcorKuN6ZAfnAoI"/>
+	<meta name="description" content="Slew rate is the maximum voltage change per unit time in a node of a circuit, due to limited current sink or source. See its definition and examples for opamps, sine wave and datasheets.">
+	<meta name="keywords" content="slew rate, driving power, capacitive load">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>
+	<!-- Auto ads by google -->
+	<!-- end -->
+	<script>
+	// Google Analytics
+	</script>
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+ var page = 'slew.rate';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.async = true;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<input id="searchbox" class="searchempty" type="text" value="Search..."/>
+</div>
+<div id="top"></div>
+<div id="pages">
+<h1>Slew Rate (SR)</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Voltage-current relation for a capacitor</li>
+<li><a href="../p_mosfet/" id="mosfet.model" class="page">CMOS transistor model</a> (for the Opamp example)</li>
+<li>Operation of an Opamp at transistor level (for the Opamp example)</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What is Slew-Rate (SR)?</a></li>
+<li><a href="#h2_examples">Examples</a></li>
+<ul>
+<li><a href="#h3_sin">Sinusoidal waveform</a></li>
+<li><a href="#h3_opamp">Slew rate in opamp</a></li>
+</ul>
+<li><a href="#h2_datasheet">Datasheets</a></li>
+</ul>
+<h2 id="h2_whatis">What is Slew-Rate (SR)?</h2>
+<p>
+Slew rate is the maximum voltage change per unit time in a node of a circuit, due to limited current sink or source. The SR of a circuit is limited by its slowest node, i.e., the one with the smallest Slew rate. Imagine a node in a circuit where the load is capacitive-dominant, i.e., the load is mostly made of a capacitance $C$ (although there is always some very large parallel resistance $R$).
+</p>
+<center>
+<img src="../pages/slew.rate/rc.load.svg" width="480" class="svg"/>
+</center>
+<p>
+For simplicity let's assume the parallel resistance is infinite, so that all current $I$ entering the load will flow to the capacitor and none to the resistance. Then, the rate of voltage change across the capacitor is defined by the well-known formula:
+$$\frac{dV}{dt}=\frac{I}{C}.$$
+If the current being sourced to this load is limited (and in reality always is), say at $I_{max}$, the maximum voltage change per unit time is:
+$$SR=\max\left(\frac{dV}{dt}\right)=\frac{I_{max}}{C}$$
+This is the Slew-Rate. If the current is being drawn from the capacitor, i.e., the capacitor is discharging, the same rule applies, except the voltage change is negative (negative SR).
+</p>
+<h2 id="h2_examples">Examples</h2>
+<p>
+Now let's look at some examples of how to calculate the Slew rate.
+</p>
+<h3 id="h3_sin">Sinusoidal waveform</h3>
+<p>
+If you want to avoid distortion of an input signal, you must design a circuit so that every node has a Slew-Rate higher than the highest slope of the input signal. Imagine that the highest sinusoidal you will get as input has frequency $f$. The sinusoide will vary with time $t$ like:
+$$v(t)=A\sin\left(2\pi ft\right),$$
+where $A$ is the amplitude of the sinusoid. The slope of the sinusoid is the derivative:
+$$\frac{dv(t)}{dt}=A2\pi f\cos(2\pi ft)$$
+The highest slope is when the cosine is 1, therefore $SR=\max\frac{dv(t)}{dt}&gt;A2\pi f$. If the circuit amplifies the sinusoide by gain $G$, we must scale the SR by $G$ too.
+<center>
+<div style="width:600px;height:300px" id="sr_plot"></div>
+<p class="comment">The slider below controls the slew-rate of a hypothetical node where this sinusoidal signal is being driven. In the above plot you can see the original sine wave $v(t)$ and the slew-rate limited $vsr(t)$ version. As you increase the SR, the distortion is reduced because the SR gets closer to the highest slope of the signal. The highest slope of the signal is $A2\pi f$, with $A=1V$ and $f=2Hz$</p>
+SR = <span id="sr_label"></span>V/s<div id="sr_slider"></div>
+</center>
+</p>
+<h3 id="h3_opamp">Slew rate in opamp</h3>
+<p>
+One common characteristic of an opamp is the Slew-Rate. It tells how fast the opamp can charge a capacitor at its ouput and its a measure of its driving power. That, of course, depends on the value of the capacitive load and its ability to provide current. SR in the circuit perspective has already been described above. Now we will look at the transistor level. If you are interested in this example and you need to review the necessary equations, read <a href="../p_mosfet/" id="mosfet.model" class="page">this topic</a>.
+</p>
+<p>
+Let's look at the two most ordinary stages of the opamp: the differential pair and the output stage. The analysis of Slew-Rate is a large-signal analysis, therefore we will consider large swings of the input signal. In particular, we will assume that the input differential voltage $v_{d}=v_{+}-v_{-}$ is high enough to let all internal nodes hit the rails (voltage supply for driving PMOS and ground for driving NMOS). It is common that the second stage has a compensation capacitor $C_{C}$ for stability purposes. If it does not have, think of $C_{C}$ as <a href="../p_mosfet/" id="mosfet.parasitic" class="page">the parasitic capacitors</a> of the PMOS transistor.
+<center>
+<img src="../pages/slew.rate/opamp.svg" width="450" class="svg"/>
+</center>
+<ul>
+<li>First situation:
+$$v_{d}=V_{DD}-V_{SS}.$$
+<center>
+<img src="../pages/slew.rate/opamp.vdd.svg" width="450" class="svg"/>
+</center>
+In this case, the right side of the differential pair is conducting all the tail current $I_T$, pushing node $v_1$ to $V_{SS}$. Capacitor $C_{C}$ discharges at a rate:
+$$\frac{dv_{1}}{dt}=-\frac{I_{T}}{C_{C}}.$$
+Since $v_{1}$ reduces to $V_{SS}$, $M_p$ is acting as a switch turned on. A PMOS transistor has a square law relation between its source-gate voltage $V_{SG}$ and the current it allows to flow through it. Assume that the transistor dimensions are such that: 
+$$I_{M_{p}}=\frac{1}{2}\mu_{p}C_{ox}\frac{W}{L}\left(V_{DD}-V_{SS}-\left|V_{thp}\right|\right)^{2}$$
+and this current charges the capacitance at $v_{OUT}$. At the same time, the NMOS transistor $M_n$ sinks current $I_{M_{n}}$ from the node. The output node sees two capacitors attached to it, $C_{C}$ and $C$. Therefore, the rate of change of $v_{OUT}$ is:
+$$\frac{dv_{OUT}}{dt}=\frac{I_{M_{p}}-I_{M_{n}}}{C_{C}+C}.$$
+Since $M_{p}$ is working as a switch, it is expected that it provides much more current than $M_{n}$ and the node charges to $V_{DD}$.
+</li>
+<li>Second situation: 
+$$v_{d}=V_{SS}-V_{DD}.$$
+<center>
+<img src="../pages/slew.rate/opamp.vss.svg" width="450" class="svg"/>
+</center>
+In this case, the left side of the differential pair is conducting all the tail current $I_{T}$ and mirroring to the other side through the PMOS current mirror. Capacitor $C_{C}$ charges at a rate:
+$$\frac{dv_{1}}{dt}=\frac{I_{T}}{C_{C}}.$$
+Since $v_1$ rises to $V_{DD}$, the PMOS is disconnected and transistor $M_{n}$ is responsible for pushing $v_{OUT}$ to $V_{SS}$. A NMOS transistor has a square law relation between its gate-source voltage $V_{GS}$ and the current it allows to flow through it. The current flowing through it is:
+$$I_{M_{n}}=\frac{1}{2}\mu_{n}C_{ox}\frac{W}{L}\left(V_{bias}-V_{SS}-V_{thn}\right)^{2}$$
+The rate of change of $v_{OUT}$ is:
+$$\frac{dv_{OUT}}{dt}=-\frac{I_{M_{n}}}{C_{C}+C}.$$
+</li>
+</ul>
+In summary:
+<center>
+<table class="table">
+<tr><th>$v_{d}$</th><th>$\frac{dv_{1}}{dt}$</th><th>$\frac{dv_{OUT}}{dt}$</th></tr>
+<tr><td>$V_{DD}-V_{SS}$</td><td>$-\frac{I_{T}}{C_{C}}$</td><td>$\frac{I_{M_{p}}-I_{M_{n}}}{C_{C}+C}$</td></tr>
+<tr><td>$V_{SS}-V_{DD}$</td><td>$\frac{I_{T}}{C_{C}}$</td><td>$-\frac{I_{M_{n}}}{C_{C}+C}$</td></tr>
+</table>
+</center>
+</p>
+<h2 id="h2_datasheet">Datasheets</h2>
+<p>
+Opamp datasheets usually have the SR parameter at the end of the electrical characteristics. They normally refer the conditions used for the numbers they present, or even the testing circuit, although some not even mention the load capacitance (then we assume it is without load).
+</p>
+<p>
+Here is an example of the LM741 datasheet.
+<center>
+<img src="../pages/slew.rate/datasheet.LM741.png" width="800"/>
+</center>
+Here is an example of the TL3474, where it differentiates between positive (charge) and negative (discharge) slew rate. The test capacitante is stated there.
+<center>
+<img src="../pages/slew.rate/datasheet.TL3474.png" width="800"/>
+</center>
+And another example, where the test circuit is presented:
+<center>
+<img src="../pages/slew.rate/datasheet.sr.png" width="800"/>
+</center>
+</p>
+<script type="text/javascript" src="../pages/slew.rate.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<table>
+<tr>
+<td width="100"><!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=slew.rate" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></div>
+</td>
+<td width="100"><!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+</td>
+<td width="100"><!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+</td>
+<td width="100"><!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=slew.rate" data-counter="right"></script>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="sidebar" style="position:absolute;width:250px;top:50px;left:940px;"></div>
+<!-- <div id="poll1" style="position:absolute;width:250px;top:140px;left:940px;"></div>
+<div id="poll2" style="position:absolute;width:250px;top:380px;left:940px;"></div>-->
+<div id="menu">
+<a id="mn_contents" class="page" href="../p_contents/">Contents</a> |
+<a id="mn_resources" class="page" href="../p_resources/">Resources</a>
+<!--<a id="mn_plot" class="page" href="?p=plot">Plot a chart</a>--> ||
+<a id="mn_print" class="page" href="../print_p_slew_rate/">Print</a>
+</div>
+<div id="socialfixed"><b>Show your love:</b><br/><!-- Facebook -->
+<span id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=slew.rate" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></span>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=slew.rate" data-counter="right"></script>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/
+	// search box
+	$('#searchbox')
+	.focus( function () {
+		if ( $(this).hasClass('searchempty') )
+			$(this).val('').removeClass('searchempty')
+	})
+	.blur( function () {
+		if ( $(this).val() == '' )
+			$(this).val('Search...').addClass('searchempty');
+	})
+	.on('keydown', function (e) {
+		if (e.which == 13) {
+			window.open('http://www.google.com/search?sitesearch=onmyphd.com&q=' + $(this).val(), '_blank');
+		}
+    });
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

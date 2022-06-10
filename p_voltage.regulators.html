@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<a href="https://plus.google.com/106183157602618292373?rel=author">Google</a>
+	<a href="https://plus.google.com/106183157602618292373" rel="publisher">Find us on Google+</a>
+	<title>Linear voltage regulators</title>
+	<link rel="canonical" href="http://onmyphd.com/p_voltage.regulators/" />
+	<meta name="google-site-verification" content="qS-ONqo-b5-NzkWSBgPnv5l5gN7ddcorKuN6ZAfnAoI"/>
+	<meta name="description" content="Linear voltage regulators control the voltage drop between input and output as needed to set the desired output voltage. They can be roughly divided in shunt and series regulators.">
+	<meta name="keywords" content="linear voltage regulators, shunt voltage regulator, series voltage regulator">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>
+	<!-- Auto ads by google -->
+	<!-- end -->
+	<script>
+	// Google Analytics
+	</script>
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+ var page = 'voltage.regulators.linear';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.async = true;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<input id="searchbox" class="searchempty" type="text" value="Search..."/>
+</div>
+<div id="top"></div>
+<div id="pages">
+<h1>Linear Voltage regulators</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basics of electronic circuits</li>
+<li>Zener diodes</li>
+<li><a href="../p_voltage/" class="page">What is a voltage regulator</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_how">How do linear regulators control the voltage drop?</a></li>
+<ul>
+<li><a href="#h3_shunt">Shunt regulator</a></li>
+<li><a href="#h3_series">Series regulator</a></li>
+</ul>
+<li><a href="#h2_specs">Specifications</a></li>
+<li><a href="#h2_protections">Protections</a></li>
+</ul>
+<p>
+As we have seen in the <a href="../p_voltage/" class="page">voltage regulators section</a>, regulators can be roughly divided in linear or switched-mode. Linear regulators control the voltage drop between the input and output as required to produce the desired output. These are very simple and used mainly for low power circuits and low voltage differences between input and output (otherwise a large dissipation of energy would overheat the regulator).
+</p>
+<h2 id="h2_how">How do linear regulators control the voltage drop?</h2>
+<p>
+To understand how linear regulators work, imagine that the output voltage is the level of water in a tank and the output current is a leakage. To maintain the level in the tank, the same flux of water must enter the tank as the one that is leaking. To control the influx, we have two options: either strangle the influx to match the leakage or divert any influx that may be exceeding the leakage to another path.
+</p>
+<p>
+Similarly, linear regulators can work in two ways.
+</p>
+<center>
+<img src="../pages/linear.regulator/linear.regulator.concept.svg" width="300" class="svg"/>
+<p class="comment">Concept of linear regulators</p>
+</center>
+<p>
+The above circuit is the concept of a linear regulator, where $R_L$ is the load resistance. The equation
+$$ V_{out} = V_{in} - R_S (I_L + I_Z) $$
+rules this circuit. The variables the regulator does not control are $V_{in}$ and $I_L$. Its objective is to keep $V_{out}$ fixed. Its knobs to do that are $R_S$ and $I_Z$. Therefore, it can either "strangle the input current" (change $R_S$) or divert any extra current from the input current to ground (change $I_Z$) to keep $V_{out}$ always at the same value. The regulators that have $R_S$ as a variable resistance, which is in <b>series</b> with the load are called <b>series regulators</b>, while the ones that fix $R_S$ but create a <b>shunt</b> through $I_Z$ are called <b>shunt regulators</b>.
+</p>
+Therefore, we can divide the linear voltage regulators in two categories:
+<ul>
+<li><a href="../p_voltage.regulators.linear.zener.diode/" class="page">Shunt regulators</a></li>
+<li><a href="../p_voltage.regulators.linear/" class="page">Series regulators</a></li>
+</ul>
+<h3 id="h3_shunt">Shunt regulator</h3>
+<p>
+The device that is used to divert the extra current of a <b>shunt regulator</b> is the <b>zener diode</b>. Every diode has a maximum reverse voltage above which it breaks down, the properly named reverse breakdown voltage. A zener diode differs from normal diodes in that its breakdown voltage is well-defined during fabrication and it can revert from the breakdown region. In this region, its dynamic resistance is very low, which means that a large change in current has a small effect on its voltage. Therefore, the zener diode has the ability to keep a reasonably steady reverse voltage at its terminals around its breakdown voltage for a wide range of reverse currents. This property makes it a voltage reference on its own. The shunt regulators can be as simple as a resistor and a zener diode in series and the load is applied to the cathode of the zener.<br/>
+</p>
+<center>
+<table style="text-align:center">
+<tr>
+<td><img src="../pages/linear.regulator/linear.regulator_shunt.concept.svg" width="300" class="svg" alt="Concept of linear shunt regulator"/>
+<p class="comment">Concept of linear shunt regulator</p></td>
+<td><img src="../pages/linear.regulator/linear.regulator_shunt.svg" width="300" class="svg"/>
+<p class="comment">Linear shunt regulator</p></td>
+</tr>
+</table>
+</center>
+<p>
+$$I_{out} = I_{in} - I_{z}$$
+The efficiency of the regulator is
+$$\eta = \frac{P_{out}}{P_{in}} = \frac{V_{out} I_{out}}{V_{in} I_{in}} = \frac{V_{out}I_{out}}{V_{in}(I_{out}+I_{z})}$$
+and the power loss is:
+$$P_{in} - P_{out} = V_{in}I_{in} - V_{out}I_{out} = (V_{in} - V_{out}) I_{in} + V_{out} I_{z}$$
+i.e., the power loss is equal to the power lost in the resistance $R_S$ , plus the power consumed by the parallel resistance $R_Z$.
+</p>
+<p>
+There is much more to say about the shunt regulators. To go deeper, read the <a href="../p_voltage.regulators.linear.zener.diode/" class="page">shunt regulators page</a>.
+</p>
+<h3 id="h3_series">Series regulator</h3>
+<p>
+A series regulator controls the voltage drop between input and output nodes by actively controlling the value of the series resistance.
+</p>
+<center>
+<table style="text-align:center">
+<tr>
+<td>
+<img src="../pages/linear.regulator/linear.regulator.series.concept.svg" width="350" class="svg"/>
+<p class="comment">Concept of linear series regulator</p>
+</td>
+<td>
+<img src="../pages/linear.regulator/linear.regulator.series.svg" width="350" class="svg"/>
+<p class="comment">Linear series regulator</p>
+</td>
+</tr>
+</table>
+</center>
+<p>
+To that end, an active device such as a Bipolar Junction Transistor or Field Effect Transistor (MOSFET) is used. The details vary for different implementations, but it boils down to this: the output is compared with a voltage reference and the series resistance is changed in a way that the voltage drop maintains the output voltage close to that voltage reference. Unlike the shunt regulator, all current flows to the load (ignoring any quiescent current of the control circuit):
+$$I_S = I_L$$
+$$I_{out} \approx I_{in}$$
+Hence, the efficiency is only defined by the ratio of voltages:
+$$\eta = \frac{P_{out}}{P_{in}} = \frac{V_{out} I_{out}}{V_{in} I_{in}} \approx \frac{V_{out}}{V_{in}}$$
+and the power is lost only in the series resistance:
+$$P_{in} - P_{out} = (V_{in} - V_{out}) I_{out}$$
+Therefore, series regulators have better efficiency than shunt regulators.
+</p>
+<p>
+There is much more to say about the series regulators. To go deeper, read the <a href="../p_voltage.regulators.linear/"> series regulator page</a>.
+</p>
+<h2 id="h2_specs">Specifications of linear regulators</h2>
+<p>
+You should be aware of a number of specifications related to linear regulators. Just to name a few:
+<ul>
+<li><b><a href="../p_voltage.regulators.linear.ldo/" class="page">Dropout voltage:</a></b> minimum voltage difference between input and output that still maintains operation. This should be around 2V, but some regulators are specially designed to have a <a href="../p_voltage.regulators.linear.ldo/" class="page">low dropout voltage</a>, in the order of hundreds of mV.</li>
+<li><b>Input voltage range:</b> the range of input voltages the regulator can handle properly</li>
+<li><b>Output voltage range:</b> for adjustable output voltage regulators, the range of output voltages the regulator can produce</li>
+<li><b>Maximum output current:</b> this is limited by overheating of the pass or shunt elements</li>
+<li><a href="../p_load/" class="page"><b>Load regulation/Output voltage regulation:</b></a> sensitivity of output voltage to changes in load current</li>
+<li><a href="../p_line/" class="page"><b>Line regulation/Input voltage regulation:</b></a> sensitivity of output voltage to changes in input voltage</li>
+<li><b>Ripple rejection:</b> How much a sine wave gets attenuated from input to output. This is particularly important when the linear regulator should be very precise and is being driven by a noisy source, such as a switched-mode power supply</li>
+<li><b>Thermal regulation/Temperature coefficient of output voltage:</b> sensitivity of output voltage to changes in temperature or power</li>
+<li><b>Quiescent or bias current:</b> the current that the regulator consumes if the output has no load</li>
+<li><a href="../p_voltage.regulators.linear/#h2_frequencyresponse" class="page"><b>Frequency response:</b></a> what makes the regulator stable</li>
+<li><b>Output resistance:</b> the resistance seen by the load. It should be as low as possible for the regulator to be the closest to an ideal voltage source</li>
+</ul>
+</ul>
+</p>
+<h2 id="h2_protections">Protections</h2>
+<p>
+Regulators can be very badly used: excessive currents, excessive temperatures, swapping input and output, etc.. To make them more robust, IC regulators already come with protections. The most notable are:
+<ul>
+<li><b>Current limiting:</b> Limits the output current, to protect for example when the output is short-circuited to ground.</li>
+<li><b>Thermal protection:</b> Turns the regulator off in case of overtemperature, caused by excessive dissipated power and/or lack of heat dissipation</li>
+<li><b>Reverse polarity protection:</b> Stops the regulator from blowing up, just because the input and output terminals are exchanged or a negative voltage is applied to the input.
+</ul> 
+</p>
+<script type="text/javascript" src="../pages/typeset.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<table>
+<tr>
+<td width="100"><!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=voltage.regulators.linear" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></div>
+</td>
+<td width="100"><!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+</td>
+<td width="100"><!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+</td>
+<td width="100"><!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=voltage.regulators.linear" data-counter="right"></script>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="sidebar" style="position:absolute;width:250px;top:50px;left:940px;"></div>
+<!-- <div id="poll1" style="position:absolute;width:250px;top:140px;left:940px;"></div>
+<div id="poll2" style="position:absolute;width:250px;top:380px;left:940px;"></div>-->
+<div id="menu">
+<a id="mn_contents" class="page" href="../p_contents/">Contents</a> |
+<a id="mn_resources" class="page" href="../p_resources/">Resources</a>
+<!--<a id="mn_plot" class="page" href="?p=plot">Plot a chart</a>--> ||
+<a id="mn_print" class="page" href="../print_p_voltage_regulators_linear/">Print</a>
+</div>
+<div id="socialfixed"><b>Show your love:</b><br/><!-- Facebook -->
+<span id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=voltage.regulators.linear" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></span>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=voltage.regulators.linear" data-counter="right"></script>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/
+	// search box
+	$('#searchbox')
+	.focus( function () {
+		if ( $(this).hasClass('searchempty') )
+			$(this).val('').removeClass('searchempty')
+	})
+	.blur( function () {
+		if ( $(this).val() == '' )
+			$(this).val('Search...').addClass('searchempty');
+	})
+	.on('keydown', function (e) {
+		if (e.which == 13) {
+			window.open('http://www.google.com/search?sitesearch=onmyphd.com&q=' + $(this).val(), '_blank');
+		}
+    });
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

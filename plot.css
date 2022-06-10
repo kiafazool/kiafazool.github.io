@@ -1,0 +1,35 @@
+#panel {
+	position:fixed;
+	top:30px;
+	background-color:white;
+	width:10px;
+	height:10px;
+	/*min-height:100%;*/
+	left:50%;
+	margin-left:410px;
+	padding:20px 20px;
+	box-shadow: -2px 2px 2px #444;
+	z-index:400;
+}
+
+#togglepanel {
+	padding:2px 2px 2px 2px;
+	float:right;
+}
+
+.plotoptions {
+	width:280px;
+	height:280px;
+	font-size: 0.7em;
+	float:right;
+}
+
+.plot {
+	width:500px;
+	height:300px;
+}
+
+#equation {
+	font-family: monospace;
+	font-size: 1.5em;
+}

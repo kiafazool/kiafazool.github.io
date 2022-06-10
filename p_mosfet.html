@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<a href="https://plus.google.com/106183157602618292373?rel=author">Google</a>
+	<a href="https://plus.google.com/106183157602618292373" rel="publisher">Find us on Google+</a>
+	<title>MOSFET transistor (physics)</title>
+	<link rel="canonical" href="http://onmyphd.com/p_mosfet/" />
+	<meta name="google-site-verification" content="qS-ONqo-b5-NzkWSBgPnv5l5gN7ddcorKuN6ZAfnAoI"/>
+	<meta name="description" content="The MOSFET transistor is a 4-terminal electronic device that is able to control the flow of current through it. The MOS is derived from its structure while the FET is derived from its principle of operation">
+	<meta name="keywords" content="mosfet, cmos, transistor, semiconductor, doping, dopage, source, drain, gate, substrate, channel, pinch-off, threshold voltage, pn junction">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>
+	<!-- Auto ads by google -->
+	<!-- end -->
+	<script>
+	// Google Analytics
+	</script>
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+ var page = 'mosfet.transistor';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.async = true;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<input id="searchbox" class="searchempty" type="text" value="Search..."/>
+</div>
+<div id="top"></div>
+<div id="pages">
+<h1>The MOSFET Transistor</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Very basic knowledge of chemistry</li>
+<li>Circuit theory</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_mosfet">What is a MOSFET Transistor?</a></li>
+<li><a href="#h2_mos">The MOS part</a></li>
+<ul>
+<li>What is a semiconductor material?</li>
+<li>How to make a semiconductor material conductive?</li>
+</ul>
+<li><a href="#h2_fet">The FET part</a></li>
+<ul>
+<li>What happens in a PN junction?</li>
+<li>What happens in a MOSFET transistor when $V_{GS}&gt;0$?</li>
+<li>What happens in a MOSFET when $V_{DS}&gt;0$?</li>
+<li>What happens in a MOSFET when $V_{DS} &gt; V_{GS} - V_{TH}$?</li>
+</ul>
+</ul>
+<h2 id="h2_mosfet">What is a MOSFET Transistor?</h2>
+<p>
+MOSFET stands for Metal Oxide Semiconductor Field Effect Transistor. The MOS part is related to the structure of the transistor, while the FET part is related to how it works. The MOSFET is a device that has 4 terminals (gate, drain, source and bulk), in which a voltage at the gate controls the current that flows between the drain and source. The voltage in the bulk plays a minor role and is often not shown in the symbol. Since it has a controlling terminal, it can be used in many ways to control signals in electronic circuits.
+</p>
+<center>
+<img src="../pages/mosfet.transistor/symbol.svg" width="200" class="svg"/>
+</center>
+<h2 id="h2_mos">The MOS part</h2>
+<p>
+To talk about the structure of the transistor, we should talk about of what it is made. The transistor has a part of <b>metal</b>, which is conductive and is where the gate terminal is connected, a part of <b>oxide</b> which is an insulator, and a part of <b>semiconductor</b> which can go both ways.
+</p>
+<center>
+<img src="../pages/mosfet.transistor/mos.svg" class="svg" width="200"/>
+</center>
+<p class="comment">In fact, in the old days the gate was connected to a metal layer, but now it is used instead a type of silicon, called polysilicon (in short, poly). The name MOS, however, was kept. More recently, the gates are made of metal again for performance reasons.</p>
+<h3>What is a semiconductor material?</h3>
+<p>
+When looking at the periodic table, you will notice that there is a zone of metals, a zone of non-metals, and a very narrow zone of semi-metals. From this narrow region, silicon (Si) and germanium (Ge) have 4 valence electrons and make good semiconductors.
+</p>
+<center>
+<img src="../pages/mosfet.transistor/periodic.table.png"/>
+</center>
+<p>
+When many atoms with 4 valence electrons are joined in a lattice, they make covalent bonds, by sharing their 4 electrons with 4 neighboring atoms and vice-versa (that way, they can fill the valence band with 8 electrons). Since they are all atoms, the charge in the lattice is zero. At this state, the electrons are tied together to the atoms by the covalent bonds. The semiconductor is non-conductive and it is considered <b>pure</b> or <b>intrinsic</b>.
+</p>
+<center>
+<img src="../pages/mosfet.transistor/silicon.lattice.svg" width="300" class="svg"/>
+</center>
+<h3>How to make a semiconductor material conductive?</h3>
+<p>
+The intrinsic semiconductor material can be doped to create free electrons. When a pentavalent atom (with 5 electrons in the valence band, such as phosphorus) is added to semiconductor, we say that we are doping the silicon into a <b>n-type material</b>, since <b>negatively charged electrons</b> are being created. This happens because the phosphorus atom joins the silicon lattice with covalent bonds, but it has to release its extra electron. The lattice has more protons than electrons, which makes it positively charged. The number of free electrons is proportional to the number of dopant atoms. In the figure of the MOS structure, light green means light dopage (small amount of dopant atoms), while strong green means heavy dopage (large amount of dopant atoms).
+</p>
+<center>
+<img src="../pages/mosfet.transistor/silicon.lattice_dopedn.svg" width="300" class="svg"/>
+</center>
+<p>
+We can also dope the silicon into a <b>p-type material</b> by creating <b>positively charged particles</b>. Are these protons? No, they are actualy the absence of electrons, much like the dark is the absence of light. Let me explain: by adding a trivalent atom (with 3 electrons in the valence band, such as boron), an electron will be missing from a covalent bond between silicon and the dopant atom. Let's call this a <b>hole</b>. Whenever a free electron passes by the hole, it jumps into it and fills the covalent band. However, under this lattice, that electron must have jumped from another covalent bond (since there are no free electrons), which left a hole in that other covalent bond. Hence, it is created the illusion that the hole is moving from covalent bond to covalent bond, and thus it is a <b>positively charged hole</b>. The lattice has more electrons than protons, which makes it negatively charged.
+</p>
+<center>
+<img src="../pages/mosfet.transistor/silicon.lattice_dopedp.svg" width="300" class="svg">
+</center>
+<p>
+Do not forget that for a n-type or p-type impure semiconductor, the global charge is still zero. The free charge, either negative for electrons or positive for holes, is being cancelled by the positive or negative charge in the lattice.
+</p>
+<h2 id="h2_fet">The FET part</h2>
+Now that the structure is understood, we will see what can be done with it.
+<h3>What happens in a PN junction?</h3>
+<p>
+Let's consider the n-type MOSFET, which has its source and drain n-doped. The area between the source and drain is called <b>substrate</b> and is lightly doped with the opposite dopant, p-type. In the boundary between n-type and p-type materials, the electrons from the n-type material quickly spread to the p-type material by diffusion, filling the holes in it. Since electrons are flowing, we consider that a current exists, to which we call <b>diffusion current</b> $I_D$ (remember that, by convention, electrons flow in the direction opposite to the current). The lack of electrons in the n-type silicon makes it positively charged, and the lack of holes (or the filling of holes by the electrons) in the p-type silicon makes it negatively charged, generating a difference of potential between the junction. The region without holes and free electrons is called <b>depletion region</b> because these elements were depleted. The difference of potential in the depletion region when no external voltage is applied is called the <b>builtin voltage</b>.
+</p>
+<p>
+As you know, a difference of potential in a close distance creates an electrical field. The field in the depletion region pushes the electrons back to the n-type region. Since electrons are flowing, we consider a current exists, to which we call <b>drift current</b> $I_S$. The balance of the <b>diffusion and drift currents</b> sets the width of the depletion region.
+In the case of the n-MOSFET, the substrate is lightly doped (small amount of holes) and the source/drain is heavily doped (large amount of electrons). Then, the substrate has to deplete a much bigger region than the source/drain to match the holes and free electrons. The depletion region becomes skewed to the p- side.
+</p>
+<center>
+<img src="../pages/mosfet.transistor/pn.junction.svg" width="500" viewbox="0 0 500 200" class="svg"/>
+<p>
+<div style="position:relative; width:800px">
+<img src="../pages/mosfet.transistor/pn.junction.clean.svg" width="350" class="svg"/>
+<img style="position:absolute;left:355px" id="depletion" src="../pages/mosfet.transistor/depletion.region.png" width="70" height="115"/>
+<span style="position:absolute;left:350px;top:120px">$V_{dep}$=</span>
+<span style="position:absolute;left:260px;top:170px" id="plus">$+$</span>
+<span style="position:absolute;left:530px;top:170px" id="minus">$-$</span>
+<span id="vdep" style="position:absolute;left:400px;top:120px"></span>
+<span style="position:absolute;left:360px;top:155px">$V_{pn}$=</span>  
+<span id="vpn" style="position:absolute;left:410px;top:155px"></span>  
+</div>
+</p>
+<span>$V = $</span><span id="v"></span>
+</center>
+<div id="slider"></div>
+<div class="comment">Use the slider to change the voltage applied to the pn junction. You will see the depletion region change its width. For positive voltages, the junction is reverse biased, for negative voltages it is forward biased.</div>
+<p>
+When a positive voltage is applied between the n and p regions, a very small current in the same direction as $I_S$ flows through the external circuit. This current is made by electrons flowing from the n region to the p region and from holes from the p region to the n region. Hence, this voltage increases the width of the depletion region and the junction voltage increases to counter it. The junction is <b>reverse biased</b>.
+</p>
+<p>
+On the other hand, if the positive voltage is applied between the p and n regions, a current in the same direction as $I_D$ flows through the external circuit. The junction is <b>forward biased</b>. In this case, electrons are being accumulated in the n region and holes in the p region, narrowing the depletion region. When the external voltage is high enough to remove the depletion region, the electric field also disappears. The majority carriers (holes in p-type and electrons in n-type) exchange sides, as in the beginning, but there is always an external current refilling the carriers. The pn junction is no longer stopping current from flowing and it has low resistance.
+</p>
+<p>
+A diode is in fact a pn junction. If it is reverse biased ($V_{pn}$ &lt; 0), it will not conduct current because its depletion region has increased. If it is forward biased ($V_{pn}$ &gt; 0) and the voltage across it is above the builtin voltage, it starts to conduct current with a voltage drop equal to the builtin voltage (~0.7V).
+</p>
+<h3>What happens in a MOSFET transistor when $V_{GS}&gt;0$?</h3>
+<p>
+Between drain and source there are two depletion regions created by the two pn junctions (source-bulk and drain-bulk) and the resistance between them is very high when they are reversed polarized. The transistor is said to be off and it does not conduct electrons.
+When the voltage at the gate is larger than the voltage at the source, an electric field created by this difference of potential will first push the holes of the p- down and then pull electrons from the highly doped n+ of source and drain closer to the gate. The voltage $V_{GS}$ at which the electric field is strong enough to create a <b>channel of electrons</b> between source and drain is called <b>threshold voltage</b> ($V_{TH}$). That is why the FET (Field Effect Transistor) is in the name. At the region where the channel is created, the substrate inverted from p- to n+. For that reason, the channel is also called <b>inversion layer</b>.
+</p>
+<center>
+<img src="../pages/mosfet.transistor/nmos.svg" width="600" class="svg"/>
+</center>
+<p>
+Since we always want the pn junctions of the MOSFET reversed polarized, the bulk voltage is usually connected to the lowest potential in the whole circuit (normally ground) and it is assumed so if it is not shown in the transistor symbol.<br>
+</p>
+<h3>What happens in a MOSFET when $V_{DS}&gt;0$?</h3>
+<p>
+With a channel created underneath the gate, there is a conductive path between drain and source. If $V_{DS}&gt;0$, electrons flow from source to drain, inducing a current from drain to source in the channel proportional to $V_{DS}$. Besides, the more $V_{GS}$ is above the threshold voltage, more electrons are attracted to the channel and more conductive (or less resistive) is the channel. Hence, the current is also proportional to $V_{GS} - V_{TH}$. The term $V_{GS} - V_{TH}$ is also known as <b>effective voltage</b> or <b>overdrive voltage</b>. This region of operation is commonly referred to as <a href="../p_mosfet/#h3_triode" class="page"><b>linear or triode region</b></a>.
+</p>
+<h3 id="pinchoff">What happens in a MOSFET when $V_{DS} &gt; V_{GS} - V_{TH}$?</h3>
+<p>
+The voltage drop at the channel is a continuum between the source and drain. The channel depth depends on the electric field, which in turn depends on the voltage difference between gate and channel. Therefore, the channel depth is not uniform and is deeper at the source ($V_S$) and shallower at the drain ($V_D = V_S + V_{DS}$), because $V_{GS} &gt; V_{GD}$. As $V_{DS}$ increases, the drain voltage gets closer to the gate voltage and the channel at the drain becomes shallower, which increases the overall resistance of the channel.
+</p>
+<center>
+<img src="../pages/mosfet.transistor/pinch.off.svg" width="600" class="svg"/>
+</center>
+<p>
+When $V_{DS}$ is high enough that reduces $V_{GD}$ to $V_{TH}$, that end of the channel has no overdrive voltage and cannot create an inversion layer. It is said that the <b>channel is pinched off</b>.
+$$V_{GD} = V_{TH}$$
+$$V_{GS} - V_{DS} = V_{TH}$$
+$$V_{DS} = V_{GS} - V_{TH}$$
+In other words, the channel is pinched off when $V_{DS} &gt; V_{GS} - V_{TH}$. After that point, the drain-source voltage stops influencing the drain current and it is said that the channel current is saturated and that <a href="../p_mosfet/#h3_saturation" class="page"><b>the transistor is in saturation</b></a>.
+</p>
+<p>
+To understand how this behavior is modeled into equations that can be used on simulators, visit the <a href="../p_mosfet/" class="page">mosfet model page</a>.
+</p>
+<p>
+This topic follows the explanation of the book Microelectronic Circuits from Sedra and Smith. For a deeper explanation, you can get it at Amazon.
+<br/>
+<a href="http://www.amazon.com/gp/product/0195142519/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0195142519&amp;linkCode=as2&amp;tag=httpwwwonmyph-20" target="_blank"><img border="0" src="../images/519_Format__SL110__ID_AsinImage_MarketPlace_US_ServiceVersion_20070822_WS_1_tag_httpwwwonmyph-20_jpg_g03cmt56yr4un36v0fmc8z.jpg"></a><img src="../e/ir_t_httpwwwonmyph-20_l_as2_o_1_a_0195142519.jpg" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"/>
+</p>
+<script type="text/javascript" src="../pages/mosfet.transistor.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<table>
+<tr>
+<td width="100"><!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=mosfet.transistor" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></div>
+</td>
+<td width="100"><!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+</td>
+<td width="100"><!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+</td>
+<td width="100"><!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=mosfet.transistor" data-counter="right"></script>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="sidebar" style="position:absolute;width:250px;top:50px;left:940px;"></div>
+<!-- <div id="poll1" style="position:absolute;width:250px;top:140px;left:940px;"></div>
+<div id="poll2" style="position:absolute;width:250px;top:380px;left:940px;"></div>-->
+<div id="menu">
+<a id="mn_contents" class="page" href="../p_contents/">Contents</a> |
+<a id="mn_resources" class="page" href="../p_resources/">Resources</a>
+<!--<a id="mn_plot" class="page" href="?p=plot">Plot a chart</a>--> ||
+<a id="mn_print" class="page" href="../print_p_mosfet_transistor/">Print</a>
+</div>
+<div id="socialfixed"><b>Show your love:</b><br/><!-- Facebook -->
+<span id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=mosfet.transistor" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></span>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=mosfet.transistor" data-counter="right"></script>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/
+	// search box
+	$('#searchbox')
+	.focus( function () {
+		if ( $(this).hasClass('searchempty') )
+			$(this).val('').removeClass('searchempty')
+	})
+	.blur( function () {
+		if ( $(this).val() == '' )
+			$(this).val('Search...').addClass('searchempty');
+	})
+	.on('keydown', function (e) {
+		if (e.which == 13) {
+			window.open('http://www.google.com/search?sitesearch=onmyphd.com&q=' + $(this).val(), '_blank');
+		}
+    });
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

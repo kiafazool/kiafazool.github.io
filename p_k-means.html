@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<a href="https://plus.google.com/106183157602618292373?rel=author">Google</a>
+	<a href="https://plus.google.com/106183157602618292373" rel="publisher">Find us on Google+</a>
+	<title>K-means clustering - algorithm and examples</title>
+	<link rel="canonical" href="http://onmyphd.com/p_k-means/" />
+	<meta name="google-site-verification" content="qS-ONqo-b5-NzkWSBgPnv5l5gN7ddcorKuN6ZAfnAoI"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="description" content="K-means clustering partitions a dataset into a small number of clusters by minimizing the distance between each data point and the center of the cluster it belongs to. Since the distance is euclidean, the model assumes the form of the cluster is spherical and all clusters have a similar scatter. The clustering problem is NP-hard, so one only hopes to find the best solution with a heuristic algorithm. Interactive examples are given for good and bad clustering problems.">
+	<meta name="keywords" content="clustering method, k-means algorithm">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>
+	<!-- Auto ads by google -->
+	<!-- end -->
+	<script>
+	// Google Analytics
+	</script>
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+ var page = 'k-means.clustering';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.async = true;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<input id="searchbox" class="searchempty" type="text" value="Search..."/>
+</div>
+<div id="top"></div>
+<div id="pages">
+<h1>K-means clustering</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Distance norms</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_what">What is K-means clustering?</a></li>
+<li><a href="#h2_algorithm">K-means algorithm</a></li>
+<ul>
+<li><a href="#h3_clusters">Deciding the number of clusters</a></li>
+<li><a href="#h3_init">Initializing the position of the clusters</a></li>
+<li><a href="#h3_goodexample">Good example</a></li>
+<li><a href="#h3_badexample">Bad examples</a></li>
+</ul>
+</ul>
+<h2 id="h2_what">What is K-means clustering?</h2>
+<p>
+Clustering is the process of partitioning a group of data points into a small number of clusters. For instance, the items in a supermarket are clustered in categories (butter, cheese and milk are grouped in dairy products). Of course this is a qualitative kind of partitioning. A quantitative approach would be to measure certain features of the products, say percentage of milk and others, and products with high percentage of milk would be grouped together. In general, we have $n$ data points $\b{x}_i,i=1...n$ that have to be partitioned in $k$ clusters. The goal is to assign a cluster to each data point. K-means is a clustering method that aims to find the positions $\b{\mu}_i,i=1...k$ of the clusters that minimize the <i>distance</i> from the data points to the cluster. K-means clustering solves
+$$\arg\min_\b{c} \sum_{i=1}^k\sum_{\b{x}\in c_i} d(\b{x},\mu_i) = \arg\min_\b{c} \sum_{i=1}^k\sum_{\b{x}\in c_i} \left\Vert \b{x}-\mu_i \right\Vert_2^2$$
+where $\b{c}_i$ is the set of points that belong to cluster $i$. The K-means clustering uses the square of the Euclidean distance $d(\b{x},\mu_i) = \left\Vert \b{x}-\mu_i \right\Vert_2^2$. This problem is not trivial (in fact it is NP-hard), so the K-means algorithm only hopes to find the global minimum, possibly getting stuck in a different solution.
+<h2 id="h2_algorithm">K-means algorithm</h2> 
+<p>
+The Lloyd's algorithm, mostly known as k-means algorithm, is used to solve the k-means clustering problem and works as follows. First, decide the number of clusters $k$. Then:
+</p>
+<table class="table" cellpadding="5">
+<tr><td>1. Initialize the center of the clusters</td><td>$\b{\mu}_i =$ <a href="#h3_init">some value</a> $, i=1,...,k$</td></tr>
+<tr><td>2. Attribute the closest cluster to each data point</td><td>$$\b{c}_i = \{j: d(\b{x}_j, \mu_i) \le d(\b{x}_j, \mu_l),  l \ne i, j=1,...,n\} $$</td></tr>
+<tr><td>3. Set the position of each cluster to the mean of all data points belonging to that cluster</td><td>$\mu_i = \frac{1}{|c_i|}\sum_{j\in c_i} \b{x}_j,\forall i$</td></tr>
+<tr><td>4. Repeat steps 2-3 until convergence</td><td></td></tr>
+<tr><td>Notation</td><td>$|\b{c}| =$ number of elements in $\b{c}$</td></tr>
+</table>
+<p>
+The algorithm eventually converges to a point, although it is not necessarily the minimum of the sum of squares. That is because the problem is non-convex and the algorithm is just a heuristic, converging to a local minimum. The algorithm stops when the assignments do not change from one iteration to the next.
+</p>
+<h3 id="h3_clusters">Deciding the number of clusters</h3>
+<p>
+The number of clusters should match the data. An incorrect choice of the number of clusters will invalidate the whole process. An empirical way to find the best number of clusters is to try K-means clustering with different number of clusters and measure the resulting sum of squares. 
+</p>
+<p>
+The most curious can look at <a href="http://link.springer.com/article/10.1007%2FBF02294245" target="_blank" rel="external">this paper</a> for a benchmarking of 30 procedures for estimating the number of clusters.
+</p>
+<h3 id="h3_init">Initializing the position of the clusters</h3>
+<p>
+It is really up to you! Here are some common methods:
+<ul>
+<li><b>Forgy:</b> set the positions of the $k$ clusters to $k$ observations chosen randomly from the dataset.</li>
+<li><b>Random partition:</b> assign a cluster randomly to each observation and compute means as in step 3.</li>
+</ul>
+Since the algorithm stops in a local minimum, the initial position of the clusters is very important.
+</p>
+<h3 id="h3_goodexample">Good example</h3>
+<p>
+<center>
+<table>
+<tr><td><div style="width:400px;height:400px" id="plot1"></div></td>
+<td>
+<p>
+Initialization method: <select id="init1_sel"><option value="forgy">Forgy</option><option value="random">Random partition</option></select>
+</p><p>
+number of clusters = <span id="k1"></span><div id="k1_slider" style="width:300px"></div>
+</p>
+<p>
+<a class="reset_btn" value="0" href="#">Reset</a> <a class="iter_btn" value="0" href="#">Iterate</a>
+</p>
+<div id="steps1">
+<div id="1">1. Initialize clusters</div>
+<div id="2">2. Assign data points to closer cluster</div>
+<div id="3">3. Calculate center of each cluster</div>
+</div>
+</td>
+</tr></table>
+<p class="comment">In this scatter plot you have several two-dimensional data points, clustered at 4 distinct positions. You can choose the initialization method and the number of clusters used in the k-means algorithm. The button 'Reset' resets the algorithm and generates a new dataset. The button 'Iterate' runs one step of the algorithm, which becomes bolded in the text below the button. More often than not, you see that the algorithm converges to the best solution. However, if you try enough times, there are some initializations of the clusters that lead to a "bad" local minimum. If you choose the wrong number of clusters, you can see the drastic effects on the result of the algorithm.</p>
+</center>
+</p>
+<h3 id="h3_badexample">Bad examples</h3>
+<p>
+The k-means algorithm works reasonably well when the data fits the cluster model:
+<ul>
+<li><b>The clusters are spherical:</b> the data points in a cluster are centered around that cluster</li>
+<li><b>The spread/variance of the clusters is similar:</b> Each data point belongs to the closest cluster</li>
+</ul>
+If any one these principles does not hold (and assuming the clusters are not too far apart), then the local minima of the k-means algorithm will be counter-intuitive. Here are two examples to demonstrate this:
+</p>
+<center>
+<table>
+<tr><td><div style="width:400px;height:400px" id="plot2"></div></td>
+<td>
+<p>
+Initialization method: <select id="init2_sel"><option value="forgy">Forgy</option><option value="random">Random partition</option></select>
+</p><p>
+number of clusters = <span id="k2"></span><div id="k2_slider" style="width:300px"></div>
+</p>
+<p>
+<a class="reset_btn" value="1" href="#">Reset</a> <a class="iter_btn" value="1" href="#">Iterate</a>
+</p>
+<div id="steps2">
+<div id="1">1. Initialize clusters</div>
+<div id="2">2. Assign data points to closer cluster</div>
+<div id="3">3. Calculate center of each cluster</div>
+</div>
+</td>
+</tr></table>
+<p class="comment">Although the clusters have the same scatter (in fact, the same shape), they are not spherical. As before, you can choose the initialization method and the number of clusters used in the k-means algorithm. The button 'Reset' resets the algorithm and generates a new dataset. The button 'Iterate' runs one step of the algorithm, which becomes bolded in the text below the button. The k-means algorithm never assigns correctly the tips of the shapes because the spherical assumption fails.</p>
+</center>
+<center>
+<table>
+<tr><td><div style="width:400px;height:400px" id="plot3"></div></td>
+<td>
+<p>
+Initialization method: <select id="init3_sel"><option value="forgy">Forgy</option><option value="random">Random partition</option></select>
+</p><p>
+number of clusters = <span id="k3"></span><div id="k3_slider" style="width:300px"></div>
+</p>
+<p>
+<a class="reset_btn" value="2" href="#">Reset</a> <a class="iter_btn" value="2" href="#">Iterate</a>
+</p>
+<div id="steps3">
+<div id="1">1. Initialize clusters</div>
+<div id="2">2. Assign data points to closer cluster</div>
+<div id="3">3. Calculate center of each cluster</div>
+</div>
+</td>
+</tr></table>
+<p class="comment">Although the clusters have spherical shapes, they have different scatters. As before, you can choose the initialization method and the number of clusters used in the k-means algorithm. The button 'Reset' resets the algorithm and generates a new dataset. The button 'Iterate' runs one step of the algorithm, which becomes bolded in the text below the button. The data points that clearly belong to the large cluster but are closer to the small clusters are misclassified.</p>
+</center>
+<p>
+You are probably one of those that likes to learn stuff outside your field of work. Cosmology is a topic that wonders many, including myself. If you take an interest in it too, I suggest you read the classic <a href="http://www.amazon.com/gp/product/0553380168/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0553380168&amp;linkCode=as2&amp;tag=onmyphd-kmeans-20&amp;linkId=AJ52ED4E6JIPUVIG"><i>A Brief History of Time</i> by Stephen Hawking</a>. The Professor gives us an excellent explanation of cosmological physics, making complex concepts simple to understand (I wish I could explain like that :) ). The book is also pretty accessible.
+</p>
+<div style="clear: left;"></div>
+<script type="text/javascript" src="../pages/k-means.clustering.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<table>
+<tr>
+<td width="100"><!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=k-means.clustering" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></div>
+</td>
+<td width="100"><!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+</td>
+<td width="100"><!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+</td>
+<td width="100"><!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=k-means.clustering" data-counter="right"></script>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="sidebar" style="position:absolute;width:250px;top:50px;left:940px;"></div>
+<!-- <div id="poll1" style="position:absolute;width:250px;top:140px;left:940px;"></div>
+<div id="poll2" style="position:absolute;width:250px;top:380px;left:940px;"></div>-->
+<div id="menu">
+<a id="mn_contents" class="page" href="../p_contents/">Contents</a> |
+<a id="mn_resources" class="page" href="../p_resources/">Resources</a>
+<!--<a id="mn_plot" class="page" href="?p=plot">Plot a chart</a>--> ||
+<a id="mn_print" class="page" href="../print_p_k-means_clustering/">Print</a>
+</div>
+<div id="socialfixed"><b>Show your love:</b><br/><!-- Facebook -->
+<span id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=k-means.clustering" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></span>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=k-means.clustering" data-counter="right"></script>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/
+	// search box
+	$('#searchbox')
+	.focus( function () {
+		if ( $(this).hasClass('searchempty') )
+			$(this).val('').removeClass('searchempty')
+	})
+	.blur( function () {
+		if ( $(this).val() == '' )
+			$(this).val('Search...').addClass('searchempty');
+	})
+	.on('keydown', function (e) {
+		if (e.which == 13) {
+			window.open('http://www.google.com/search?sitesearch=onmyphd.com&q=' + $(this).val(), '_blank');
+		}
+    });
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

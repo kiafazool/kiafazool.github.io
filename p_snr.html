@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Signal-Noise Ratio (SNR)</title>
+	<link rel="canonical" href="http://onmyphd.com/p_snr/" />
+	<meta name="description" content="The signal to noise ratio measures how strong is signal related to the noise floor.">
+	<meta name="keywords" content="noise, signal, ratio, SNR, bandwidth, power, PSD, measure, definition">
+	<meta name="author" content="Hugo Goncalves"> 
+	<link href="../main.css" rel="stylesheet" type="text/css">
+	<script src="../ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script type="text/javascript" src="../components/js/jquery/jquery.parsequery.min.js">//parse query string</script>	
+	<script type="text/javascript" src="../components/js/phd.js"></script>
+	<script src="../components/js/jquery/jquery.history.js"></script>
+	<script type="text/javascript">
+	  // Google Adsenses
+	  // Google Custom Search Box
+	  (function() {
+	    var cx = '014153164923287878546:ymbsrdn5ci4';
+	    var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
+	    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+		'http://www.google.com/cse/cse.js?cx=' + cx;
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gcse, s);
+	  })();
+	$ (function () {
+		// Prepare
+		$.phd.configure();	
+	});
+	</script>
+</head>
+<body>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<a href="#" id="searchtoggle">Search &#x25BC;</a><br/><br/>
+<div id="searchbox"><gcse:searchbox-only></gcse:searchbox-only></div>
+</div>
+<div id="top"></div>
+<div id="pages">
+<script type="text/javascript" src="../components/js/math.js"></script> <!-- $.math.nrand() -->
+<h1>Signal-Noise Ratio (SNR)</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basic notions of noise</li>
+<li>Power Spectral Density (PSD)</li>
+</ul>
+<h2>What is Signal-Noise Ratio?</h2>
+<p>
+<p>
+The Signal-Noise Ratio (SNR) is a measure of how strong the signal is compared to the noise.
+</p>
+<p>
+Every signal is contaminated by some amount of noise. This noise is added to the signal and if it is too much, it will make the signal undetectable.
+</p>
+<center>
+<div style="width:600px;height:300px" id="noise_plot"></div>
+<p class="comment">The slider below controls the level of noise added to the sinusoidal signal above. When you increase it too much, the signal becomes undetectable. The reverse is also true: if the signal is too small, it will become submerged in noise. $P_n=$ noise power; $P_s=$ signal power</p>
+<table cellpadding="10">
+<tr><td width="100">$P_n/P_s=$<span id="p_n"></span></td><td><div id="pn_slider" style="width:450px"></div></td></tr>
+</table>
+</center>
+<p>
+Therefore, we want a signal-to-noise ratio as high as possible. <b>The ratio between the signal power and the noise power is the Signal-Noise Ratio</b> and be calculated as:
+$$ SNR = \frac{P_{signal}}{P_{noise}}$$
+SNR is also usually represented in decibels (dB)
+$$ SNR = 10\log\left(\frac{P_{signal}}{P_{noise}}\right) (dB)$$
+or if working with the amplitudes of signal and noise
+$$ SNR = 10\log\left(\left(\frac{A_{signal}}{A_{noise}}\right)^2\right) = 20\log\left(\frac{A_{signal}}{A_{noise}}\right) (dB)$$
+</p>
+<p>
+<h2>Signal and noise spectrums</h2>
+<p>
+Let's assume that the noise is white and the signal is a sinusoidal wave. The power of the signal is its RMS value squared, but the noise, being white, has its power density integrated throughout the bandwidth of the system in which is being processed. The larger the frequency band we integrate, the larger is the noise power. Therefore, it is a good idea to make the bandwidth of the system to match the bandwidth of the signal to remove the noise from the remaining bands.
+</p>
+<center>
+<div style="width:600px;height:300px" id="noise2_plot"></div>
+<p class="comment">The sliders below control the level of noise added to the signal and the bandwidth of a first-order low pass filter. The noise spectrum is shaped by the filter and the integrated noise is reduced as the bandwidth decreases. $P_n=$ noise power; $P_s=$ signal power; BW = bandwidth</p>
+<table cellpadding="10">
+<tr><td width="100">$P_n/P_s=$<span id="p_n2"></span></td><td><div id="pn2_slider" style="width:450px"></div></td></tr>
+<tr><td width="100">BW =<span id="bw"></span></td><td><div id="bw_slider" style="width:450px"></div></td></tr>
+</table>
+</center>
+<h2>How to measure Signal to Noise Ratio?</h2>
+<p>
+To measure the signal to noise ratio, it is necessary to first measure the RMS of the noise alone. That can be measured by a True RMS multimeter or an oscilloscope. In alternative, you can take many samples of the noise and then calculate its RMS. Then, you connect the signal and measure its RMS. It is often the case that the signal has already noise in it, so you get the measure signal + noise. Finally, you just apply the formula of the SNR.
+</p>
+</p>
+<script type="text/javascript" src="../pages/snr.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=snr" data-send="false" data-width="90" data-show-faces="false" data-layout="button-count"></div>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+(function() {
+	var po = document.createElement('script');
+	po.type = 'text/javascript';
+	po.async = true;
+	po.src = '../js/plusone.js';
+	var s = document.getElementsByTagName('script')[0];
+	s.parentNode.insertBefore(po, s);
+})();
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+</div>
+</div>
+<div id="menu">
+<a id="contents" class="page" href="../p_contents/">Contents</a> |
+<a id="resources" class="page" href="../p_resources/">Resources</a> |
+<a id="plot" class="page" href="../p_plot/">Plot a chart</a>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+$ (function () {
+	// on page 
+	var q = {};
+	if (window.location.href.indexOf("=") == -1)
+	{
+		var href = window.location.href.split('?');
+		q.p = href[1];
+	}
+	else
+		q = $.parseQuery();
+	q.p = q.p || "about.me";
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (q.p != 'contents' && q.p != 'about.me')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		//$.phd.ads('#pages');
+	}
+	$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});
+});
+</script>
+</body>
+<!-- Hosting24 Analytics Code -->
+<script type="text/javascript" src="../count.php.js"></script>
+<!-- End Of Analytics Code -->

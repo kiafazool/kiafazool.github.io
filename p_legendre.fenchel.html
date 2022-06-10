@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<a href="https://plus.google.com/106183157602618292373?rel=author">Google</a>
+	<a href="https://plus.google.com/106183157602618292373" rel="publisher">Find us on Google+</a>
+	<title>Legendre and Legendre-Fenchel transforms.</title>
+	<link rel="canonical" href="http://onmyphd.com/p_legendre.fenchel/" />
+	<meta name="google-site-verification" content="qS-ONqo-b5-NzkWSBgPnv5l5gN7ddcorKuN6ZAfnAoI"/>
+	<meta name="description" content="The Legendre transform is a transformation from a convex differentiable function f(x) to a function that depends on the family of tangents s=∇xf(x). The Legendre-Fenchel transform generalizes the Legendre transform for the non-differentiable or non-convex functions, by finding a one-to-one correspondence between the independent variable x and the derivative of f(x).">
+	<meta name="keywords" content="Legendre Fenchel transformation, derivative, slope, dual">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>
+	<!-- Auto ads by google -->
+	<!-- end -->
+	<script>
+	// Google Analytics
+	</script>
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+ var page = 'legendre.fenchel.transform';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.async = true;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<input id="searchbox" class="searchempty" type="text" value="Search..."/>
+</div>
+<div id="top"></div>
+<div id="pages">
+<h1>Legendre and Legendre-Fenchel transforms</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Derivatives of a function</li>
+<li>What are convex and non-convex functions</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_legendre">What is the Legendre Transform?</a></li>
+<li><a href="#h2_legendrefenchel">What is the Legendre-Fenchel transform?</a></li>
+<ul>
+<li><a href="#h3_example">Examples</a></li>
+</ul>
+</ul>
+<h2 id="h2_legendre">What is the Legendre Transform?</h2>
+<p>
+The Legendre transform is a transformation from a convex differentiable function $f(\mathbf{x})$ to a function that depends on the family of tangents $\mathbf{s}=\nabla_\mathbf{x} f(\mathbf{x})$. To see how it works, you must first realize that for a convex and smooth function there is a one-to-one correspondence between $\mathbf{x}$ and $\mathbf{s}(\mathbf{x})$, because $\mathbf{s}(\mathbf{x})$ is a monotonic function of $\mathbf{x}$, i.e., the derivative is always increasing with $\mathbf{x}$. You can see this notion in the plot below.
+</p>
+<center>
+<img src="../pages/legendre.fenchel.transform/derivative.svg" alt="Derivative of a convex function is monotonic" class="svg" width="600"/>
+</center>
+<p>
+In some situations, it is more meaningful or convenient to work with a function of $\mathbf{s}$ than with the original function $f(\mathbf{x})$. That's when the Legendre transform comes in handy. Let's go into the math. At any point $\mathbf{x^\star}$, we have the tangent with slope:
+$$\mathbf{s}=\left.\frac{df(\mathbf{x})}{d\mathbf{x}}\right|_{\mathbf{x}=\mathbf{x}^{\star}}$$
+If we want a function of $\mathbf{s}$, we could first find the inverse of $\mathbf{s}(\mathbf{x})$, say $\mathbf{x}(\mathbf{s})$, and apply it to $f(\mathbf{x})$. We would then get $f(\mathbf{x}(\mathbf{s}))$. Of course there are many ways to get a function of $\mathbf{s}$, not necessarily the one presented right now. Instead, the Legendre transform is the expression:
+$$f^\star(\mathbf{s})=\mathbf{s}^{T}\mathbf{x}(\mathbf{s})-f(\mathbf{x}(\mathbf{s}))$$
+To find out how this expression is derived, let's write the full expression of a tangent (see the picture below):
+$$y=\mathbf{s}^{T}\mathbf{x}+b,$$
+where $b$ represents the value of the tangent when $\mathbf{x=0}$. We know that at $\mathbf{x}^{\star}$ the tangent touches $f(\mathbf{x})$, therefore:
+$$f(\mathbf{x}^{\star})	= \mathbf{s}^{T}\mathbf{x}^{\star}+b$$
+$$-b = \mathbf{s}^{T}\mathbf{x}^{\star}-f(\mathbf{x}^{\star})$$
+Let's call the term $-b$, $f^{\star}(\mathbf{s})$. The reason for it is that this term changes with $\mathbf{x}^{\star}$ and therefore with $\mathbf{s}$. Then, for any point $\mathbf{x}$:
+$$f^{\star}(\mathbf{s})	=	\mathbf{s}^{T}\mathbf{x}-f(\mathbf{x})$$		
+In words, for any point $\mathbf{x}=\mathbf{x}^{\star}$, the transform is the negative of parameter $b$ of the tangent line at that point (the value of the tangent line when $\mathbf{x}=\mathbf{0}$). Graphically, this is depicted in figure below:
+</p>
+<center>
+<img src="../pages/legendre.fenchel.transform/geometric.explanation.svg" alt="Geometric explanation of the Legendre transformation" class="svg" width="400"/>
+</center>
+<p>
+In a geometric sense, there is a triangle shown. In it, the slope of the tangent ($s$) times the horizontal side ($x^\star$) equals the vertical side, which is the sum of $f(x)$ and $f^{\star}(s)$.
+</p>
+<p>
+Although this seems all a bit random, this transform has some nice properties. For one, we can apply it again to the transform to get back the original function:
+$$\begin{eqnarray*}
+f^{\star\star}(\mathbf{x}) & = & \mathbf{x}^{T}\mathbf{s}-f^{\star}(\mathbf{s}) \\
+& = & \mathbf{x}^{T}\mathbf{s}-\left(\mathbf{s}^{T}\mathbf{x}-f(\mathbf{x})\right) \\
+& = & f(\mathbf{x})
+\end{eqnarray*}$$
+In the same way that the slope of $f(\mathbf{x})$ is $\mathbf{s}$, we have that the slope of $f^{\star}(\mathbf{s})$ is $\mathbf{x}$:
+$$\frac{df^{\star}(\mathbf{s})}{d\mathbf{s}}=\frac{d\mathbf{s}^{T}\mathbf{x}-f(\mathbf{x})}{d\mathbf{s}}=\mathbf{x}$$
+Say that we want to find the minimum of $f(\mathbf{x})$ and we have $f^{\star}(\mathbf{s})$. Suffice to say that at the minimum, the slope of the tangent is zero. Therefore:
+$$\begin{eqnarray*}
+f^{\star}(\mathbf{0}) & = &\mathbf{0}^{T}\mathbf{x}_{min}-f(\mathbf{x}_{min}) \\
+f(\mathbf{x}_{min}) & = & -f^{\star}(\mathbf{0})
+\end{eqnarray*}$$
+Pretty cool, uh? For some examples of the Legendre transform in the domains of physics and mechanics, check out <a href="../pdf/0806.1147v2.pdf" target="_blank" rel="external">this educational paper</a>.
+</p>
+<h2 id="h2_legendrefenchel">What is the Legendre-Fenchel transform?</h2>
+<p>
+The Legendre transform is pretty useful on its own, but it is limited to convex and differentiable functions. If any of these properties fail, the transform cannot be used. Consider the case $f(x)=|x|$. The slope at $x=0$ is not defined. All we know is that, at point $x=0$, the subdifferential is between -1 and 1 ($s \in [-1,1]$).
+</p>
+<center>
+<img src="../pages/legendre.fenchel.transform/subdifferential.svg" alt="The subdifferential for the absolute value function" class="svg" width="400"/>
+</center>
+<p>
+Also, non-convex functions have the same derivative for different values of $\mathbf{x}$, which makes it impossible to form a unique correspondence between $\mathbf{x}$ and $\mathbf{s}$.
+</p>
+<center>
+<img src="../pages/legendre.fenchel.transform/b.nonconvex.svg" alt="A nonconvex function has the same slope for different values of x" class="svg" width="400"/>
+</center>
+<p>
+Here comes a nifty trick to generalize the Legendre transform to this type of functions. As you now know, the value $f^{\star}(\mathbf{s})$ comes from finding $b$ of the tangent, which is the smallest $b$ term for a line (hyperplane for several dimensions) with slope $\mathbf{s}$ that crosses the convex funcion $f(\mathbf{x})$. As shown in the picture below, the smallest $b$ that crosses the $f(\mathbf{x})$ is the one from the tangent. Smaller than that and the line will not even touch $f(\mathbf{x})$.
+So, in a more general sense, we are finding all values of $b$ with which lines with slope $\mathbf{s}$ cross $f(\mathbf{x})$ and then find the minimum $b$.
+<center>
+<img src="../pages/legendre.fenchel.transform/tangent.svg" alt="The tangent of a function" class="svg" width="400"/>
+</center>
+This more general rule applies to non-differentiable or non-convex functions. So, when a line with slope $\mathbf{s}$ crosses $f(\mathbf{x})$, we have:
+$$\begin{eqnarray*}
+\mathbf{s}^{T}\mathbf{x}+b & = & f(\mathbf{x}) \\
+b & = & f(\mathbf{x})-\mathbf{s}^{T}\mathbf{x}
+\end{eqnarray*}$$
+and we want the smallest value of $b$ for all $\mathbf{x}$. Then:
+$$\begin{eqnarray*}
+b & = & \underset{\mathbf{x}}{\inf}\left(f(\mathbf{x})-\mathbf{s}^{T}\mathbf{x}\right) \\
+& = & \underset{\mathbf{x}}{\inf}\left(-\left(\mathbf{s}^{T}\mathbf{x}-f(\mathbf{x})\right)\right) \\
+& = & -\underset{\mathbf{x}}{\sup}\left(\mathbf{s}^{T}\mathbf{x}-f(\mathbf{x})\right)
+ \end{eqnarray*}$$
+where we used the property $\inf\left(\mathbf{x}\right)=-\sup\left(-\mathbf{x}\right)$. Since $f^{\star}(\mathbf{s})=-b$, we finally have:
+$$f^{\star}(\mathbf{s})	=-b=	\underset{\mathbf{x}}{\sup}\left(\mathbf{s}^{T}\mathbf{x}-f(\mathbf{x})\right)$$
+<b>This is the Legendre-Fenchel transform, also known as convex conjugate</b>. Note that now <b>the transform is not reversible</b>, i.e., you cannot get the original function by applying the transform to the transform. On the other hand, <b>the transform of the transform is convex, even if the original function is not</b>.
+</p>
+<h3 id="h3_example">Examples</h3>
+<h4 id="h4_linear">Linear function</h4>
+For the linear function:
+$$f(\mathbf{x})=\mathbf{c}^{T}\mathbf{x}-b$$
+the Legendre transform is
+$$\sup \mathbf{s}^{T}\mathbf{x}-f(\mathbf{x})$$	
+$$\sup \left(\mathbf{s}^{T}-\mathbf{c}^{T}\right)\mathbf{x}+b$$
+For $\mathbf{s}^{T}\ne\mathbf{c}^{T}$, the supremum is found for infinite values of $\mathbf{x}$. Therefore, the condition $\mathbf{s}^{T}=\mathbf{c}^{T}$ is necessary to have a bounded conjugate:
+$$f^{\star}(\mathbf{s})=\begin{cases}
+b & \mathbf{s}^{T}=\mathbf{c}^{T}\\
+\infty & \mbox{otherwise}
+\end{cases}$$
+<h4 id="leastsquares">Weighted Least squares</h4>
+<p>
+The weighted least squares problem is defined as:
+$$f(\mathbf{x})=\frac{1}{2}\left\Vert \b{A} (\b{y}-\b{x})\right\Vert _{2}^{2}$$
+The Legendre transform is then:
+$$\sup_{\mathbf{x}}	\mathbf{s}^{T}\mathbf{x}-\frac{1}{2}\left\Vert \b{A}(\mathbf{y}-\mathbf{x})\right\Vert_{2}^{2}$$
+To find the value of $\mathbf{x}$ that maximizes the above expression, we equate to zero its derivative w.r.t. $\mathbf{x}$:
+$$\mathbf{s}+\b{A}^T \b{A}(\mathbf{y}-\mathbf{x})	=	\mathbf{0}$$
+$$\mathbf{x}	=	\left(\b{A}^T \b{A}\right)^{-1}\mathbf{s}+\mathbf{y}$$
+Now we replace $\mathbf{x}$ in the original transform:
+$$\sup_{\mathbf{x}}\mathbf{s}^{T}\mathbf{x}-\frac{1}{2}\left\Vert \b{A}(\mathbf{y}-\mathbf{x})\right\Vert _{2}^{2}$$
+$$\mathbf{s}^{T}\left(\left(\b{A}^T \b{A}\right)^{-1}\mathbf{s}+\mathbf{y}\right)-\frac{1}{2}\left\Vert \b{A}\left(\mathbf{y}-\left(\b{A}^T \b{A}\right)^{-1}\mathbf{s}-\mathbf{y}\right)\right\Vert _{2}^{2}$$
+$$\mathbf{s}^{T}\left(\left(\b{A}^T \b{A}\right)^{-1}\mathbf{s}+\mathbf{y}\right)-\frac{1}{2}\left\Vert \b{A}\left(\b{A}^T \b{A}\right)^{-1}\mathbf{s}\right\Vert _{2}^{2}$$
+$$\b{s}^{T}\left(\b{A}^T \b{A}\right)^{-1}\b{s}+\b{s}^{T}\b{y}-\frac{1}{2}\mathbf{s}^{T}\left(\b{A}^T \b{A}\right)^{-1}\mathbf{s}$$
+$$\frac{1}{2}\b{s}^{T}\left(\b{A}^T \b{A}\right)^{-1}\b{s}+\b{s}^{T}\b{y}$$
+The common case when $\b{A}$ is a diagonal matrix $\b{\Lambda}$, the above expression can be simplified:
+$$\frac{1}{2}\b{s}^{T}\left(\b{\Lambda}\right)^{-2}\b{s}+\b{s}^{T}\b{y}=\frac{1}{2}\left\Vert \b{\Lambda}^{-1}\b{s}\right\Vert+\b{s}^{T}\b{y}$$
+When $\b{A}$ is the identity matrix, it becomes:
+$$\frac{1}{2}\left\Vert \mathbf{s}\right\Vert _{2}^{2}+\mathbf{s}^T\mathbf{y}$$
+</p>
+<h4 id="l1norm">$\ell_1$-norm</h4>
+For the $\ell_1$-norm:
+$$f(\mathbf{x})=a\left\Vert \mathbf{x}\right\Vert _{1}$$
+the Legendre transform is
+$$\sup	\mathbf{s}^{T}\mathbf{x}-a\left\Vert \mathbf{x}\right\Vert _{1}$$
+The transform can be written as the sum of elements of $\mathbf{s}$ and $\mathbf{x}$ as:
+$$\sup\sum\left(s_{i}x_{i}-a\left|x_{i}\right|\right)=\sup\sum\left(\begin{cases}
+\left(s_{i}-a\right)x_{i} & ,x_{i}\ge 0 \\
+\left(s_{i}+a\right)x_{i} & ,x_{i}\lt 0
+\end{cases}\right)$$
+This way is easy to see that if any element $s_{i}&gt;a$, then any vector $\mathbf{x}$ with $x_{i}\rightarrow\infty$ will push the transform to infinity. Likewise, if any element $s_{i}\lt-a$, then any vector $\mathbf{x}$ with $x_{i}\rightarrow-\infty$ will push the transform to $\infty$ too. For any $-a\le s_{i}\le a$, $\left(s_{i}-a\right)\le 0$ and $\left(s_{i}+a\right)\ge 0$. Then, under this condition, the expressions above are always lower than zero because they always multiply terms with opposite signs. That in turn, means that the supremum is found for $x_{i}=0$. In conclusion, the transform is:
+$$f^{\star}(\mathbf{s})=\underset{\mathbf{x}}{\sup}\left(\mathbf{s}^{T}\mathbf{x}-a\left\Vert \mathbf{x}\right\Vert _{1}\right)=\left\Vert \mathbf{s}\right\Vert _{\infty}^{a}=\begin{cases}
+0 & \left|s_{i}\right|\le a,\forall i\\
++\infty & \mbox{otherwise}
+\end{cases}$$
+<h4 id="weightedl1norm">Weighted $\ell_1$-norm</h4>
+For the weighted $\ell_1$-norm case:
+$$f(\mathbf{x})=a\left\Vert \mathbf{W^{-1}}\mathbf{x}\right\Vert _{1}$$
+the Legendre transform is
+$$\sup	\mathbf{s}^{T}\mathbf{x}-a\left\Vert \mathbf{W}^{-1}\mathbf{x}\right\Vert _{1}$$
+$$\sup	\left(\mathbf{s}^{T}\mathbf{W}\right)\mathbf{z}-a\left\Vert \mathbf{z}\right\Vert _{1}$$
+with $\mathbf{z}=\mathbf{W}^{-1}\mathbf{x}$ and assuming matrix $\mathbf{W}$ can be inverted. Following a similar approach to the previous example, the values for $s_{i}$ are limited, but now each is scaled differently:
+$$\sup\sum\left(\mathbf{s}^{T}\mathbf{w}_{i}z_{i}-a\left|z_{i}\right|\right)=\sup\sum\left(\begin{cases}
+\left(\mathbf{s}^{T}\mathbf{w}_{i}-a\right)z_{i} & ,z_{i}\ge 0\\
+\left(\mathbf{s}_{i}^{T}\mathbf{w}_{i}-a\right)z_{i} & ,z_{i} \lt 0
+\end{cases}\right)$$
+where $\mathbf{w}_{i}$ is the $i^{th}$ column of $\mathbf{W}$. For the supremum to be bounded, we must have that each $-a\lt\mathbf{s}^{T}\mathbf{w}_{i}\lt a$. In matrix notation, we get:
+$$f^{\star}(\mathbf{s})=\underset{\mathbf{z}}{\sup}\left(\mathbf{s}^{T}\mathbf{W}\mathbf{z}-a\left\Vert \mathbf{z}\right\Vert _{1}\right)=\left\Vert \mathbf{s}^{T}\mathbf{W}\right\Vert _{\infty}^{a}=\left\Vert \mathbf{W}^{T}\mathbf{s}\right\Vert _{\infty}^{a}=\begin{cases}
+0 & \left|\mathbf{s}^{T}\mathbf{w}_{i}\right|\le a,\forall i\\
++\infty & \mbox{otherwise}
+\end{cases}$$ 
+We would reach the same result if we simply noticed that compared to the previous example, the variable $\mathbf{s}$ is now replaced by $\mathbf{W}^T\mathbf{s}$, so that's what goes inside the $\left\Vert \cdot \right\Vert_\infty^a$.
+</p>
+<h4 id="differencel1norm">Difference $\ell_1$-norm</h4>
+<p>
+For the difference $\ell_1$-norm:
+$$f(\mathbf{x})=a\left\Vert \mathbf{x} - \b{y} \right\Vert _{1}$$
+the Legendre transform is
+$$\sup_\b{x} \mathbf{s}^{T}\mathbf{x}-a\left\Vert \mathbf{x} - \b{y}\right\Vert _{1}$$
+The transform can be written as the sum of elements of $\mathbf{s}$ and $\mathbf{x}$ as:
+$$\sup\sum\left(s_{i}x_{i}-a\left|x_{i} - y_i\right|\right)=\sup\sum\left(\begin{cases}
+\left(s_{i}-a\right)x_{i} +a\cdot y_i & ,x_{i} - y_i \ge 0 \\
+\left(s_{i}+a\right)x_{i} -a\cdot y_i & ,x_{i} - y_i \lt 0
+\end{cases}\right)$$
+This way is easy to see that if any element $s_{i}&gt;a$, then any vector $\mathbf{x}$ with $x_{i}\rightarrow\infty$ will push the transform to infinity. Likewise, if any element $s_{i}\lt-a$, then any vector $\mathbf{x}$ with $x_{i}\rightarrow-\infty$ will push the transform to $\infty$ too. For any $-a\le s_{i}\le a$, $\left(s_{i}-a\right)\le 0$ and $\left(s_{i}+a\right)\ge 0$. Then, under this condition, the expressions $(s_i - a)x_i$  and $(s_i + a)x_i$ are always lower than zero because they always multiply terms with opposite signs. That in turn, means that the supremum is found for $x_{i}=y_i$, which leads to:
+$$\sup_{x_i} (s_i x_i - a|x_i - y_i| ) = \begin{cases}
+(s_i - a)y_i + a \cdot y_i = s_i y_i & x_i - y_i \ge 0\\
+(s_i + a)y_i - a \cdot y_i = s_i y_i & x_i - y_i \lt 0\\
+\end{cases}$$
+In conclusion, the transform is:
+$$f^{\star}(\mathbf{s})=\underset{\mathbf{x}}{\sup}\left(\mathbf{s}^{T}\mathbf{x}-a\left\Vert \mathbf{x} - \b{y} \right\Vert _{1}\right)=\left\Vert \mathbf{s}\right\Vert _{\infty}^{a}=\begin{cases}
+\b{s}^T\b{y} & \left|s_{i}\right|\le a,\forall i\\
++\infty & \mbox{otherwise}
+\end{cases}$$
+When $\b{y = 0}$, the above expression reverts to the $\ell_1$-norm case.
+</p>
+<h3 id="h3_extra">Extra information</h3>
+<ul>
+<li><a href="http://jmanton.wordpress.com/2010/11/21/introduction-to-the-legendre-transform" target="_blank" rel="external">Explanation of Legendre transformation</a> and <a href="http://maze5.net/?page_id=733" target="_blank" rel="external">pictures</a> supporting it.</li>
+<li><a href="http://www.maths.qmul.ac.uk/~ht/archive/lfth2.pdf" target="_blank" rel="external">Legendre-Fenchel transforms in a nutshell</a></li>
+</ul>
+<script type="text/javascript" src="../pages/typeset.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<table>
+<tr>
+<td width="100"><!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=legendre.fenchel.transform" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></div>
+</td>
+<td width="100"><!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+</td>
+<td width="100"><!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+</td>
+<td width="100"><!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=legendre.fenchel.transform" data-counter="right"></script>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="sidebar" style="position:absolute;width:250px;top:50px;left:940px;"></div>
+<!-- <div id="poll1" style="position:absolute;width:250px;top:140px;left:940px;"></div>
+<div id="poll2" style="position:absolute;width:250px;top:380px;left:940px;"></div>-->
+<div id="menu">
+<a id="mn_contents" class="page" href="../p_contents/">Contents</a> |
+<a id="mn_resources" class="page" href="../p_resources/">Resources</a>
+<!--<a id="mn_plot" class="page" href="?p=plot">Plot a chart</a>--> ||
+<a id="mn_print" class="page" href="../print_p_legendre_fenchel_transform/">Print</a>
+</div>
+<div id="socialfixed"><b>Show your love:</b><br/><!-- Facebook -->
+<span id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=legendre.fenchel.transform" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></span>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=legendre.fenchel.transform" data-counter="right"></script>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/
+	// search box
+	$('#searchbox')
+	.focus( function () {
+		if ( $(this).hasClass('searchempty') )
+			$(this).val('').removeClass('searchempty')
+	})
+	.blur( function () {
+		if ( $(this).val() == '' )
+			$(this).val('Search...').addClass('searchempty');
+	})
+	.on('keydown', function (e) {
+		if (e.which == 13) {
+			window.open('http://www.google.com/search?sitesearch=onmyphd.com&q=' + $(this).val(), '_blank');
+		}
+    });
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

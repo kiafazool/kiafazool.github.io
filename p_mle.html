@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title></title>
+	<link rel="canonical" href="http://onmyphd.com/p_mle/" />
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<meta name="author" content="Hugo Goncalves"> 
+	<link href="../main.css" rel="stylesheet" type="text/css">
+	<script src="../ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script type="text/javascript" src="../components/js/jquery/jquery.parsequery.min.js">//parse query string</script>	
+	<script type="text/javascript" src="../components/js/phd.js"></script>
+	<script src="../components/js/jquery/jquery.history.js"></script>
+	<script type="text/javascript">
+	  // Google Adsenses
+	  // Google Custom Search Box
+	  (function() {
+	    var cx = '014153164923287878546:ymbsrdn5ci4';
+	    var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
+	    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+		'http://www.google.com/cse/cse.js?cx=' + cx;
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gcse, s);
+	  })();
+	$ (function () {
+		// Prepare
+		$.phd.configure();	
+	});
+	</script>
+</head>
+<body>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<a href="#" id="searchtoggle">Search &#x25BC;</a><br/><br/>
+<div id="searchbox"><gcse:searchbox-only></gcse:searchbox-only></div>
+</div>
+<div id="top"></div>
+<div id="pages">
+<h1>Maximum Likelihood Estimation (MLE)</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basics of probability</li>
+<li>Bernoulli distribution</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_likelihood">What is the likelihood function?</a></li>
+<li><a href="#h2_loglikelihood">Log-likelihood</a></li>
+<li><a href="#h2_mle">What is Maximum Likelihood Estimation?</a></li>
+<ul>
+<li><a href="#h3_example">An example</a></li>
+<li><a href="#h3_prior">Incorporating prior knowledge to the model</a></li>
+</ul>
+</ul>
+Just as a tease, the MLE algorithm justifies the choice of a parameter in a model by maximizing the probability of getting a particular set of observations from the model. It makes use of the likelihood or log-likehood functions.
+<h2 id="h2_likelihood">What is the likelihood function?</h2>
+<p>
+I will explain what likelihood is with a simple example. Suppose you have a coin that is not necessarily fair, i.e., it is not certain if it flips equally heads and tails. The result of $n$ flips is defined by a vector $\mathbf{x} = [x_1,...,x_n]$, where $x_i$ can be heads ($x_i = 1$) or tails ($x_i = 0$). We would like to find the probability of seeing this result, given that the coin flips heads (the remaining probability is to flip tails) a fraction $\theta$ of the times. The Bernoulli distribution represents each flip of the coin:
+$$f(x_i |  \theta) = \theta^{x_i} (1 - \theta)^{1-x_i}$$
+As you can see, this function depends on our unknown parameter $\theta$ and our result. The join result of several flips is defined by the join distribution:
+$$f(\mathbf{x} | \theta) = f(x_1,...,x_n | \theta). $$
+Since we know that a flip of a coin does not depend on any other flip, we say that <b>each observation $x_i$ is independent and identically distributed (i.i.d.) and the joint distribution simplifies to a product of distributions</b>:
+$$f(x_1,...,x_n | \theta) = \prod_{i=1}^n f(x_i | \theta) = \theta^{x_1} (1 - \theta)^{1-x_1}\cdot...\cdot\theta^{x_n} (1 - \theta)^{1-x_n} = \theta^{\#H} (1 - \theta)^{n-\#H},$$
+where $\#H$ is the number of flips that resulted in heads. <b>The likelihood
+$$L(\theta|\mathbf{x}) = \prod_{i=1}^n f(x_i | \theta)$$
+is just the probability of seeing our observations given a certain value for the unknown parameters</b>. Other common ways to represent the likelihood is
+$$L(\theta|\mathbf{x}) = f(\mathbf{x} | \theta) = f_{\theta}(\mathbf{x}) = p_{\theta}(\mathbf{x}).$$
+But <b>the likelihood function is not a probability</b>. To show you this more clearly, let's calculate the likelihood for some coins:
+$$L(\theta = 0.5 | HH ) = f(HH | \theta = 0.5) = 0.5 \cdot 0.5 = 0.25$$
+$$L(\theta = 0 | HH ) = f(HH | \theta = 0) = 0$$
+$$L(\theta = 1 | HH ) = f(HH | \theta = 1) = 1$$
+By this simple example, you can imagine that the integral of the likelihoods will not sum to 1, which is impossible for a distribution.
+</p>
+<p>
+Just to make it clear:
+<ul>
+<li>Probability allows to predict unknown outcomes based on known parameters.</li>
+<li>Likelihood allows to predict unknown parameters based on known outcomes.</li>
+</ul>
+</p>
+<h2 id="h2_loglikelihood">Log-likelihood</h2>
+<p>
+Because many probability functions have exponentials, it is sometimes easier to use the log of the likelihood. Furthermore, imagine the example above
+$$L(\theta | \mathbf{x} ) = \prod_{i=1}^n f(x_i | \theta).$$
+Then
+$$\log L(\theta | \mathbf{x} ) = \log \prod_{i=1}^n f(x_i | \theta) = \sum_{i=1}^n \log f(x_i | \theta)$$
+because the log of products is equal to the sum of logs. If the probability function is from the exponential family, the log cancels with the exponential and the expression becomes simpler.
+</p>
+<h2 id="h2_mle">What is Maximum Likelihood Estimation (MLE)?</h2>
+<p>
+The name makes it really obvious: <b>Maximum Likelihood Estimation is about finding the value for the parameters that maximizes the likelihood function</b>. If we have to choose some value for the parameter, our best guess is the one that best describes our results. Since log is a monotonically increasing function, <b>maximizing the log-likelihood is the same as maximizing the likelihood</b>.
+</p>
+<p>
+$$\log L(\theta|\mathbf{x}) =  \sum_{i=1}^n \log f(x_i | \theta)$$
+Dividing the log-likelihood by $n$ does not change our maximization problem, so we have
+$$\hat{l(\theta|\mathbf{x})} = \frac{\sum_{i=1}^n \log L(\theta | x_i)}{n} =  E[\log f(x_i | \theta)]$$
+where $E[\cdot]$ is the expected value over all observations. Then, the maximum likelihood problem can be defined as:
+$$\theta_{MLE} = \underset{\theta}{\textrm{argmax }} \hat{l}(\theta|\mathbf{x}) = \underset{\theta}{\textrm{argmax }} \log L(\theta|\mathbf{x}) = \underset{\theta}{\textrm{argmax }} L(\theta|\mathbf{x})$$
+</p>
+<h3 id="h3_example">An example</h3>
+<p>
+Let's apply the Maximum Likelihood Estimation to our previous example:
+$$\log L(\theta|\mathbf{x}) = \log \prod_{i=1}^n f(x_i | \theta) = \log \theta^{\#H} (1 - \theta)^{n-\#H}.$$
+To find the maximum likelihood, we derive it and find its root:
+$$ \frac{\partial \log (\theta^{\#H} (1 - \theta)^{n-\#H}) }{\partial \theta}  = \frac{  \partial \log (\theta^{\#H}) + \partial \log ((1 - \theta)^{n-\#H}) }{\partial \theta} = \frac{  \#H\partial\log \theta +  (n-\#H)\partial \log(1 - \theta) }{\partial \theta} = 0 $$
+Recalling that $\partial log (x) / \partial x = 1/x$
+$$ \#H\frac{1}{\theta} + (n-\#H)\frac{ \partial \log  (1-\theta)}{1-\theta}\frac{1 - \theta}{\partial \theta} = 0$$
+$$ \#H\frac{1}{\theta} + (n-\#H)\frac{1}{1-\theta}(-1) = 0$$
+$n-\#H = \#T$ is equal to the number of tails
+$$ \#H\frac{1}{\theta} - \#T\frac{1}{1-\theta} = 0$$
+$$ \theta = \frac{\#H}{\#T + \#H} = \frac{\#H}{n}$$
+Conclusion: the best value for $\theta$ (according to MLE) is defined by the fraction of flips that resulted in heads. That makes sense!
+</p>
+<h3 id="h3_prior">Incorporating prior knowledge to the model</h3>
+<p>
+As you might have noticed, there is no a priori knowledge about the coin. If we have a tendency to believe that the coin is fair, we cannot put that belief into the model. That is when <a href="http://en.wikipedia.org/wiki/Maximum_a_posteriori_estimation" target="_blank" rel="external">Maximum a Posteriory Probability (MAP)</a> comes in.
+</p>
+<script type="text/javascript" src="../pages/typeset.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=mle" data-send="false" data-width="90" data-show-faces="false" data-layout="button-count"></div>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+(function() {
+	var po = document.createElement('script');
+	po.type = 'text/javascript';
+	po.async = true;
+	po.src = '../js/plusone.js';
+	var s = document.getElementsByTagName('script')[0];
+	s.parentNode.insertBefore(po, s);
+})();
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+</div>
+</div>
+<div id="menu">
+<a id="contents" class="page" href="../p_contents/">Contents</a> |
+<a id="resources" class="page" href="../p_resources/">Resources</a> |
+<a id="plot" class="page" href="../p_plot/">Plot a chart</a>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+$ (function () {
+	// on page 
+	var q = {};
+	if (window.location.href.indexOf("=") == -1)
+	{
+		var href = window.location.href.split('?');
+		q.p = href[1];
+	}
+	else
+		q = $.parseQuery();
+	q.p = q.p || "about.me";
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (q.p != 'contents' && q.p != 'about.me')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		//$.phd.ads('#pages');
+	}
+	$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});
+});
+</script>
+</body>
+<!-- Hosting24 Analytics Code -->
+<script type="text/javascript" src="../count.php.js"></script>
+<!-- End Of Analytics Code -->

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<a href="https://plus.google.com/106183157602618292373?rel=author">Google</a>
+	<a href="https://plus.google.com/106183157602618292373" rel="publisher">Find us on Google+</a>
+	<title>Plot a Chart - Online Graphing Calculator and Function Plotter</title>
+	<link rel="canonical" href="http://onmyphd.com/p_plot/" />
+	<meta name="description" content="A tool that plots a chart representing any function: Just type the function. Then, customize the chart to your will. You can also make any operation you would make in a calculator: just type the expression and hit Enter.">
+	<meta name="keywords" content="plot chart, plot graph, plot function">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>
+	<script>
+	// Google Analytics
+	</script>
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+ var page = 'plot';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.async = true;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<input id="searchbox" class="searchempty" type="text" value="Search..."/>
+</div>
+<div id="top"></div>
+<div id="pages">
+<link href="../plot.css" rel="stylesheet" type="text/css"/>
+<!--<link rel="stylesheet" type="text/css" href="components/js/math.charts.css" >-->
+<span id="results"></span>
+<div id="cmd">
+	<input id="equation" type="text" style="width:700px;" class="code"/>
+	<input type="button" value="Plot" id="btnplot"/>
+	<br/>
+	<span class="comment">Type here commands. e.g.: </span><span class="code">x = sqrt(3^2 + 4^2), sin(2*pi*x), 4*(x-0.5)^2 + 1, ...</span>
+</div>
+<span id="whatsnew">
+<h2>What's new?</h2>
+<h3>Version 0.1</h3>
+Launched. Type a function with one independent variable and you will see a plot of that function in the range [0,1]. You can change the range by hovering the plot.
+<h3>Version 0.2</h3>
+Added some plot properties, such as line color, width and style. Changed to SVG format, which makes download the plot much simpler now. Added attribution operator (e.g. f = 0.1). The "x" in the upper-right corner lets you see and remove the variables in the workspace.
+<h3>Version 0.3</h3>
+Added more plot properties (axis labels, title and legend)
+<h3>Version 0.4</h3>
+Support for multiple series in the same plot. Drag the hand in the left of each series to another plot to merge the dragged series with existing ones.</br>
+Added legend to plots. The legend can be dragged to any position in the plot.
+<h3>Version 0.5</h3>
+Added command history. Use UP and DOWN arrow keys to scroll through the last typed commands.
+<h3>Future updates</h3>
+<ul>
+<li>Add matrix support</li>
+<li>Add matrix operators</li>
+<li>Add more chart types (e.g. bar, pie)</li>
+<li>3D plotting (surface plots)</li>
+<li>Add answer function (e.g. ans(1), ans(2))</li>
+<li>Add object support ('.' operator)</li>
+</ul>
+</span>
+<div id="panel" visible="false">
+<a href="#" id="atogglepanel"><div id="togglepanel"><img /></div></a>
+<table id="tablevars" width="100%" class="table small">
+</table>
+</div>
+<!--<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>-->
+<script type="text/javascript" src="http://www.onmyphd.com/components/js/d3.v3.min.js"></script>
+<script type="text/javascript" src="../components/js/math.js"></script>
+<script type="text/javascript" src="../components/js/math.rpn.js"></script>
+<script type="text/javascript" src="http://www.onmyphd.com/components/js/math.ui.js"></script>
+<script type="text/javascript" src="../components/js/math.charts.js"></script>
+<script type="text/javascript" src="../pages/plot.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<table>
+<tr>
+<td width="100"><!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=plot" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></div>
+</td>
+<td width="100"><!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+</td>
+<td width="100"><!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>
+/*(function () {
+var p=/^http:/.test(window.location)?'http':'https';
+var src = p+'://platform.twitter.com/widgets.js';
+loadJSonce(src, 'twitter-wjs');
+})();*/
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+</td>
+<td width="100"><!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=plot" data-counter="right"></script>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="sidebar" style="position:absolute;width:250px;top:50px;left:940px;"></div>
+<!-- <div id="poll1" style="position:absolute;width:250px;top:140px;left:940px;"></div>
+<div id="poll2" style="position:absolute;width:250px;top:380px;left:940px;"></div>-->
+<div id="menu">
+<a id="mn_contents" class="page" href="../p_contents/">Contents</a> |
+<a id="mn_resources" class="page" href="../p_resources/">Resources</a> |
+<a id="mn_plot" class="page" href="../p_plot/">Plot a chart</a> ||
+<a id="mn_print" class="page" href="/">Print</a>
+</div>
+<div id="socialfixed"><b>Show your love:</b><br/><!-- Facebook -->
+<span id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=plot" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></span>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=plot" data-counter="right"></script>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/
+	// search box
+	$('#searchbox')
+	.focus( function () {
+		if ( $(this).hasClass('searchempty') )
+			$(this).val('').removeClass('searchempty')
+	})
+	.blur( function () {
+		if ( $(this).val() == '' )
+			$(this).val('Search...').addClass('searchempty');
+	})
+	.on('keydown', function (e) {
+		if (e.which == 13) {
+			window.open('http://www.google.com/search?sitesearch=onmyphd.com&q=' + $(this).val(), '_blank');
+		}
+    });
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

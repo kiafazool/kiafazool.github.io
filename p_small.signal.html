@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<a href="https://plus.google.com/106183157602618292373?rel=author">Google</a>
+	<a href="https://plus.google.com/106183157602618292373" rel="publisher">Find us on Google+</a>
+	<title>Small signal model</title>
+	<link rel="canonical" href="http://onmyphd.com/p_small.signal/" />
+	<meta name="google-site-verification" content="qS-ONqo-b5-NzkWSBgPnv5l5gN7ddcorKuN6ZAfnAoI"/>
+	<meta name="description" content="The small signal model of MOSFET transistors is the model derived from the main equations when they are linearized around a certain point of operation. Then it is considered that for small signals, the linear approximation is accurate.">
+	<meta name="keywords" content="mosfet, cmos, transistor, model, small signal, linearization, gm, transconductance, ro, output resistance">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>
+	<!-- Auto ads by google -->
+	<!-- end -->
+	<script>
+	// Google Analytics
+	</script>
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+ var page = 'small.signal.model';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.async = true;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<input id="searchbox" class="searchempty" type="text" value="Search..."/>
+</div>
+<div id="top"></div>
+<div id="pages">
+<h1>CMOS Transistor Small signal model</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li><a href="../p_mosfet/" id="mosfet.model" class="page">The MOSFET model</a></li>
+<li><a href="../p_channel.length/" id="channel.length.modulation" class="page">Channel length modulation</a></li>
+<li><a href="../p_body/" id="body.effect" class="page">The body effect</a></li>
+</ul>
+<h2>Sections</h3>
+<ul>
+<li><a href="#h2_whatis">What is the small-signal model?</a></li>
+<ul>
+<li><a href="#h3_bias">The bias or operating point</a></li>
+<li><a href="#h3_linearizing">Linearizing the curves</a></li>
+<li><a href="#h3_smallsignalmodel">The small-signal equivalent model</a></li>
+<ul>
+<li><a href="#h4_gm">Transconductance $g_m$</a></li>
+<li><a href="#h4_ro">Output resistance $r_o$</a></li>
+<li><a href="#h4_bodyeffect">Include body effect</a></li>
+</ul>
+<li><a href="#h3_summary">Summary</a></li>
+</ul>
+</ul>
+<h2 id="h2_whatis">What is the small-signal model?</h2>
+<p>
+The CMOS transistor is normally used as an amplifier when it is working in the saturation region (it has a low dependence with $V_{DS}$ and a high sensitivity to $V_{GS}$). To characterize the transistor for that purpose, it is used a <b>model that considers that small signals are injected in the terminals of the transistor</b>. That model linearizes the $I_D-V_{GS}$ and $I_D-V_{DS}$ curves around a point of operation, called the <b>bias or operating point</b>.
+</p>
+<h3 id="h3_bias">The bias or operating point</h3>
+<p>
+Consider the following circuit:
+</p>
+<center>
+<img src="../pages/small.signal.model/xtor.bias.svg" width="150" class="svg"/>
+</center>
+<p>
+A gate voltage $v_{GS}$ is applied to the transistor. A current will be generated that will match the current that flows through the resistance. This will in turn generate a voltage drop across the resistance and set the drain-source voltage of the transistor. This will lead to a stable condition for the transistor, for which we call bias or operating point.
+</p>
+<center>
+<div id="idvds" style="width:600px;height:300px;"></div>
+</center>
+<p class="comment">
+The slider represents $R$. As you decrease $R$ (go left), the current sunk by the transistor has a small voltage drop at the resistance and the operating point goes to higher $v_{DS}$. If you increase $R$ (go right), the voltage drop is higher and $v_{DS}$ decreases. If the resistance was too large, it would put the transistor in triode region for this $v_{GS}$.
+</p>
+<center>
+$R=$<span id="R"></span>$k\Omega$
+<div style="width:500px" id="Rslider"></div>
+</center>
+<h3 id="h3_linearizing">Linearizing the curves</h3>
+<p>
+If a small signal $v_{gs}$ is superimposed on a DC signal $V_{GS}$ to produce $v_{GS} = V_{GS} + v_{gs}$ at the gate of the transistor, the DC signal sets the bias and the small-signal will swing around that bias point. The curves around the bias point are not linear and to get a simple model for small signals that can be analyzed, we approximate the curves to lines to get a linear model.
+</p>
+<p>
+The linear model is based on taking the derivatives of the drain current with respect to the voltages at the terminals of the transistor.
+</p>
+<h3 id="h3_smallsignalmodel">The small-signal equivalent model</h3>
+<p>
+First let us find what components should make up this model. First we see that the transistor is a current source controlled by the gate voltage, so a voltage-controlled current source should be there. Next, we see that the current is also influenced by the drain-source voltage from the <a class="page" href="../p_channel.length/" id="channel.length.modulation">channel length modulation</a>, which translates into an output resistance. There is no input resistance because there is no current flowing through the gate.
+</p>
+<center>
+<img src="../pages/small.signal.model/small.signal.model.svg" width="450" class="svg"/>
+</center>
+<p>
+Now it is time to determine the values of the <b>transconductance $g_m$</b> and the <b>output resistance $r_o$</b>.
+<h4 id="h4_gm">Transconductance $g_m$</h4>
+$g_m$ is the change in current caused by a change in $v_{GS}$, so it is:
+$$g_m = \frac{\partial i_D}{\partial v_{GS}}.$$
+The equation for $g_m$ depends whether the transistor is in triode or in saturation.
+<table width="100%" class="table">
+<tr align="center">
+<th>$g_m$ in triode</th>
+<th>$g_m$ in saturation</th>
+</tr>
+<tr>
+<td>
+$$\frac{\partial \frac{1}{2}\mu C_{ox}\frac{W}{L}(2(v_{GS} - V_{TH})v_{DS} - v_{DS}^2 ) }{\partial v_{GS}}$$
+$$\mu C_{ox}\frac{W}{L}v_{DS}$$
+</td>
+<td>
+$$\frac{\partial \frac{1}{2}\mu C_{ox}\frac{W}{L}(v_{GS}-V_{TH})^2}{\partial v_{GS}}$$
+$$\mu C_{ox}\frac{W}{L}(V_{GS}-V_{TH})$$
+</td>
+</tr>
+</table>
+</p>
+<p>
+When in triode, $g_m$ does not really depend on $v_{GS}$ because $i_D$ is linear with $v_{GS}$ in this region. However, $v_{DS}$ affects the transconductance linearly. When in saturation, $g_m$ depends on $V_{GS}$ and it is a parameter that can be tweaked to control the gain of the transistor.
+</p>
+<h4 id="h4_ro">Output resistance $r_o$</h4>
+<p>
+$r_o$ is the inverse of a change in current caused by a change in the drain-source voltage, so it is:
+$$1/r_o = g_o = \frac{\partial i_D}{\partial v_{DS}}.$$
+$g_o$ is the output conductance and is commonly used in exchange of $r_o$ when it simplifies the equations. The equation for $g_o$ depends whether the transistor is in triode or in saturation.
+<table width="100%" class="table">
+<tr align="center">
+<th>$g_o$ in triode</th>
+<th>$g_o$ in saturation</th>
+</tr>
+<tr>
+<td>
+$$\frac{\partial \frac{1}{2}\mu C_{ox}\frac{W}{L}(2(v_{GS} - V_{TH})v_{DS} - v_{DS}^2 ) }{\partial v_{DS}}$$
+$$\frac{1}{2}\mu C_{ox}\frac{W}{L}(2(v_{GS} - V_{TH}) - 2v_{DS} ) $$
+$$\mu C_{ox}\frac{W}{L}(v_{GS} - V_{TH} - v_{DS} ) $$
+</td>
+<td>
+$$\frac{\partial \frac{1}{2}\mu C_{ox}\frac{W}{L}(v_{GS}-V_{TH})^2(1+\lambda v_{DS})}{\partial v_{GS}}$$
+$$\frac{1}{2}\mu C_{ox}\frac{W}{L}(v_{GS}-V_{TH})^2 \lambda $$
+$$\approx I_D \lambda $$
+</td>
+</tr>
+</table>
+The output resistance is influenced both by $v_{GS}$ and $v_{DS}$ when the transistor is in triode. When in saturation, the output resistance is only defined by the bias current.
+</p>
+<p>
+From here we see that the transistor is not a very good amplifier in the triode region, because its gain is changed with the output voltage and we can only play with the transistor's size to control the gain. It is not a very good current source either, because its gain (and therefore its current) and its output resistance changes with the output voltage. <b>The transistor is usually used in the saturation region for amplification</b>. Also, to reduce the distortion caused by the amplification, the bias point should be somewhere in the middle of the saturation region, so that large swings of the drain voltage will not bring the transistor into the triode region or saturate to the power supply voltage.
+</p>
+<h4 id="h4_bodyeffect">Include body effect</h4>
+<p>
+The <a href="../p_body/" id="body.effect" class="page">body effect</a> changes the threshold voltage, which in turn affects the drain current. How can this be incorporated in the model? The body is like another gate (it is sometimes called a back-gate) and it is modelled as just that:
+</p>
+<center>
+<img src="../pages/small.signal.model/small.signal.model.body.svg" width="550" class="svg"/>
+</center>
+<p>
+Since $v_{BS}$ is always negative, the current direction of the $g_{mb}$ current source is actually the opposite of the $g_m$ current source. To calculate the value of $g_{mb}$, we have to realize that there is a cascade of effects ($v_{BS}$ to $V_{TH}$ and $V_{TH}$ to $i_D$):
+$$g_{mb} = \frac{\partial i_D}{\partial V_{TH}}\frac{\partial V_{TH}}{\partial v_{BS}}.$$
+$\frac{\partial V_{TH}}{\partial v_{BS}}$ is expressed as:
+$$\frac{\partial V_{TH}}{\partial v_{BS}} = -\frac{\partial V_{T0_n} + \gamma \left( \sqrt{2\phi_f+V_{SB}} - \sqrt{2\phi_f} \right)}{\partial v_{SB}}$$
+$$\frac{\partial V_{TH}}{\partial v_{BS}} = -\frac{\gamma}{ 2\sqrt{2\phi_f+V_{SB}} }$$
+As in the other cases, the expression depends if the transistor is in triode or in saturation
+</p>
+<table width="100%" class="table">
+<tr align="center">
+<th>$g_{mb}$ in triode</th>
+<th>$g_{mb}$ in saturation</th>
+</tr>
+<tr>
+<td>
+$$g_{mb} = \frac{\partial i_D}{\partial V_{TH}}\frac{\partial V_{TH}}{\partial v_{BS}}$$
+$$g_{mb} = \frac{\partial \frac{1}{2}\mu C_{ox}\frac{W}{L}(2(v_{GS} - V_{TH})v_{DS} - v_{DS}^2 )}{\partial V_{TH}}\frac{\partial V_{TH}}{\partial v_{BS}}$$
+$$\frac{1}{2}\mu C_{ox}\frac{W}{L}(-2v_{DS} ) \frac{\partial V_{TH}}{\partial v_{BS}}$$
+$$-\mu C_{ox}\frac{W}{L}v_{DS} \frac{\partial V_{TH}}{\partial v_{BS}}$$
+$$-g_m \frac{\partial V_{TH}}{\partial v_{BS}}$$
+$$g_m \frac{\gamma}{ 2\sqrt{2\phi_f+V_{SB}} }$$
+</td>
+<td>
+$$\frac{\partial \frac{1}{2}\mu C_{ox}\frac{W}{L}(v_{GS}-V_{TH})^2}{\partial V_{TH}} \frac{\partial V_{TH}}{\partial v_{BS}}$$
+$$\frac{\partial \mu C_{ox}\frac{W}{L}(v_{GS}-V_{TH})^2}{\partial V_{TH}} \frac{\partial V_{TH}}{\partial v_{BS}}$$
+$$-\mu C_{ox}\frac{W}{L}(v_{GS}-V_{TH}) \frac{\partial V_{TH}}{\partial v_{BS}} $$
+$$-g_m \frac{\partial V_{TH}}{\partial v_{BS}} $$
+$$g_m \frac{\gamma}{ 2\sqrt{2\phi_f+V_{SB}} } $$
+</td>
+</tr>
+</table>
+<h3 id="h3_summary">Summary</h3>
+<p>
+The model has three parameters: the gate-source transconductance $g_m$, the bulk-source transconductance $g_{mb}$ and the output resistance $r_o$. The expressions for these parameters are summarized in the following table:
+<table width="100%" class="table">
+<tr align="center">
+<th>Parameter</th>
+<th>Triode</th>
+<th>Saturation</th>
+</tr>
+<tr>
+<td align="center">$g_m$</td>
+<td>$$\mu C_{ox}\frac{W}{L}v_{DS}$$</td>
+<td>$$\mu C_{ox}\frac{W}{L}(V_{GS}-V_{TH})$$</td>
+</tr>
+<tr>
+<td align="center">$r_o$</td>
+<td>$$\frac{1}{\mu C_{ox}\frac{W}{L}(v_{GS} - V_{TH} - v_{DS} )}$$</td>
+<td>$$\frac{1}{I_D \lambda}$$</td>
+</tr>
+<tr>
+<td align="center">$g_{mb}$</td>
+<td colspan="2">$$g_m \frac{\gamma}{ 2\sqrt{2\phi_f+V_{SB}} }$$</td>
+</tr>
+</table>
+</p>
+<script type="text/javascript" src="../pages/small.signal.model.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<table>
+<tr>
+<td width="100"><!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=small.signal.model" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></div>
+</td>
+<td width="100"><!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+</td>
+<td width="100"><!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+</td>
+<td width="100"><!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=small.signal.model" data-counter="right"></script>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="sidebar" style="position:absolute;width:250px;top:50px;left:940px;"></div>
+<!-- <div id="poll1" style="position:absolute;width:250px;top:140px;left:940px;"></div>
+<div id="poll2" style="position:absolute;width:250px;top:380px;left:940px;"></div>-->
+<div id="menu">
+<a id="mn_contents" class="page" href="../p_contents/">Contents</a> |
+<a id="mn_resources" class="page" href="../p_resources/">Resources</a>
+<!--<a id="mn_plot" class="page" href="?p=plot">Plot a chart</a>--> ||
+<a id="mn_print" class="page" href="../print_p_small_signal_model/">Print</a>
+</div>
+<div id="socialfixed"><b>Show your love:</b><br/><!-- Facebook -->
+<span id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=small.signal.model" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></span>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=small.signal.model" data-counter="right"></script>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/
+	// search box
+	$('#searchbox')
+	.focus( function () {
+		if ( $(this).hasClass('searchempty') )
+			$(this).val('').removeClass('searchempty')
+	})
+	.blur( function () {
+		if ( $(this).val() == '' )
+			$(this).val('Search...').addClass('searchempty');
+	})
+	.on('keydown', function (e) {
+		if (e.which == 13) {
+			window.open('http://www.google.com/search?sitesearch=onmyphd.com&q=' + $(this).val(), '_blank');
+		}
+    });
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

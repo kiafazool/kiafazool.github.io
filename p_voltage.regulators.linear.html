@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<a href="https://plus.google.com/106183157602618292373?rel=author">Google</a>
+	<a href="https://plus.google.com/106183157602618292373" rel="publisher">Find us on Google+</a>
+	<title>Series linear voltage regulators</title>
+	<link rel="canonical" href="http://onmyphd.com/p_voltage.regulators.linear/" />
+	<meta name="google-site-verification" content="qS-ONqo-b5-NzkWSBgPnv5l5gN7ddcorKuN6ZAfnAoI"/>
+	<meta name="description" content="Linear voltage regulators control the voltage drop between input and output as needed to set the desired output voltage. The series type does that by varying a dynamic resistance connected between input and output.">
+	<meta name="keywords" content="Series voltage regulator, dynamic resistance, pass transistor">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>
+	<!-- Auto ads by google -->
+	<!-- end -->
+	<script>
+	// Google Analytics
+	</script>
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+ var page = 'voltage.regulators.linear.series';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.async = true;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<input id="searchbox" class="searchempty" type="text" value="Search..."/>
+</div>
+<div id="top"></div>
+<div id="pages">
+<h1>Series Linear Voltage regulators</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basics of electronic circuits</li>
+<li>Bipolar Junction Transistor (BJT) operation</li>
+<li>Zener diodes</li>
+<li>MOSFET operating curves and regions</li>
+<li>Opamp principle of operation</li>
+<li><a href="../p_voltage/" class="page">What is a voltage regulator</a></li>
+<li><a href="../p_voltage.regulators/" class="page">What is a linear regulator</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_basic">Basic series regulator</a></li>
+<li><a href="#h2_feedback">Series regulator with feedback</a></li>
+<li><a href="#h2_frequencyresponse">Frequency response</a></li>
+</ul>
+<p>
+<a href="../p_voltage.regulators/" class="page">Linear regulators</a> control the voltage drop between the input and output as required to produce the desired output. A series linear regulator has a variable resistance between the input and output that is used to control that voltage drop.
+</p>
+<h2 id="h2_basic">Basic series regulator</h2>
+<p>
+A series regulator controls the voltage drop between input and output nodes by actively controlling the value of the series resistance. To that end, an active device such as a Bipolar Junction Transistor or Field Effect Transistor (MOSFET) is used.
+Since there is only one main path for the current, the input current is approximately equal to the output current:
+$$I_{out} \approx I_{in}$$
+Therefore the efficiency is only defined by the voltages:
+$$\eta = \frac{P_{out}}{P_{in}} = \frac{V_{out} I_{out}}{V_{in} I_{in}} \approx \frac{V_{out}}{V_{in}}$$
+and power is lost only in the series resistance:
+$$P_{in} - P_{out} = (V_{in} - V_{out}) I_{out}$$
+Imagine the following circuit:
+</p>
+<center>
+<img src="../pages/linear.regulator/linear.regulator.series.concept.svg" width="350" class="svg"/>
+<p class="comment">Concept of linear series regulator</p>
+</center>
+<p>
+The active device, represented by resistance $R_S$, is variable and is set in a way that the output voltage $V_{out}$ is constant. If there is a change in input voltage or the load current, the resistance will change such that the output voltage remains as before. Now let's look at a real implementation.
+</p>
+<p>
+Unlike a <a href="../p_voltage.regulators.linear.zener.diode/" class="page">shunt regulator</a>, this type of regulators cannot be made with just a resistance and a zener diode. The zener diode may still be there to provide a reference voltage, but the variable resistance must be accomplished by a transistor. A transistor, being an active device, can drive large loads while being controlled by a low power signal. Let's look at the following circuit:
+</p>
+<center>
+<img src="../pages/linear.regulator/linear.regulator.series.svg" width="350" class="svg"/>
+<p class="comment">Linear series regulator</p>
+</center>
+<p>
+The zener diode sets a constant voltage to the base of a power Bipolar Junction Transistor (BJT). The output voltage is the zener voltage minus the $V_{BE}$ drop of the BJT. The zener diode is affected by the base current of the BJT, which is the load current divided by the $\beta$ parameter of the BJT. Given the small value of the base current, the zener voltage is hardly affected with changes in load current. To quantify this, we see that the current flowing through $R_D$ is equal to the zener current $I_Z$ plus the BJT base current $I_B$. Also, the load current is equal to the BJT current, which is $I_E=(\beta +1) I_B$. In sum:
+$$V_{out} = V_{Z} - V_{be}$$
+where $V_{be}$ is the base-emitter voltage of the Bipolar transistor.
+$$I_D = I_Z + I_B$$
+$$R_D = \frac{V_{in} - V_Z}{I_D}$$
+$$I_L = I_E = (\beta +1 ) I_B$$
+Putting all pieces together, the $R_D$ resistor should be sized such that:
+$$R_D = \frac{V_{in} - V_Z}{I_Z+\frac{I_L}{\beta+1}}$$
+Clearly, the designed value for $R_D$ is not very dependent on the load current. However, a change in input voltage will cause a change of current flowing through $R_D$, and that in turn affects all other values, including the output voltage. To avoid that, negative feedback must be employed to keep the output voltage stable under all sources of perturbations, including variations in input voltage and load current.
+</p>
+<h2 id="h2_feedback">Series regulator with feedback</h2>
+<p>
+This more elaborate example of a series regulator adds a feedback loop to monitor the output voltage and dinamically changes the value of $R_S$ in order to keep the output voltage on track. The component of excelence to implement this feedback loop is the opamp.
+</p>
+<center>
+<img src="../pages/linear.regulator/linear.regulator.series.feedback2.svg" width="400" class="svg"/>
+<p class="comment">Linear series regulator with feedback</p>
+</center>
+<p>
+The zener diode provides the reference voltage to the positive input of the opamp. Note that any other kind of voltage reference, such as a bandgap voltage reference would also work (it is actually better). A voltage divider composed by $R_1$ and $R_2$ provides a measure of the output voltage suitable for the opamp, i.e., if we want the output voltage to be $k$ times higher than the voltage reference, than the voltage divider should divide the output voltage by $k$ so that both inputs of the opamp can be equal for the desired output voltage. Then, the op amp supplies a voltage to the gate of the MOSFET transistor such that its negative input (the output voltage) follows its positive input (the reference), due to the beautiful effect of negative feedback. Any perturbation of the input current or the load current (or even others) will affect the output voltage, but the feedback loop will quickly adjust the driving of the BJT base to stabilize the output voltage at the desired reference. 
+</p>
+<center>
+<table>
+<tr>
+<td><div id="idvds" style="width:400px;height:300px"></div></td>
+<td><div id="voutvin" style="width:400px;height:300px"></div></td>
+</tr>
+</table>
+<span id="state"></span><p>
+$V_{in}$ = <span id="vds"></span><p>
+<div id="vds-slider" style="width:700px;"></div><p>
+$I_{DS}$ = <span id="id"></span><p>
+<div id="id-slider" style="width:700px;"></div><p>
+<input type="checkbox" checked="checked" id="limitvgs"/>$V_{GS}$ is never larger than $V_{in}$.
+</center>
+<p class="comment">Take some time to experiment with this example and have a feeling for how a linear regulator with a MOSFET pass transistor works. Say we want to have a 5V output. The first slider controls the input voltage and the second slider controls the current that the load is requesting. The negative feedback of the regulator applies a gate voltage such that the MOSFET transistor has the necessary voltage drop $V_{in} - V_{out}$ between its drain and source, and supplies the necessary current. The plot shows the $I_D-V_{DS}$ curve of the transistor, as well as the operating point. There are three possible states for the regulator: a) Normal operation: the regulator can work as a current source, fixing the voltage and current for the load, b) Linear region: the regulator needs to enter the linear region to deliver the necessary current, working as a resistor, c) Dropout: the regulator cannot keep up and needs to lower the output voltage to still be operable. You can also choose if $V_{GS}$ is limited or not by the input voltage (which normally is), to see the difference that it makes.</p>
+<p>
+Linear regulators datasheets provide information about the sensitivity of the output voltage to the output current (<a href="../p_load/" class="page">load regulation</a>), the input voltage (<a href="../p_line/" class="page">line regulation</a>) and temperature (thermal regulation).
+</p>
+<h2 id="h2_frequencyresponse">Frequency response</h2>
+<p>
+Like any circuit with negative feedback, a linear regulator with feedback can be unstable. In order to understand this, you should have some background about the concepts of feedback and gain or phase margins. Just as a review, any system with feedback can be conceptualized as a loop of an open-loop gain $A(s)$ (when there is no feedback) and a feedback gain $G$. The loop gain is the product of both. In this type of analysis we have gains as functions of frequency, since this is a frequency analysis. Assuming both blocks have positive gain, the blocks connected as in the next figure form a negative feedback loop.
+</p>
+<center>
+<img src="../pages/linear.regulator/feedback.closed.loop.svg" class="svg" alt="Closed-loop diagram" width="350"/>
+</center>
+<p>
+The closed-loop gain is
+$$\frac{Y(s)}{X(s)} = \frac{A(s)}{1+A(s)G}$$
+For frequencies where $A(s)G \gg 1$, we have
+$$\frac{Y(s)}{X(s)} \approx \frac{1}{G}$$
+which produces a steady gain mosty dependent on the feedback gain. As frequency increases, $A(s)$ drops, the term $A(s)G$ gets close to zero and the closed-loop gain approaches the open-loop gain. However, if the term $1+ A(s)G$ gets close to zero, it can dangerously set the closed-loop gain to very high values. This happens for $A(s)G = -1$, which means that the loop gain inverted its phase (it passed from positive to negative gain). Therefore, it is important to ensure that the loop gain is below 1 when the phase reaches 180º. In practice, we want the gain to be substantially lower than 1, so that the closed-loop gain does not peak due to a demoninator close to zero. To evaluate how far the regulator is from instability, we define two measures:
+<ul>
+<li>Gain margin: The gain magnitude when the phase reaches 180º</li>
+<li>Phase margin: The phase when the gain reaches 1 (0 dB)</li>
+</ul>
+It matters to say that each pole in any transfer function reduces the gain and shifts the phase by -90º, while each zero increases the gain and shifts the phase by 90º (<a href="../p_bode/" class="page">more on this in here</a>). So, two points to take from this:
+<ul>
+<li>Two poles are sufficient to invert the phase of the regulator</li>
+<li>A zero can be used to compensate the phase shift of a pole</li>
+</ul>
+</p>
+<p>
+Now we are ready to do a stability analysis of the regulator. First of, where are the feedfoward and feedback paths? The loop starts and ends in the output voltage. For a frequency independent feedback path, we have the resistive voltage divider $R_1$ and $R_2$. Then the error is the difference between $V_{ref}$ and $V_s$. Finally, the feedforward is everything else. Now let's find its poles, zeros and gains. The gain of the feedback path is:
+$$A_{fb} = \frac{R_2}{R_2+R_1}$$
+and of the feedforward path is:
+$$A_{ff} = A_o g_m R_o$$
+where $A_o$ is the gain of the op amp, $g_m$ is the transconductance of the pass transistor and $R_o$ is the resistance seen from the pass transistor. The poles and zeros of the feedback loop $A(s)G$ are the same as of the feedforward path $A(s)$ (open-loop), because the feedback path $G$ is only resistive. For every closed branch that we can form a resistance/capacitor pair, there is a pole. Therefore, we can immediately identify 3 poles: two poles at the regulator output and one pole at the opamp output. The first two are coupled, so we need a more thorough inspection of the circuit. The small-signal of the voltage regulator, including capacitors is:
+</p>
+<center>
+<img src="../pages/linear.regulator/linear.regulator.series.feedback.small.signal.model3.svg" class="svg" alt="Small-signal model of the series linear regulator with feedback for feedback analysis" width="500"/>
+</center>
+<p class="comment">Did this model came from nowhere to you? Maybe you should look at the <a href="../p_small.signal/" class="page">MOSFET small-signal model</a> for a review.</p>
+<p>
+$C_L$ is the capaticance placed at the ouput of the regulator, with its equivalent series resistance ($R_{ESR}$), $C_b$ is the bypass capacitor placed closed to the components powered by the regulator, $C_g$ is the gate capacitance of the pass transistor and $r_{oa}$ is the output resistance of the opamp.
+</p>
+<p>
+We now break the feedback to take a look at the loop. Note that the input resistance of the feedback path is added as output of the feedforward path to account for its contribution as load.
+</p>
+<center>
+<img src="../pages/linear.regulator/linear.regulator.series.feedback.small.signal.model4.svg" class="svg" alt="Small-signal model of the series linear regulator with broken feedback for feedback analysis" width="650"/>
+</center>
+<p>
+Now things look more simple. An isolated pole is present in the feedback path, with value:
+$$p_3 = -\frac{1}{r_{oa}C_g}$$
+The output impedance of the feedforward path is:
+$$Z_o = (R_1+R_2)||r_{ds}||R_L||\left(R_{ESR} + \frac{1}{sC_L}\right)||\frac{1}{sC_b}$$
+Let's lump $(R_1+R_2)||r_{ds}||R_L$ into a single resistance $R_o$ and work on the above expression:
+$$Z_o = R_o\frac{1+sR_{ESR}C_L}{sR_oR_{ESR}C_LC_b+s(R_oC_b + (R_o+R_{ESR})C_L) + 1}$$
+Since typically $C_L \gg C_b$, we neglect the term $R_oC_b$:
+$$Z_o = R_o\frac{1+sR_{ESR}C_L}{(1 + s(R_o + R_{ESR})C_L)(1+ s(R_o||R_{ESR})C_b)}$$
+It becomes pretty clear that the output node provides with two poles and one zero:
+$$z_1 = -\frac{1}{R_{ESR}C_L}$$
+$$p_1 = -\frac{1}{(R_o + R_{ESR})C_L}$$
+$$p_2 = -\frac{1}{(R_o||R_{ESR})C_b}$$
+It is common for $p_1 \lt p_3 \lt p_2$ to be true. $p_1$ will always be at lower frequencies than $z_1$, but the position of $z_1$ is not certain. If $z_1$ is bigger and far from $p_3$, the regulator may reach the 180º phase before the zero as any chance of compensating. This will cause instability. If $p_3$ and $z_1$ are very close to each other, the effects of the pole and zero cancel and the system behaves like a two-pole system, which can also be unstable. Therefore, there is a range of $z_1$ for which the regulator is stable. The balance between $p_3$ and $z_1$ is controlled by $R_{ESR}$.
+</p>
+<center>
+<table style="text-align:center">
+<tr>
+<td><div id="frequencyresponsemag" style="width:400px;height:300px"></div></td>
+<td><div id="frequencyresponsephase" style="width:400px;height:300px"></div></td>
+</tr>
+</table>
+Phase margin: <span id="phasemargin"></span> º
+<p>
+<table cellpadding="5">
+<tr>
+<td>$R_{ESR}$ = <span id="resr"></span> $\Omega$</td>
+<td><div id="resr-slider" style="width:600px;"></div></td>
+</tr>
+<tr>
+<td>$C_{L}$ = <span id="cl"></span> $\mu F$</td>
+<td><div id="cl-slider" style="width:600px;"></div></td>
+</tr>
+<tr>
+<td>$R_{o}$ = <span id="ro"></span> $\Omega$</td>
+<td><div id="ro-slider" style="width:600px;"></div></td>
+</tr>
+<tr>
+<td>$C_{b}$ = <span id="cb"></span> $nF$</td>
+<td><div id="cb-slider" style="width:600px;"></div></td>
+</tr>
+</table>
+</center>
+<p class="comment">In this example you can see the loop frequency response of the regulator depending on several parameters. Play around and understand what it takes to make the regulation stable. Remember: we must have a phase well above -180º when the gain reaches 0 dB, or a gain smaller than 0dB when the phase reaches -180º. In pratice, we want a phase margin above 65º to avoid any peaking. Lets consider a loop gain of 1000 (60dB)</p>
+<p>
+Some regulators do not have this problem, probably because they are designed so that pole $p_3$ is far from the zero.
+</p>
+<script type="text/javascript" src="../pages/voltage.regulators.linear.series.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<table>
+<tr>
+<td width="100"><!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=voltage.regulators.linear.series" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></div>
+</td>
+<td width="100"><!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+</td>
+<td width="100"><!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+</td>
+<td width="100"><!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=voltage.regulators.linear.series" data-counter="right"></script>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="sidebar" style="position:absolute;width:250px;top:50px;left:940px;"></div>
+<!-- <div id="poll1" style="position:absolute;width:250px;top:140px;left:940px;"></div>
+<div id="poll2" style="position:absolute;width:250px;top:380px;left:940px;"></div>-->
+<div id="menu">
+<a id="mn_contents" class="page" href="../p_contents/">Contents</a> |
+<a id="mn_resources" class="page" href="../p_resources/">Resources</a>
+<!--<a id="mn_plot" class="page" href="?p=plot">Plot a chart</a>--> ||
+<a id="mn_print" class="page" href="../print_p_voltage_regulators_linear_series/">Print</a>
+</div>
+<div id="socialfixed"><b>Show your love:</b><br/><!-- Facebook -->
+<span id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=voltage.regulators.linear.series" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></span>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=voltage.regulators.linear.series" data-counter="right"></script>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/
+	// search box
+	$('#searchbox')
+	.focus( function () {
+		if ( $(this).hasClass('searchempty') )
+			$(this).val('').removeClass('searchempty')
+	})
+	.blur( function () {
+		if ( $(this).val() == '' )
+			$(this).val('Search...').addClass('searchempty');
+	})
+	.on('keydown', function (e) {
+		if (e.which == 13) {
+			window.open('http://www.google.com/search?sitesearch=onmyphd.com&q=' + $(this).val(), '_blank');
+		}
+    });
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

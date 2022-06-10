@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<a href="https://plus.google.com/106183157602618292373?rel=author">Google</a>
+	<a href="https://plus.google.com/106183157602618292373" rel="publisher">Find us on Google+</a>
+	<title>Quantization Noise and Signal-Noise Ratio (SNR)</title>
+	<link rel="canonical" href="http://onmyphd.com/p_quantization.noise.snr_ckattempt_1/" />
+	<meta name="google-site-verification" content="qS-ONqo-b5-NzkWSBgPnv5l5gN7ddcorKuN6ZAfnAoI"/>
+	<meta name="description" content="Quantization noise is related to the error generated when a continuous signal is sampled in amplitude into discrete steps. That quantization noise can be used to calculate the Signal-Noise Ratio (SNR) for digital representations.">
+	<meta name="keywords" content="analog, digital, representation, adc, quantization, error, noise, Root-Mean Square, RMS">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>
+	<!-- Auto ads by google -->
+	<!-- end -->
+	<script>
+	// Google Analytics
+	</script>
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+ var page = 'quantization.noise.snr';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="logo"><a id="about.me" class="page" href="/" style="color:white">OnMyPhD</a></div>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.async = true;
+  js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div id="fb" class="fb-like" data-href="http://www.facebook.com/onmyphd" data-send="false" data-width="60" data-show-faces="false" data-colorscheme="dark" width="60" data-layout="button_count"></div>
+<div id="search">
+<input id="searchbox" class="searchempty" type="text" value="Search..."/>
+</div>
+<div id="top"></div>
+<div id="pages">
+<h1>Quantization Noise and Signal-Noise Ratio (SNR)</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<!-- Right of TOC -->
+<div style="float:right;padding:5px">
+</div>
+<ul>
+<li>Root-Mean Square (RMS)</li>
+<li>Nyquist Theorem</li>
+</ul>
+<h2>What is Quantization Noise?</h2>
+<p>
+When an <a href="../p_analog.digital/" class="page">Analog-Digital Converter (ADC)</a> converts a continuous signal into a discrete digital representation, there is a range of input values that produces the same output. That range is called quantum ($Q$) and is equivalent to the Least Significant Bit (LSB). The difference between input and output is called the quantization error. Therefore, the quantization error can be between $\pm Q/2$.
+</p>
+<center>
+<img src="../pages/quantization.noise.snr/coding.scheme.ideal.svg" width="400" class="svg"/>
+</center>
+<p>
+Any value of the error is equally likely, so it has a uniform distribution ranging from $-Q/2$ to $+Q/2$. Then, this error can be considered a quantization noise with RMS:
+$$ v_{qn} = \sqrt{\frac{1}{Q}\int_{-Q/2}^{+Q/2}x^2dx}=\sqrt{\frac{1}{Q}\left[\frac{x^3}{3}\right]_{-Q/2}^{+Q/2}} = \sqrt{\frac{Q^2}{2^3 3} + \frac{Q^2}{2^3 3}} = \frac{Q}{\sqrt{12}}$$
+</p>
+<h2>What is the frequency spectrum of the quantization noise?</h2>
+<p>
+We know the quantization noise power is $v_{qn}^2$, but where is it concentrated or spread in the frequency domain? The quantization error creates harmonics in the signal that extend well above the Nyquist frequency. Due to the sampling step of an ADC, these harmonics <a href="../p_aliasing/#h2_frequencyfolding" class="page">get folded to the Nyquist band</a>, pushing the total noise power into the Nyquist band and with an approximately white spectrum (equally spread across all frequencies in the band). 
+</p>
+<p>
+</p>
+<h2>How does the Signal-Noise Ratio (SNR) relates to the number of bits in the digital representation?</h2>
+<p>
+Assuming an input sinusoidal with peak-to-peak amplitude $V_{ref}$, where $V_{ref}$ is the reference voltage of an N-bit ADC (therefore, occupying the full-scale of the ADC), its RMS value is
+$$V_{rms} = \frac{V_{ref}}{2\sqrt{2}} = \frac{2^NQ}{2\sqrt{2}}.$$
+where $N$ is the number of bits available for discretization. The relation $V_{ref} = 2^NQ$ comes from the fact that the range $V_{ref}$ is divided among $2^N$ steps, each with quantum $Q$. To calculate the Signal-Noise Ratio, we divide the RMS of the input signal by the RMS of the quantization noise:
+$$SNR = 20\log\left(\frac{V_{rms}}{v_{qn}}\right) = 20\log\left(\frac{\frac{2^NQ}{2\sqrt{2}}}{\frac{Q}{\sqrt{12}}}\right)
+= 20\log\left(\frac{2^N\sqrt{12}}{2\sqrt{2}}\right)$$
+$$ = 20\log\left(2^N\right) + 20\log\left(\frac{\sqrt{6}}{2}\right)
+= 6.02N + 1.76 (dB).$$
+</p>
+<p>
+In fact, the equation:
+$$SNR = 6.02N + 1.76 (dB)$$
+generalizes to any system using a digital representation. So, a microprocessor representing values with N bits will have a SNR defined by the above formula.
+</p>
+<script type="text/javascript" src="../pages/typeset.js"></script>
+<div id="social">
+If I helped you in some way, please help me back by liking this website on the bottom of the page or clicking on the link below. It would mean the world to me!<p>
+<table>
+<tr>
+<td width="100"><!-- Facebook -->
+<div id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=quantization.noise.snr" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></div>
+</td>
+<td width="100"><!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+</td>
+<td width="100"><!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+</td>
+<td width="100"><!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=quantization.noise.snr" data-counter="right"></script>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="sidebar" style="position:absolute;width:250px;top:50px;left:940px;"></div>
+<!-- <div id="poll1" style="position:absolute;width:250px;top:140px;left:940px;"></div>
+<div id="poll2" style="position:absolute;width:250px;top:380px;left:940px;"></div>-->
+<div id="menu">
+<a id="mn_contents" class="page" href="../p_contents/">Contents</a> |
+<a id="mn_resources" class="page" href="../p_resources/">Resources</a>
+<!--<a id="mn_plot" class="page" href="?p=plot">Plot a chart</a>--> ||
+<a id="mn_print" class="page" href="../print_p_quantization_noise_snr/">Print</a>
+</div>
+<div id="socialfixed"><b>Show your love:</b><br/><!-- Facebook -->
+<span id="fb-like-page" class="fb-like" data-href="http://www.onmyphd.com/?p=quantization.noise.snr" data-send="false" data-width="90" data-show-faces="false" data-layout="button_count"></span>
+<!-- Google+ -->
+<div class="g-plusone"></div>
+<script type="text/javascript">
+loadJS('../js/plusone.js');
+</script>
+<!-- Twitter -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="Onmyphd">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.async=true;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+</script>
+<!-- Linkedin -->
+<script>
+if (typeof (IN) != 'undefined') {
+    IN.parse();
+} else {
+   loadJS("../in.js");
+}
+</script>
+<script type="IN/Share" data-url="http://www.onmyphd.com/?p=quantization.noise.snr" data-counter="right"></script>
+</div>
+<div id="footer"><span id="message"></span></div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/
+	// search box
+	$('#searchbox')
+	.focus( function () {
+		if ( $(this).hasClass('searchempty') )
+			$(this).val('').removeClass('searchempty')
+	})
+	.blur( function () {
+		if ( $(this).val() == '' )
+			$(this).val('Search...').addClass('searchempty');
+	})
+	.on('keydown', function (e) {
+		if (e.which == 13) {
+			window.open('http://www.google.com/search?sitesearch=onmyphd.com&q=' + $(this).val(), '_blank');
+		}
+    });
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>
