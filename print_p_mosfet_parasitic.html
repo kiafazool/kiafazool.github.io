@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>MOSFET parasitic capacitances</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_mosfet_parasitic/" />
+	<meta name="description" content="MOSFET parasitic capacitances are unwanted capacitances existent between the terminals of the transistor. These are derived from the structure and principle of operation of the transistor.">
+	<meta name="keywords" content="mosfet, cmos, transistor, small signal, oxide capacitance, cgs, cgd, cgb, csb, cdb, cds">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'mosfet.parasitic';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_mosfet/">http://onmyphd.com/?p=mosfet.parasitic</a></p><h1>MOS Transistor parasitic capacitances</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li><a href="../print.php/p_mosfet/" id="mosfet.model" class="page">The MOSFET model</a></li>
+<li><a href="../print.php/p_small.signal/" id="small.signal.model" class="page">The MOSFET small-signal model</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+	<li><a href="#h2_whatis">What are parasitic capaticances?</a></li>
+	<li><a href="#h2_types">Types of parasitic capacitances</a></li>
+	<ul>
+		<li><a href="#h3_pn_cap">Junctions depletion capacitances</a></li>
+		<li><a href="#h3_overlap">Overlap and gate-channel capacitances</a></li>
+		<li><a href="#h3_channel_bulk">Channel-bulk depletion capacitance?</a></li>
+	</ul>
+	<li><a href="#h2_highfreq">High-frequency small-signal model</a></li>
+	<li><a href="#h2_summary">Summary</a></li>
+</ul>
+<h2 id="h2_whatis">What are parasitic capaticances?</h2>
+These are unwanted capacitances, but still are part of the transistor. Together with the resistances in the circuit, <b>they put an upper limit to the speed of the transistor</b>. First, let us see what kind of capacitances a transistor has.
+</p>
+<h2 id="h2_types">Types of parasitic capacitances</h2>
+<center>
+<img src="../pages/mosfet.parasitic/mos.svg" width="500" class="svg"/>
+</center>
+$C_1$ and $C_2$ are capacitances created by the depletion regions between source/drain and bulk. $C_3$ is the depletion capacitance between the channel and bulk. $C_4$ and $C_5$ are capacitances caused by the overlap between the gate and the source/drain diffusions. Finally, $C_6$ is the oxide capacitance between gate and the channel and is split between drain and source depending on the region of operation of the transistor.
+We want to map this physical capacitances to the terminals of the transistor, so we can use them in our model.
+<h3 id="h3_pn_cap">Junctions depletion capacitances</h3>
+<p>
+$C_1$ and $C_2$ are capacitances created by the depletion regions of the junctions between source/drain and bulk. These junctions are three-dimensional: 3 sides that are away from the channel, one side that is in front of the channel, and the bottom side (the upper side has isolator above it, so it has no depletion).
+</p>
+<center>
+<img src="../pages/mosfet.parasitic/depletion.capacitances.svg" width="350" class="svg"/>
+</center>
+We define 3 normalized capacitances
+<ul>
+<li>$C_{ja}$ - Bottom plate capacitance per unit area ($fF/\mu m^2$)</li>
+<li>$C_{jp}$ - Sidewalls away from channel capacitance per unit length ($fF/\mu m$). The height is a process parameter and is included in the capacitance</li>
+<li>$C_{jpg}$ - Sidewall in front of the channel capacitance per unit length ($fF/\mu m$). The height is a process parameter and is included in the capacitance</li>
+</ul>
+<p>
+In order to calculate $C_{SB}$ or $C_{DB}$, we need to sum all these capacitances.
+$$C_{SB} = C_{DB} = WEC_{ja} + (W + 2E)C_{jp} + WC_{jpg}$$
+</p>
+<h3 id="h3_overlap">Overlap and gate-channel capacitances</h3>
+<p>
+$C_4$ and $C_5$ are overlap capacitances and are only proportional to the width of the transistor. $C_6$ is the gate-channel capacitance and its total value is split between drain and source in a way that depends on the region of operation of the transistor.</p>
+<p>
+First, we define the normalized capacitances:
+<ul>
+<li>$C_{ov}$ - Overlap capacitance per unit length ($fF/\mu m$)</li>
+<li>$C_{ox}$ - Gate to channel capacitance per unit area ($fF/\mu m^2$)</li>
+</ul>
+</p>
+<p>
+$C_{GS}$ and $C_{GD}$ have a base value of the overlap capacitance $WC_{ov}$. To that we add the gate to channel capacitance $WL C_{ox}$ according to the region of operation:
+</p>
+<center>
+<img src="../pages/mosfet.parasitic/gatechannel.capacitance.svg" width="450" class="svg"/>
+</center>
+<p>
+In subthreshold region, there is no gate-channel capacitance because there is no channel. In saturation, the channel is pinched-off and there is no gate-channel capacitance at the drain and only two-thirds go to the source. In triode, the channel is not pinched-off and the gate-channel capacitance is split equally between drain and source.
+</p>
+<h3 id="h3_channel_bulk">Channel-bulk depletion capacitance</h3>
+<p>
+This capacitance is only relevant in <a href="../print.php/p_mosfet.subthreshold/" id="mosfet.subthreshold.model" class="page">subthreshold regime</a>. In strong inversion, the channel is being driven and shields the transistor from this capacitance. However, in subthreshold there is no channel and this capacitance is in series with the oxide capacitance. Furthermore, $C_{GS}$ and $C_{DS}$ are made of only the overlap capacitance and they are small.
+</p>
+<h2 id="h2_highfreq">High-frequency small-signal model</h2>
+<p>
+All these capacitances can be introduced into the low-frequency small-signal model to make it into a <b>high-frequency small-signal model</b>:
+</p>
+<center>
+<img src="../pages/mosfet.parasitic/hf.small.signal.model.svg" width="650" class="svg"/>
+</center>
+<p>
+<b>The speed of a transistor can be measured by the unity-gain frequency $f_T$</b>. It is the frequency at which the current that enters the gate $i_{in}$ equals the current that flows through the channel $i_{out}$.
+</p>
+<center>
+<img src="../pages/mosfet.parasitic/unity.gain.frequency.svg" width="750" class="svg"/>
+</center>
+When in strong inversion and saturation, $C_{GS}$ is dominant with respect to $C_{GD}$ and $C_{GB}$ and these can be neglected. Then
+$$v_{gs} = \frac{i_{in}}{s(C_{GS}+ C_{DS} + C_{GB})} \approx \frac{i_{in}}{sC_{GS}}$$
+$$i_{out} = g_m v_{gs} \approx g_m \frac{i_{in}}{sC_{GS}}$$
+$$s \approx g_m \frac{i_{in}}{i_{out} C_{GS}} \approx  \frac{g_m}{C_{GS}}$$
+$$f_T \approx  \frac{g_m}{2\pi C_{GS}}$$
+<h2 id="h2_summary">Summary</h2>
+</p>
+Parasitic capacitances of the MOS transistor can be incorporated into the small-signal model to make it valid at high-frequency operation. The following table summarizes the capacitances in the transistor:
+</p>
+<p>
+<table width="100%" class="table">
+<tr align="center">
+<th rowspan="2">Capacitance</th>
+<th rowspan="2">Off (subthreshold)</th>
+<th colspan="2">Strong Inversion</th>
+</tr>
+<tr align="center">
+<th>Saturation</th>
+<th>Triode</th>
+</tr>
+<tr>
+<td align="center">$C_{GS}$</td>
+<td>$$WC_{ov}$$</td>
+<td>$$WC_{ov} + \frac{2}{3}WL C_{ox}$$</td>
+<td>$$WC_{ov} + \frac{1}{2}WL C_{ox}$$</td>
+</tr>
+<td align="center">$C_{GD}$</td>
+<td>$$WC_{ov}$$</td>
+<td>$$WC_{ov}$$</td>
+<td>$$WC_{ov} + \frac{1}{2}WL C_{ox}$$</td>
+</tr>
+<tr>
+<td align="center">$C_{GB}$</td>
+<td>$$\frac{n-1}{n}WL C_{ox}$$</td>
+<td colspan="2">$$\approx 0$$</td>
+</tr>
+<tr>
+<td align="center">$C_{SB}/C_{DB}$</td>
+<td colspan="3">$$WE C_{ja} + (W + 2E)C_{jp} + WC_{jpg}$$</td>
+</tr>
+</table>
+</p>
+<script type="text/javascript" src="../pages/mosfet.parasitic.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

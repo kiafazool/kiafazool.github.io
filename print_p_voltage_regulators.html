@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Voltage regulators/converters</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_voltage_regulators/" />
+	<meta name="description" content="Voltage regulators are 3-terminal devices that maintain their output voltage fixed, despite changes in their input voltage and the load current. They can be roughly divided in linear and switch-mode regulators.">
+	<meta name="keywords" content="voltage regulators, adjustable voltage regulator, linear regulator, switch-mode regulator">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'voltage.regulators';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_voltage/">http://www.onmyphd.com/?p=voltage.regulators</a></p><h1>Voltage regulators</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basics of electronic circuits</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What is a voltage regulator?</a></li>
+<ul>
+<li><a href="#h3_adjustable">Adjustable voltage regulator</a></li>
+</ul>
+<li><a href="#h2_types">Types of voltage regulators</a></li>
+<ul>
+<li><a href="#h3_linear">Linear regulators</a></li>
+<li><a href="#h3_switchmode">Switched-mode regulators</a></li>
+</ul>
+</ul>
+<h2 id="h2_whatis">What is a voltage regulator?</h2>
+<p>
+A voltage regulator is an electronic device that produces a steady and fixed output voltage, independently of its input voltage and output current. In reality, any voltage regulator has a range of input voltages for which it works, a certain level of efficiency and a limited amount of power it can handle. Therefore, a careful selection of the voltage regulator must be made depending on the application it is for.
+</p>
+<p>
+The black box model of the voltage regulators is a 3-terminal device with:
+<ul>
+<li>an input terminal with a certain input voltage $V_{in}$ and input current $I_{in}$</li>
+<li>an output terminal with output voltage $V_{out}$ and current $I_{out}$</li>
+<li>a common terminal $GND$</li>
+</ul>
+The goal is to keep the output voltage at a fixed value, no matter what!
+</p>
+<center>
+<table><tr>
+<td><img src="../pages/voltage.regulators/voltage.regulator.svg" class="svg" alt="Black box model of voltage regulator" width="300"/></td>
+<td><img src="../pages/voltage.regulators/TO-220.pinout.svg" class="svg" alt="Example of a voltage regulator" width="300"/></td>
+</td>
+</tr></table>
+</center>
+<p>
+Most voltage regulators have a standard pinout. In the TO-220 package shown in the right, the pins connect to:
+<ol>
+<li>Input voltage</li>
+<li>Ground</li>
+<li>Output voltage</li>
+</ol>
+Regulators such as the 78xx series follow this pinout.
+</p>
+<p>
+Fixed voltage regulators have a block diagram as shown below. The <i>reference</i> block generates a reference voltage $V_{ref}$ that is expected to be insensitive to any type of perturbation. The resistive-divider provides a scaled-version of the output voltage 
+$$V_s = \frac{R_2}{R_2+R_1}V_{out}$$
+to the regulator. It then adds a voltage reference $V_{ref}$ to the scaled voltage. The <i>control</i> block forces the output voltage to follow the resulting voltage.
+</p>
+<center>
+<img src="../pages/voltage.regulators/control.fixed.svg" class="svg" alt="Simplified circuit of a fixed voltage regulator" width="400"/>
+</center>
+<p>
+Say the control block sets the output voltage to be the tracking error multiplied by $A \gg 1$ (a typical gain stage). Then:
+$$V_{out} = A(V_{ref} + V_s - V_{out} )$$
+$$V_{out} = A(V_{ref} + \frac{R_2}{R_2+R_1}V_{out} - V_{out})$$
+$$V_{out}\left(1+A\left(1-\frac{R_2}{R_2+R_1}\right)\right) = AV_{ref}$$
+$$V_{out} \approx \left(1 + \frac{R_2}{R_1}\right) V_{ref}$$
+We see that the output voltage can be defined by the ratio $R_2/R_1$.
+</p>
+<h3 id="h3_adjustable">Adjustable voltage regulator</h3>
+<p>
+Some regulators, such as the LM317, allow the designer to select a desired output voltage based on an external resistive-divider. They are called adjustable.
+<center>
+<img src="../pages/voltage.regulators/control.adjust.svg" class="svg" alt="Simplified circuit of an adjustable voltage regulator" width="400"/>
+</center>
+The major difference between the fixed and adjustable regulators is the place where the resistors are, inside or outside the chip. These configurations only require 3 pins.
+</p>
+<h2 id="h2_types">Types of voltage regulators</h2>
+<p>
+Voltage regulators can be roughly divided in two categories: <b>linear</b> and <b>switch-mode</b>. While linear regulators dissipate power when dropping the voltage level, switch-mode regulators transfer almost all energy from input to output. The input and output powers are defined as:
+$$P_{in} = V_{in} I_{in}$$
+$$P_{out} = V_{out} I_{out}$$
+</p>
+<h3 id="h3_linear">Linear regulators</h3>
+<p><a href="../print.php/p_voltage.regulators/" class="page">Linear regulators</a> control the voltage drop between the input and output as required to produce the desired voltage. Since the power used to drop from the input to the output voltage is lost, these are mainly used for low power circuits and low voltage differences between input and output (otherwise a large dissipation of energy would overheat the regulator).
+<p>
+There are basically two types of <a href="../print.php/p_voltage.regulators/" class="page">linear voltage regulators:</a>
+<ul>
+<li><a href="../print.php/p_voltage.regulators.linear.zener.diode/" class="page">Zener-diode shunt</a></li>
+<li><a href="../print.php/p_voltage.regulators.linear/" class="page">Series</a></li>
+</ul>
+</p>
+<p>
+For example, for the series regulator, the input and output currents are equal:
+$$I_{out} \approx I_{in}$$
+Therefore, the efficiency is only defined by the ratio of voltages:
+$$\eta = \frac{P_{out}}{P_{in}} = \frac{V_{out} I_{out}}{V_{in} I_{in}} \approx \frac{V_{out}}{V_{in}}$$
+and the lost power is in the resistance between input and output:
+$$P_{in} - P_{out} = (V_{in} - V_{out}) I_{in}$$
+</p>
+<h3 id="h3_switchmode">Switched-mode regulators</h3>
+<p>
+<a href="../print.php/p_voltage.regulators/" class="page">The switch-mode regulators</a> are more elaborate and use energy storage devices such as inductors to buffer energy between the input and output. They work by getting energy from the input when the output voltage is below the desired value and cutting the energy flow from the input when the output voltage is above the desired value. This is done by switching on and off the power transistor that connects the input and output, hence the name switch-mode. Since all energy is being transferred from the input to the output as needed, the power loss only exists in parasitic resistances present in the components and wires.
+$$P_{out} \approx P_{in}$$
+$$\eta = \frac{P_{out}}{P_{in}} \approx 1$$
+$$P_{in} - P_{out} \approx 0$$
+Therefore, these are preferable for power circuits and/or high voltage differences. In pratice, the efficiency $\eta$ is around 90-98%. The AC adapter that connects to your laptop has some sort of switch-mode power regulator to produce the steady DC voltage that the laptop requires.
+</p>
+<p>
+In this kind of regulators, there are some external components between the output pin and the node we want to keep at a desired voltage. They have a block diagram as shown below. The <i>reference</i> block generates a reference voltage $V_{ref}$ that is expected to be insensitive to any type of perturbation. The <i>control</i> block uses the error between the reference voltage and the sensed output voltage to control the input-output relation.
+</p>
+<center>
+<img src="../pages/voltage.regulators/control.svg" class="svg" alt="Simplified circuit of a switching voltage regulator" width="550"/>
+</center>
+<p>
+The resistive-divider provides a scaled-version of the output voltage 
+$$V_s = \frac{R_2}{R_2+R_1}V_{out}$$
+to the regulator. It is then compared to the voltage reference $V_{ref}$. The control loop forces the output pin in a way that brings this error down. Say the control block sets the output voltage to be the tracking error multiplied by $A \gg 1$ (a typical gain stage). Then:
+$$V_{out} = A(V_{ref} - V_s)$$
+$$V_{out} = A(V_{ref} - \frac{R_2}{R_2+R_1}V_{out})$$
+$$V_{out}\left(1+A\frac{R_2}{R_2+R_1}\right) = AV_{ref}$$
+$$V_{out} \approx \left(1 + \frac{R_1}{R_2}\right) V_{ref}$$
+We see that the output voltage can be defined by the ratio $R_1/R_2$. This type of regulators need at least 4 pins, like the LM2575. Like their linear counterpart, the resistances can be inside or outside the chip.
+</p>
+<p>
+These are the most distinct types of <a href="../print.php/p_voltage.regulators/" class="page">switched-mode voltage regulators</a>:
+<ul>
+<li><a href="../print.php/p_voltage.regulators.buck.step.down/" class="page">Buck/step down ($V_{in} &gt; V_{out}$)</a></li>
+<li>Boost/step up ($V_{out} &gt; V_{in}$)</li>
+<li>Buck-boost</li>
+</ul>
+</p>
+<script type="text/javascript" src="../pages/typeset.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

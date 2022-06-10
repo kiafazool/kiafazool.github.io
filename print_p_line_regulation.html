@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Line regulation: Definition, Examples</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_line_regulation/" />
+	<meta name="description" content="Line regulation measures the sensitivity of the output voltage of voltage regulators to variations in the input voltage.">
+	<meta name="keywords" content="load regulation, output voltage sensitivity, linear regulators">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'line.regulation';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_line/">http://www.onmyphd.com/?p=line.regulation</a></p><h1>Line regulation</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basics of electronic circuits</li>
+<li>Zener diodes</li>
+<li><a href="../print.php/p_small.signal/" class="page">MOSFET small signal model</a></li>
+<li>Opamp principle of operation</li>
+<li><a href="../print.php/p_voltage/" class="page">What is a voltage regulator</a></li>
+<li><a href="../print.php/p_voltage.regulators/" class="page">What is a linear regulator</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What is line regulation?</a></li>
+<li><a href="#h2_examples">Examples</a></li>
+<ul>
+<li><a href="#h3_shunt">Shunt regulator</a></li>
+<li><a href="#h3_seriesfeedback">Series regulator with feedback and MOSFET pass transistor</a></li>
+<li><a href="#h3_datasheet">Datasheet</a></li>
+</ul>
+</ul>
+<p>
+<h2 id="h2_whatis">What is line regulation?</h2>
+<p>
+In linear regulators, the output voltage is affected by the input voltage. Line regulation measures how much it is affected:
+$$\mbox{Line regulation} = \frac{\Delta V_{out}}{\Delta V_{in}}$$
+We want this specification to be as low as possible. There are several ways of finding out this relation, but the most systematic one, that can be applied the same way to all circuits, is the small-signal analysis. Basically, a circuit is working at some operating point and we analyze it for small variations of some parameter, this case the input voltage $V_{in}$. Since we are analyzing around a specific point, we approximate the circuit to a linear version (remember Taylor series?), just with resistances, capacitors, inductors and sources. From here we can get a closed-form relation between any two parameters of the circuit. Constant voltage sources, such as the average value of the input voltage $V_{in}$, become short-circuits and constant current sources, such as the average value of the load current, become open-circuits.
+</p>
+<h2 id="h2_examples">Examples</h2>
+<h3 id="h3_shunt">Shunt linear regulator</h3>
+<p>
+Let's try with the shunt regulator. For a given operating point, the zener diode can be replaced by a resistance $r_z$ (that is the small-signal model of the diode). The input voltage is our changing parameter, therefore we connect a voltage source $v_{in}$ to it. Therefore, we have:
+</p>
+<center>
+<img src="../pages/line.regulation/linear.regulator_shunt.small.signal.model.svg" class="svg" alt="Small-signal model of the shunt linear regulator for line regulation measure" width="350"/>
+</center>
+<p>
+Then:
+$$v_{out}= \frac{r_z||R_L}{r_z||R_L + R_D} v_{in}$$ 
+Since $r_z \ll R_L$ (be careful, this is true for the small-signal model. In the large signal analysis, this does not apply), we can approximate $r_z || R_L \approx r_z$, which gives us:
+$$ v_{out}= \frac{r_z}{r_z + R_D} v_{in}$$
+</p>
+<h3 id="h3_seriesfeedback">Series regulator with feedback and MOSFET pass transistor</h3>
+<p>
+For the regulator with feedback, it is important to account with a parallel resistance $r_{ds}$ that exists in the small signal model of the MOSFET transistor. Also, for this case, there is a voltage source in the input, representing our change in the input voltage.
+<center>
+<img src="../pages/line.regulation/linear.regulator.series.feedback.small.signal.model.svg" class="svg" alt="Small-signal model of the series linear regulator with feedback for line regulation measure" width="350"/>
+</center>
+To calculate the transfer function between input and output voltages, we start with the Kirchhoff Current Law (KCL) in the output node:
+$$i_{out} \approx g_m v_{sg} + \frac{v_{in} - v_{out}}{r_{ds}}$$
+$$\frac{v_{out}}{R_L} \approx g_m (v_{in} - A_o \frac{R_2}{R_1+R_2} v_{out}) + \frac{v_{in} - v_{out}}{r_{ds}}$$
+Good, now our only variables are $v_{out}$ and $v_{in}$. Working out the above equation, we end up with:
+$$\frac{v_{out}}{v_{in}} = \frac{R_L + g_m r_{ds} R_L}{R_L + r_{ds} + g_m r_{ds} R_L A_o \frac{R_2}{R_2+R_1}} $$
+Recognizing that $R_L + r_{ds} \ll g_m r_{ds} R_L A_o \frac{R_2}{R_2+R_1}$, we can approximate the above equation to:
+$$\frac{v_{out}}{v_{in}} = \frac{1 + g_m r_{ds}}{g_m r_{ds} A_o \frac{R_2}{R_2+R_1}} $$
+Even more, $g_m r_{ds} \gg 1$, which approximates the above equation to:
+$$\frac{v_{out}}{v_{in}} = \frac{R_2+R_1}{A_o R_2} $$
+And there you have it, the line regulation reduces with the gain of the opamp, just like the <a href="../print.php/p_load/" class="page">load regulation</a>.
+</p>
+<h3 id="h3_datasheet">Datasheet</h3>
+<p>
+This is the line regulation spec in the 78xx series datasheet, named <i>Input voltage regulation</i> and measured for two input voltage ranges
+</p>
+<img src="../pages/line.regulation/line.load.regulation.78xx.gif"/>
+<p>
+and this is in the LM317 datasheet, measured in a range of input-voltage differences and indicated in %/V, since it is an adjustable regulator.
+</p>
+<img src="../pages/line.regulation/line.load.regulation.LM317.gif"/>
+<script type="text/javascript" src="../pages/typeset.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

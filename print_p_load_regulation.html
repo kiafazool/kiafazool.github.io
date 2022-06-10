@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Load regulation: Definition, Examples</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_load_regulation/" />
+	<meta name="description" content="Load regulation measures the sensitivity of the output voltage of voltage regulators to variations in the load current.">
+	<meta name="keywords" content="load regulation, output voltage sensitivity, linear regulators">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'load.regulation';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_load/">http://www.onmyphd.com/?p=load.regulation</a></p><h1>Load regulation</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basics of electronic circuits</li>
+<li>Zener diodes</li>
+<li><a href="../print.php/p_small.signal/" class="page">MOSFET small signal model</a></li>
+<li>Opamp principle of operation</li>
+<li><a href="../print.php/p_voltage/" class="page">What is a voltage regulator</a></li>
+<li><a href="../print.php/p_voltage.regulators/" class="page">What is a linear regulator</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What is load regulation?</a></li>
+<li><a href="#h2_examples">Examples</a></li>
+<ul>
+<li><a href="#h3_shunt">Shunt regulator</a></li>
+<li><a href="#h3_seriesfeedback">Series regulator with feedback and MOSFET pass transistor</a></li>
+<li><a href="#h3_datasheet">Datasheet</a></li>
+</ul>
+</ul>
+<p>
+<h2 id="h2_whatis">What is load regulation?</h2>
+<p>
+In linear regulators, the output voltage is affected by the load/output current. Load regulation measures how much it is affected:
+$$\mbox{Load regulation} = \frac{\Delta V_{out}}{\Delta I_{out}}$$
+We would like a small value for this specification. There are several ways of finding out this relation, but the most systematic one, that can be applied the same way to all circuits, is the small-signal analysis. Basically, a circuit is working at some operating point and we analyze it for small variations of some parameter, this case the load current $i_{out}$. Since we are analyzing around a specific point, we approximate the circuit to a linear version (remember Taylor series?), just with resistances, capacitors, inductors and sources. From here we can get a closed-form relation between any two parameters of the circuit. Constant voltage sources, such as $V_{in}$ become short-circuits and constant current sources, such as the average value of the load current, become open-circuits. 
+</p>
+<h2 id="h2_examples">Examples</h2>
+<h3 id="h3_shunt">Shunt regulator</h3>
+<p>
+Let's try with the shunt regulator. For a given operating point, the zener diode can be replaced by a resistance $r_z$ (that is the small-signal model of the diode). Our load is replaced by a current source $i_{out}$, because this is the parameter we are changing. The input voltage, since it is constant for our analysis, becomes a short-circuit. Therefore, we have:
+<center>
+<img src="../pages/load.regulation/linear.regulator_shunt.small.signal.model.svg" class="svg" alt="Small-signal model of the shunt linear regulator for load regulation measure" width="300"/>
+</center>
+$$v_{out} = -(R_D||r_z)i_{out}$$
+$$\frac{v_{out}}{i_{out}} = -(R_D||r_z)$$
+</p>
+<h3 id="h3_seriesfeedback">Series regulator with feedback and MOSFET pass transistor</h3>
+<p>
+Now consider a series regulator with feedback. This one is more complicated: we have the small-signal of a MOSFET transistor. Say it is a PMOS: the most simple small-signal model for it is a voltage-controlled current source such that $i_{sd} = g_m v_{sg}$. The opamp can be represented as a linear gain stage with gain $A_o$ and the input voltage source becomes a short circuit. Now we can represent the small-signal model of the regulator and find the transfer function from the output voltage to the output current, which is:
+<center>
+<img src="../pages/load.regulation/linear.regulator.series.feedback.small.signal.model.svg" class="svg" alt="Small-signal model of the series linear regulator with feedback for load regulation measure" width="350"/>
+</center>
+$$i_{out} \approx g_m v_{sg} = -g_m A_o \frac{R_2}{R_1+R_2} v_{out}$$
+where we assumed that $R_L \ll R_2 + R_1$ and all current flows to the load (we wouldn't like our sensing circuit to consume as much as the load, right?). We end up with:
+$$\frac{v_{out}}{i_{out}} =  -\frac{1}{g_m A_o}\frac{R_1+R_2}{R_2}$$
+We can see that the load regulation of the regulator with feedback is much lower than the shunt regulator, for a large $A_o$. In fact, the opamp has a fundamental role in pushing this spec down.
+</p>
+<h3 id="h3_datasheet">Datasheet</h3>
+<p>
+This is the load regulation spec in the 78xx series datasheet, named <i>Output voltage regulation</i> and measured for two current ranges
+</p>
+<img src="../pages/load.regulation/line.load.regulation.78xx.gif"/>
+<p>
+and this is in the LM317 datasheet, measured in several conditions and indicated in %, since it is an adjustable regulator.
+</p>
+<img src="../pages/load.regulation/line.load.regulation.LM317.gif"/>
+<script type="text/javascript" src="../pages/typeset.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

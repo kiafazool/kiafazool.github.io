@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Low dropout voltage regulators</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_voltage_regulators_linear_ldo_lowdropout/" />
+	<meta name="description" content="Linear voltage regulators control the voltage drop between input and output as needed to set the desired output voltage. Low dropout regulators can maintain operation even when the voltage drop is of hundreds of mV.">
+	<meta name="keywords" content="linear voltage regulators, low dropout, types of pass transistor">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'voltage.regulators.linear.ldo.lowdropout';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_voltage.regulators.linear.ldo/">http://www.onmyphd.com/?p=voltage.regulators.linear.ldo.lowdropout</a></p><h1>Low DropOut (LDO) Voltage regulators</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Bipolar Junction Transistor operation</a>
+<li><a href="../print.php/p_mosfet/" class="page">MOSFET operation</a>
+<li><a href="../print.php/p_voltage/" class="page">What is a voltage regulator</a></li>
+<li><a href="../print.php/p_voltage.regulators/" class="page">What is a linear voltage regulator</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_dropoutvoltage">What is the dropout voltage?</a></li>
+<li><a href="#h2_lowdropout">What is the difference between a normal and low dropout regulator?</a></li>
+<li><a href="#h2_passelements">What types of pass elements are there and which ones are suitable for low dropout regulators?</a></li>
+<ul>
+<li><a href="#h3_pnp">PNP</a></li>
+<li><a href="#h3_npnpnp">NPN+PNP</a></li>
+<li><a href="#h3_darlington">Darlington NPN</a></li>
+<li><a href="#h3_pmos">PMOS</a></li>
+<li><a href="#h3_pmosnmos">PMOS+NMOS</a></li>
+</ul>
+</ul>
+<p>
+A specific class of linear regulators work with a small difference between input and output voltages. These regulators allow the pass transistor to work in a region where they work as a low-value resistance.
+</p>
+<h2 id="h2_dropoutvoltage">What is the dropout voltage?</h2>
+<p>
+Dropout voltage is the lowest voltage drop between input and output voltages that still can guarantee the desired output voltage. If the dropout voltage of a regulator is 1V and we need an output voltage of 5V, the input voltage should always be higher than 6V, or else the output voltage will drop below 5V.
+</p>
+<h2 id="h2_lowdropout">What is the difference between a normal and low dropout regulator?</h2>
+<p>
+There is a subclass of linear regulators that have a low dropout voltage and, guess what, they are called Low DropOut (LDO) regulators.
+There are three important aspects that differentiate LDO regulators from normal ones:
+<ul>
+<li><b>Resistance region:</b> Standard series regulators operate the pass transistor in a region of operation where there is a neglible dependence between the differential input-output voltage and the current flowing through it. This is a desirable property, as a change in the input voltage will have a small impact in the load current and therefore in the output voltage. However, this region of operation requires a minimum voltage drop on the pass transistor (the regions are active region for BJTs and saturation region for MOSFETs). LDO regulators push the transistors to a region where they start to behave as a resistance (saturation for BJTs and linear/triode region for MOSFETs), thereby allowing a smaller dropout voltage.
+</li>
+<li><b>Size of pass transistor:</b> Transistors with larger size will have smaller on resistance and therefore a smaller dropout voltage.
+</li>
+<li><b>Type of pass element:</b> As will be discussed in the next section, there are various combinations of transistors to create pass elements. The simplest ones (with less transistors) are more suited to LDO regulators because their combined dropout voltage is smaller.
+</li>
+</ul>
+</p>
+<h2 id="h2_passelements">What types of pass elements are there and which ones are suitable for low dropout regulators?</h2>
+<p>
+<b>The type of pass element affects the dropout voltage and the quiescent current</b> (the current consumed by the regulator that does not go to the load). Bipolar transistors have a base current which leads to a higher quiescent current compared to MOS transistors. However, MOSFETs require a higher voltage supply than BJTs for the same driving current. Furthermore, some configurations exchange dropout voltage by quiescent curent, such as the Darlington configuration. <b>Now seems a good time to dismistify something:</b> although you see a single NPN BJTs as a pass element in the most basic schematics of linear regulators, in practice other configurations are used. The NPN BJT (or a NMOS FET) requires that the base/gate voltage be higher than the output voltage. If the input voltage is close to the output voltage, it can even happen the base/gate voltage be higher than the input voltage. This, of course, is a pain to do, since the input has the higher voltage you can get.  Instead, if a p-type device is used, the base/gate voltage is always lower than the input voltage, which is much easier to handle.
+</p>
+<h3 id="h3_pnp">PNP</h3>
+<center>
+<img src="../pages/linear.regulator/pass.transistor.pnp.svg" class="svg" width="250"></svg>
+</center>
+<p>
+A PNP transistor is the most basic form of a pass transistor, with the smallest dropout voltage. Hence, they are used for LDO regulators. The dropout voltage is:
+$$V_{do} = V_{EC}$$
+and the quiescent current is:
+$$I_q = I_B = \frac{I_C}{\beta} = \frac{I_L}{\beta}$$
+where $\beta$ is the current gain of the transistor. Given that the load is at the collector, which as a high impedance, the regulator is less stable and more difficult to control. 
+</p>
+<h3 id="h3_npnpnp">NPN+PNP</h3>
+<center>
+<img src="../pages/linear.regulator/pass.transistor.pnp_npn.svg" class="svg" width="250"></svg>
+</center>
+<p>
+This configuration is a good balance between dropout voltage and quiescent current. The dropout voltage is:
+$$V_{do} = V_{BE_1} + V_{EC_2}$$
+and the quiescent current is:
+$$I_q = I_{B_2} = \frac{I_{E_1}}{\beta_1\beta_2} = \frac{I_L}{\beta_1\beta_2}$$
+</p>
+<h3 id="h3_darlington">Darlington NPN</h3>
+<center>
+<img src="../pages/linear.regulator/pass.transistor.darlington.svg" class="svg" width="300"></svg>
+</center>
+<p>
+The Darlington is the configuration that occupies less area (each transistor can be small, since there are three gain stages), but with the largest dropout voltage:
+$$V_{do} = V_{BE_1} + V_{BE_2} + V_{EC_3}$$
+and the smallest quiescent current:
+$$I_q = \frac{I_L}{\beta_1\beta_2\beta_3}$$
+Given the low-voltages used in today's electronics, this configuration is being used less often.
+</p>
+<h3 id="h3_pmos">PMOS</h3>
+<center>
+<img src="../pages/linear.regulator/pass.transistor.pmos.svg" class="svg" width="250"></svg>
+</center>
+<p>
+The PMOS transistor has negligible quiescent current and the only dropout voltage is its source-drain saturation voltage. Therefore, these are used in LDO regulators. As in the case of the PNP transistor, the load is connected to a high-impedance node (the drain) and the regulator is less stable.
+</p>
+<h3 id="h3_pmosnmos">PMOS+NMOS</h3>
+<center>
+<img src="../pages/linear.regulator/pass.transistor.pmos_nmos.svg" class="svg" width="250"></svg>
+</center>
+<p>
+This composite has a dropout voltage of:
+$$V_{do} = V_{GS_1} + V_{SD_2}$$
+and also has negligible quiescent current.
+</p>
+<script type="text/javascript" src="../pages/typeset.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

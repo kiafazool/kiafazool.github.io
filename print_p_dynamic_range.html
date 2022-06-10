@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Dynamic Range (DR)</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_dynamic_range/" />
+	<meta name="description" content="The Dynamic Range is the Signal-Noise Ratio for the maximum possible signal">
+	<meta name="keywords" content="dynamic range, DR, signal-noise ratio, SNR, noise floor, high dynamic range">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'dynamic.range';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_dynamic/">http://www.onmyphd.com/?p=dynamic.range</a></p><h1>Dynamic Range (DR)</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li><a href="../print.php/p_snr.signal.noise/" class="page" id="snr">Signal-Noise Ratio</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What is the Dynamic Range?</a></li>
+<li><a href="#h2_examples">Examples of Dynamic Range</a></li>
+<li><a href="#h2_hdr">High Dynamic Range</a></li>
+</ul>
+<h2 id="h2_whatis">What is the Dynamic Range?</h2>
+<p>
+<p>
+The Signal-Noise Ratio (SNR) is a measure of how strong the signal is compared to the noise. The Dynamic Range is just the SNR for the maximum possible signal. By possible I mean whatever is defined as possible. For instance, the maximum signal for an opamp may be the rail-to-rail voltage, the maximum signal for an <a href="../print.php/p_analog.digital/" id="adc" class="page">ADC</a> may be its voltage reference, for a general system may be the one that does not cause distortion above a certain level, or for a wireless signal is limited by the power of the emitter, and for a digital camera may be the maximum number of photons that can be acquired in a period of time, and for an audio system is the loudest undistorted sine wave, etc. Then, by definition:
+$$ DR = \frac{P_{signal_{max}}}{P_{noise}}$$
+or in dB
+$$ DR = 10\log_{10}\left(\frac{P_{signal_{max}}}{P_{noise}}\right)=20\log_{10}\left(\frac{A_{signal_{max}}}{A_{noise}}\right)$$
+</p>
+<h2 id="h2_examples">Examples of Dynamic Range</h2>
+<p>
+<h4>Opamp</h4>
+<p>
+For an Opamp with input range of $2V$ and an input-referred noise of $20\mu V$, its DR is:
+$$DR = 20\log_{10}\left(\frac{2}{20\mu V}\right) = 100 dB$$
+</p>
+<h4>Digitally represented signal</h4>
+<p>
+For a digital representation of a signal with N bits, the DR is:
+$$DR = 6.02N + 1.76 dB$$
+(find out why <a href="../print.php/p_quantization.noise/" class="page">here</a>)
+</p>
+<h4>Wireless</h4>
+<p>
+A wireless signal with power $100\mu W$ (-10dBm) is received and the input-referred noise of the receiver is $1\mu W$ (-30 dBm). The DR is:
+$$DR = 10 \log_{10}\left(\frac{100\mu W}{1 \mu W}\right) = 20 dB$$
+Note: Power (dBm) = $10\log_{10}$( Power (mW) )
+</p>
+<h2 id="h2_hdr">High Dynamic Range</h2>
+<p>
+You may often see the term High Dynamic Range (HDR) photographies, in which a big range of illuminance is captured. Commonly, the image is captured in a single shot: either with low sensitivity and the darkest parts of the image get emerged in the noise (either photon noise or from the camera itself), or with high sensitivity and the brightest parts of the image get saturated and cannot be detected above a certain value. This is due to the limited dynamic range of the camera. High Dynamic Range can be obtained by compressing the input range prior to capture: brightest parts get darker and darkest parts get brighter. Although the dynamic range of the camera is the same, the photographers match the input signal to the dynamic range of the camera by compressing it. In practice, neutral density filters are used to control the illuminance that reaches the camera.
+</p>
+<p>
+<script type="text/javascript" src="../pages/dr.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

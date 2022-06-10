@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Buck converter (Step down regulator)</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_voltage_regulators_buck_step_down_converter/" />
+	<meta name="description" content="The buck converter is a type of DC/DC switching voltage regulator that reduces the input voltage. The energy is buffered in a series inductor when the main transistor is closed and the buffered current is continuously released to the load. This is a comprehensive guide to the analysis and design of a buck converter.">
+	<meta name="keywords" content="linear voltage regulators, shunt voltage regulator, series voltage regulator">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'voltage.regulators.buck.step.down.converter';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_voltage.regulators.buck.step.down/">http://onmyphd.com/?p=voltage.regulators.buck.step.down.converter</a></p><h1>Buck (step down) converter/regulator</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basics of electronic circuits</li>
+<li><a href="../print.php/p_voltage/" class="page">What is a voltage regulator</a></li>
+<li><a href="../print.php/p_voltage.regulators/" class="page">What is a switching voltage regulator</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_how">How does the buck converter work?</a></li>
+<li><a href="#h2_steadystate">What does steady-state mean?</a></li>
+<ul>
+<li><a href="#h3_voltsecond">Principle of inductor volt-second balance</a></li>
+<li><a href="#h3_ampsecond">Principle of capacitor amp-second balance</a></li>
+</ul>
+<li><a href="#h2_ripples">Ripples</a></li>
+<ul>
+<li><a href="#h3_inductorripple">Inductor current ripple</a></li>
+<li><a href="#h3_outputripple">Output voltage ripple</a></li>
+<li><a href="#h3_inputripple">Input voltage ripple</a></li>
+</ul>
+<li><a href="#h2_boundary">Boundary of discontinuous and continuous modes</a></li>
+<li><a href="#h2_nonidealities">Non-idealities</a></li>
+<ul>
+<li><a href="#h3_diode">The forward voltage drop in the diode</a></li>
+<li><a href="#h3_ron">The on resistance of the switch transistor</a></li>
+<li><a href="#h3_dcr">The DCR of the inductor</a></li>
+<li><a href="#h3_esr">The ESR of capacitors</a></li>
+<li><a href="#h3_switch">Switching of the transistors</a></li>
+</ul>
+<li><a href="#h2_DCmodel">Equivalent circuit model - a standard method to model the steady-state behavior</a></li>
+<ul>
+<li><a href="#h3_model_diode">The forward voltage drop in the diode</a></li>
+<li><a href="#h3_model_dcr">The DCR of the inductor</a></li>
+<li><a href="#h3_model_ron">The on resistance of the switch transistor</a></li>
+<li><a href="#h3_model_all">All together</a></li>
+</ul>
+<li><a href="#h2_limitsoutput">Limits on the output voltage</a></li>
+<li><a href="#h2_dynamics">Dynamics</a></li>
+<ul>
+<li><a href="#h3_ACmodel">AC Equivalent circuit model - a standard method to model the transient behavior</a></li>
+<!--<li><a href="#h3_frequencyresponse">Frequency response</a></li>-->
+</ul>
+<li><a href="#h2_examples">Examples</a></li>
+<ul>
+<li><a href="#h3_design">Designing a buck converter</a></li>
+<!--<li><a href="#h3_datasheet">Datasheet of a buck converter</a></li>
+<li><a href="#h3_using">Using a buck converter</a></li>-->
+</ul>
+</ul>
+<p class="comment">Disclaimer: this is a very long topic and it takes more time to load. If you are really interested in the buck regulator, I promise it will be worth it.</p>
+<p>
+As explained in the <a href="../print.php/p_voltage.regulators/" class="page">switching voltage regulators section</a>, switched-mode converters periodically send energy from input to output and store it in inductors and capacitors in a fraction of a period, and use it in the remaining fraction. The buck converter is probably the most simple DC-DC switched-mode converter and only allows the output voltage to be less than the input voltage.
+</p>
+<h2 id="h2_how">How does a buck converter work?</h2>
+<p>
+The circuit below is a buck converter. As in any switched-mode power supply, there is a switch that controls the transfer of energy. There are also inductors and capacitors used to store energy.
+</p>
+<center>
+<img src="../pages/voltage.regulators.buck/buck.svg" class="svg" width="400"/>
+</center>
+<p>
+So here is how it works. The switch is turned on and off periodically: $t_{on}$ is the time it is on, $t_{off}$ is the time it is off and $T = t_{on} + t_{off}$ is the period. We can also define duty cycle as $D = t_{on}/T$ the fraction of the period the switch is on. For the sake of simplicity, we assume that the ripple in the output voltage is so small that we may consider it constant during a cycle. This is known as the <b>small-ripple approximation</b> and really simplifies our calculations. Let's analyze separately the circuit when the switch is on and when it is off.
+</p>
+<h3>On</h3>
+<p>
+When the switch is on, the power supply is connected to the inductor and the diode is reverse polarized. The circuit reduces to:
+<center>
+<img src="../pages/voltage.regulators.buck/buck.on.svg" class="svg" width="400"/>
+</center>
+The current flowing through the inductor rises gradually with slope:
+$$\frac{dI_L}{dt} = \frac{V_{in} - V_{out}}{L}$$
+While it is on, the current increases by the amount:
+$$\Delta I_L^+ = \frac{V_{in} - V_{out}}{L}t_{on} = \frac{V_{in} - V_{out}}{L} DT$$
+</p>
+<h3>Off</h3>
+<p>
+When the switch is off, the circuit reduces to:
+<center>
+<img src="../pages/voltage.regulators.buck/buck.off.svg" class="svg" width="400"/>
+</center>
+Assuming the diode is ideal (we will later consider it not to be) and its voltage drop is zero, the diode now shunts the connection between the inductor and ground. The current through the inductor decreases with slope
+$$\frac{dI_L}{dt} = \frac{0 - V_{out}}{L}$$
+</p>
+<p>
+Now we have two possible situations:
+<ul>
+<li><b>continuous mode:</b> the inductor current never reaches zero during the off state.
+<li><b>discontinuous mode:</b> the inductor current drops down to zero during the off state. During part of it, there is no current in the inductor. The conditions that favor this mode are large inductor current ripple and a light load.</li>
+</ul>
+</p>
+<h4>Continuous</h4>
+<center>
+<img src="../pages/voltage.regulators.buck/continuous.mode.svg" width="300" class="svg"/>
+</center>
+<p>
+In the continuous case, the current falls during the whole off state:
+$$\Delta I_L^- = -\frac{V_{out}}{L}t_{off} = -\frac{V_{out}}{L} (1-D)T$$
+In steady state, the rise in current in the on state must match the fall in current in the off state. That leads to the following condition:
+$$ \Delta I_L^+ + \Delta I_L^- = 0 $$
+$$ \frac{V_{in} - V_{out}}{L} D T - \frac{V_{out}}{L} (1-D)T = 0 $$
+$$ V_{in} D - V_{out} = 0 $$
+$$\begin{equation} V_{out} = V_{in} D \label{eq:tf_continuous}\end{equation}$$
+Simple enough, the output voltage can be controlled by the duty-cycle with the expression above.
+</p>
+<h4>Discontinuous</h4>
+<center>
+<img src="../pages/voltage.regulators.buck/discontinuous.mode.svg" width="300" class="svg"/>
+</center>
+<p>
+In the discontinuous case, things get more complicated: now the current drops to zero before the end of the cycle. Thus, we cannot use the $t_{off}$ part of the period to find the transfer function. In steady-state, there must be part of the off period where the inductor current is zero. First we will use the same formula as above, but replace $1-D$ by some fraction of period $\lambda$:
+$$\Delta I_L^- = -\frac{V_{out}}{L}\lambda T$$
+$$ \Delta I_L^+ + \Delta I_L^- = 0 $$
+$$ \frac{V_{in} - V_{out}}{L} D T - \frac{V_{out}}{L} \lambda T = 0 $$
+$$ \lambda = \frac{V_{in} - V_{out}}{V_{out}} D $$
+So $\lambda$ is the fraction of the period that the inductor current drops. Another thing we can notice is that the average output current is the average inductor current. It is easy to confirm this: since the DC current of the inductor cannot flow through the output capacitor, then it can only flow to the load. Graphically, the inductor current forms a triangle with its base at zero, its peak at $t_{on}$ and value:
+$$I_{peak} = \frac{V_{in} - V_{out}}{L} D T$$
+The average value is simply the area of the triangle, divided by $T$. Thus, we get:
+$$I_{out} = \frac{1}{T}\left(\frac{1}{2}I_{peak} (D T + \lambda T)\right) $$
+$$I_{out} = \frac{1}{2}I_{peak} \left(D + \lambda \right) $$
+$$I_{out} = \frac{1}{2}\left(\frac{V_{in} - V_{out}}{L} D T (D + \lambda)\right) $$
+We can replace our $\lambda$ in the above expression, which results in:
+$$I_{out} = \frac{1}{2}\left(\frac{V_{in} - V_{out}}{L} D T \left(D + \frac{V_{in} - V_{out}}{V_{out}} D\right)\right) $$
+After some labor...
+$$V_{out} = V_{in}\frac{1}{\frac{2LI_{out}}{D^2 V_{in}T}+1}$$
+In this case, the output voltage depends on virtually every parameter in the circuit, such as the output current, the inductor value, the switching period and, of course, the duty cycle.
+</p>
+<center>
+<div id="plot_tf" style="width:600px;height:300px"></div>
+$R$ = <span id="label_R"></span> $\Omega$<br/>
+<div id="R-slider" style="width:600px;"></div>
+<p class="comment">
+This plot shows the transfer function of the buck converter depending on the duty-cycle. You can see the transition between discontinuous and continuous modes. The slider controls the load resistance, which changes the duty-cycle at which the converter changes mode (more on this in <a href="#h2_boundary">Boundary of discontinuous and continuous modes</a>).
+</p>
+</center>
+<h2 id="h2_steadystate">What does steady-state mean?</h2>
+<p>
+I mentioned steady-state before, but now it is time to expand on it. Steady-state means that if all external conditions, such as input voltage or load current, do not change, all cycles behave the same. Then, all internal values can be referenced to the beginning of a cycle instead of to the starting time of the system. This simple notion gives birth to two principles that can be applied to all switching regulators.
+<h3 id="h3_voltsecond">Principle of inductor volt-second balance</h3>
+In steady-state, the initial and final values of the inductor current during a cycle must be the same, which means that the total change in the inductor current is zero.
+$$i_L(T) - i_L(0) = \frac{1}{L}\int_0^Tv_L(t)dt = 0$$
+This expression shows one idea: <b>under steady-state, if you were to plot $v_L(t)$, the area under the inductor voltage during a cycle must equal zero</b>. Or, in a different way, the average value of the inductor voltage must be zero. This notion is known as the <b>principle of inductor volt-second balance</b>.
+</p>
+<p>
+Applied to our buck converter in continuous mode, we have:
+$$\int_0^Tv_L(t)dt = (V_{in}-V_{out})DT + -V_{out} (1-D)T = 0$$
+$$V_{out} = DV_{in}$$
+</p>
+<h3 id="h3_ampsecond">Principle of capacitor amp-second balance</h3>
+<p>
+In the same way, the output voltage must be returning to the initial value after a cycle, or else it would not be constant (excluding the ripple). Since the output capacitor is connected between the output node and ground, we can say that:
+$$v_{out}(T) - v_{out}(0) = \frac{1}{C}\int_0^Ti_C(t)dt = 0$$
+This expression shows that the average output capacitor current is zero in steady-state. This is called the <b>principle of capacitor amp-second balance</b> or <b>capacitor charge balance</b>.
+</p>
+<p>
+Applied to our buck converter in continuous mode, we have:
+$$\int_0^Ti_C(t)dt = \int_0^T i_L(t) - I_{out}dt = \langle i_L(t) \rangle T + I_{out}T = 0$$
+$$I_{out} = \langle i_L(t) \rangle$$
+</p>
+<h2 id="h2_ripples">Ripples</h2>
+<h3 id="h3_inductorripple">Inductor current ripple</h3>
+<p>
+So how much does the inductor current ripple? It is pretty easy: either in continuous or discontinuous mode, the current ripples whatever increases during the on state, because in steady-state, the current at the end of a cycle is the same as in the beginning. So, the peak-to-peak ripple is:
+$$\Delta I_L = \frac{V_{in}-V_{out}}{L}t_{on} = \frac{V_{in}-V_{out}}{L} D T$$
+You can see that the ripple depends on the inductor value. Then, you can use this expression to select your inductor:
+$$\begin{equation}L = \frac{V_{in}-V_{out}}{\Delta I_L} D T \label{eq:inductorripple}\end{equation}$$
+</p>
+<p>
+We just saw that the inductor current ripple only depends on the applied voltage, the inductance $L$, and the duty cycle $D$. On the other hand, its average is equal to the load current. This comes from the fact that any DC current flowing through the inductor must necessarily go to the load. This means that under light loads, the load current is small, but the ripple remains unchanged, which makes it easier for the inductor current to hit the ground during the off state and enter discontinuous mode.
+</p>
+<center>
+<div id="plot_diagram" style="width:600px;height:300px"></div>
+<span id="label_diagram_description"></span>
+<table cellpadding="5">
+<tr>
+<td>$V_{in}$ = <span id="vin"></span> V</td>
+<td><div id="vin-slider" style="width:600px;"></div></td>
+</tr>
+<tr>
+<td>$R$ = <span id="label_diagram_R"></span> $\Omega$</td>
+<td><div id="diagram-R-slider" style="width:600px;"></div></td>
+</tr>
+<tr>
+<td>$L$ = <span id="label_diagram_L"></span> $ \mu H$</td>
+<td><div id="diagram-L-slider" style="width:600px;"></div></td>
+</tr>
+<tr>
+<td>$D$ = <span id="dutycycle"></span></td>
+<td><div id="dutycycle-slider" style="width:600px;"></div></td>
+</tr>
+</table>
+</center>
+<p class="comment">This plot shows everything you have read so far. In it you have the inductor current, the inductor voltage and the output voltage of a buck converter simulated in steady-state conditions. From the <a href="#h2_how">first section</a>, you can see that the output voltage is proportional to the duty-cycle in continuous-mode, while in discontinuous-mode it also depends on circuit parameters, such as the load resistance and the inductor value (you can see in which mode it is right below the plot, as well as the duty-cycle at which the converter changes mode). You can also see that the inductor current ripple depends on the inductor value and the duty-cycle.
+</p>
+<h3 id="h3_outputripple">Output voltage ripple</h3>
+<p>
+As of now, we considered the output voltage constant because it made the calculations easier. However, ripple exists because the output capacitor is charging or discharging depending on the balance between the inductor and load currents. The rate of change is:
+$$\frac{dv_C}{dt}=\frac{i_L(t) - I_{out}}{C}$$
+In steady-state, the change over a complete cycle must be zero. The only problem here is that the inductor current is not constant and the small-ripple approximation cannot be done (because it is not small in the inductor current). There is one tip that might help to work this out: the DC inductor current must equal the load current. That in turn means that only the ripple of the inductor current, centered around zero, flows through the capacitor. Then we have negative portions of the ripple that remove charge from the capacitor and positive portions of the ripple that add charge to the capacitor. Both must transfer the same amount of charge in equilibrium.
+</p>
+<h4>Continuous mode</h4>
+<center>
+<img src="../pages/voltage.regulators.buck/output.ripple.svg" class="svg" width="600"/>
+</center>
+<p>
+In continuous mode, the positive part of the ripple will form a triangle. The zero crossings (the base vertices of the triangle) will be at exactly the middle of the on and off states. Therefore the charge, which is the integral of current, is the area of the triangle with base:
+$$\frac{DT}{2} + \frac{(1-D)T}{2} = \frac{T}{2}$$
+and peak as half the ripple
+$$\frac{\Delta I_L}{2}$$
+The zero crossings, being the points where charging starts and ends, correspond to the minimum and maximum output voltages. This is our output voltage ripple! Now we use the expression $\Delta Q = C\Delta V$ to relate the charge with the output voltage. Lumping everything:
+$$\mbox{area of the triangle} = \Delta Q = \frac{1}{2}\frac{T}{2}\frac{\Delta I_L}{2} = C\Delta V_C$$
+$$\Delta V_C = \frac{\Delta I_L T}{8C}$$
+This expression can be used to select the capacitor based on the output voltage ripple specification:
+$$\begin{equation}C = \frac{\Delta I_L T}{8\Delta V_C}\label{eq:capacitorripple}\end{equation}$$
+</p>
+<h4>Discontinuous mode</h4>
+<center>
+<img src="../pages/voltage.regulators.buck/output.ripple.discontinuous.svg" class="svg" width="600"/>
+</center>
+<p>
+In the discontinuous mode, we just need to be aware that the inductor current reaches zero before the end of the cycle. Then, the base of the triangle is not half the period. In fact, we have to calculate how long it takes for the inductor current to go from the load current to its peak and back again to the load current:
+$$\frac{dI_L}{dt} = \frac{\Delta I_L - I_{out}}{t_{rise}} = \frac{V_{in}-V_{out}}{L}$$
+$$t_{rise} = \frac{(\Delta I_L - I_{out})L}{V_{in}-V_{out}}$$
+$$-\frac{\Delta I_L - I_{out}}{t_{fall}} = \frac{-V_{out}}{L}$$
+$$t_{fall} = \frac{(\Delta I_L - I_{out})L}{V_{out}}$$
+Everything else remains the same. The charge that is added is the area of the triangle:
+$$\mbox{area of the triangle} = \Delta Q = \frac{1}{2}(t_{rise} + t_{fall})(\Delta I_L - I_{out}) = C\Delta V_C$$
+$$\frac{L}{2}(\Delta I_L - I_{out})^2(\frac{1}{V_{in}-V_{out}} + \frac{1}{V_{out}}) = C\Delta V_C$$
+$$\Delta V_C = \frac{L}{2C}(\Delta I_L - I_{out})^2\frac{V_{in}}{V_{in}-V_{out}}$$
+Not simple at all and the worst part is that it depends on the load current.
+</p>
+<h3 id="h3_inputripple">Input voltage ripple</h3>
+<p>
+Without the input capacitor, the pulsating current produced by the switching of the main transistor would need to be completely supplied by the source. Not only would it ask for peaks of current that the source may not be able to handle, it also generates an AC signal throughout the lines that increases the conducted EMI on the board. Ideally, at the eyes of the power suppy, the regulator should be asking for a DC current. The input capacitor is there to buffer the input current at a constant rate and supply the requested bursts to the regulator.
+</p>
+<p>
+The current flowing through the input capacitor is the difference between input and inductor currents during the on state and only the input current during the off state. It is easy to see that during the off state, the capacitor is charged with current $I_{in}$, while during the off state it is discharged. In steady state, the charge added and removed are equal. The input voltage ripple goes from its minimum to its maximum during the charging period. Then:
+$$C\frac{dV_{in}}{dt} = C\frac{\Delta V_{in}}{t_{off}} = I_{in}$$
+$$\Delta V_{in} = \frac{I_{in} t_{off}}{C}$$
+Since in the continuous case we have $I_{in} = D I_{out}$ and $t_{off} = (1-D)T$:
+$$\begin{equation}\Delta V_{in} = \frac{I_{out}D (1-D)T}{C} \label{eq:inputcapacitorripple}\end{equation}$$
+<!--If we consider only the DC inductor current, the full swing in the input capacitor current is $I_{out}$. Therefore, the ESR of the input capacitor also adds to the input voltage ripple:
+$$\Delta V_{in} = I_{out} R_C$$-->
+</p>
+<h2 id="h2_boundary">Boundary of discontinuous and continuous modes</h2>
+<center>
+<img src="../pages/voltage.regulators.buck/mode.boundary.svg" class="svg" width="600"/>
+</center>
+<p>
+As you have seen so far, the mode of operation impacts values such as required duty-cycle to set a certain output voltage and the output voltage ripple. Therefore, to properly size the components, it is important to know in which mode the regulator is working. We now look to where the boundary between the modes lies. The boundary is found when the inductor current drops to zero at exactly the end of the off state. It is also the case when the ripple current is the double of the load current. Let us start with the ripple inductor current in the continuous mode:
+$$\Delta I_L = \frac{V_{in} - V_{out}}{L}DT$$
+During continuous mode, the input-output relation is $V_{out}=DV_{in}$. Then:
+$$\Delta I_L = \frac{V_{in} - DV_{in}}{L}DT=\frac{V_{in}}{L}(1 - D)DT$$
+In steady state, the average load current is:
+$$I_{out} = \frac{V_{out}}{R}=\frac{V_{in}}{R}D$$
+The boundary is when the ripple current is the double of the load current:
+$$ \frac{\Delta I_L}{2} = I_{out}$$
+$$\frac{V_{in}}{2L}(1 - D)DT = \frac{V_{in}}{R}D$$
+$$ D = 1 - \frac{2L}{RT}$$
+For $D &gt; 1 - \frac{2L}{RT}$, the regulator operates in continuous mode, otherwise it enters discontinuous mode.
+</p>
+<p>
+Another option is to decide the boundary based on the load:
+$$R = \frac{2L}{(1-D)T}$$
+For $R &gt; \frac{2L}{(1-D)T}$, the regulator enters in discontinuous mode.
+Since $D &gt; 0$, the smallest value for the load resistance that the regulator operates in the discontinuous mode is $\frac{2L}{T}$. Below that it always works in continuous mode. If you have a maximum load resistance (or in turn a minimum load current), you can specify $L$ and $T$ such that the converter always operates in continuous mode. 
+</p>
+<center>
+<div id="plot_boundary" style="width:600px;height:300px"></div>
+<table cellpadding="5">
+<tr>
+<td>$R$ = <span id="label_boundary_R"></span> $\Omega$</td>
+<td><div id="boundary-R-slider" style="width:600px;"></div></td>
+</tr>
+<tr>
+<td>$L$ = <span id="label_boundary_L"></span> $\mu H$</td>
+<td><div id="boundary-L-slider" style="width:600px;"></div></td>
+</tr>
+</table>
+</center>
+</p>
+<p class="comment">
+This plot shows how a buck regulator can switch between discontinuous and continuous modes depending on the duty cycle. Higher duty-cycle pushes the regulator to the continuous mode because it gives less time during the off state for the current of the inductor to drop to zero. You can use the sliders to simulate a buck converter with different load resistance $R$ and different inductor value $L$. Higher resistances shrink the continuous mode range because the load sinks less current, which puts the average inductor current in a lower value. On the other hand, a higher inductor value increases the continuous mode range because it reduces the ripple and thus the conditions in which the inductor current drops to zero.
+</p>
+<h2 id="h2_nonidealities">Non-idealities</h2>
+<p>
+Nothing is perfect! The buck converter, like any electric circuit, has parasitic resistances, capacitances and inductances in every component and wires. In power applications, where efficiency is the most precious metric, resistances (losses in general) are the most important parasitics to be analyzed. Of special importance are the following:
+<ul>
+<li>The forward voltage drop in the diode</li>
+<li>The on resistance of the switch transistor</li>
+<li>The high dissipation transition from off to on and vice-versa</li>
+<li>The Equivalent Series Resistance (ESR) of capacitors</li>
+<li>The DC Resistance (DCR) or ESR of inductors</li>
+</ul>
+Since some of these non-idealities are only active during the on or off states, we will use the subscripts $\cdot_{(on)}$ and $\cdot_{(off)}$ to refer to the on and off states, respectively. For example, $i_{L(on)}$ refers to the inductor current during the on state and $i_{L(off)}$ to the inductor current during the off state.
+</p>
+<p>
+When measuring power, the measures of interest are the <a href="http://en.wikipedia.org/wiki/Root_mean_square#Average_electrical_power" rel="external" target="_blank">root mean square</a> values of currents and voltages. For standard signals, such as triangle waveforms, the <a href="http://masteringelectronicsdesign.com/how-to-derive-the-rms-value-of-a-triangle-waveform/" rel="external" target="_blank">relations between peak-to-peak $V_{pp}$ and RMS $V_{rms}$ values are known.</a>
+<center>
+<table style="align:center" class="table">
+<tr><td width="400"><img src="../pages/voltage.regulators.buck/triangular.waveform.svg" width="300"/></td>
+<td>$$V_{rms} = \frac{V_{pp}}{2\sqrt{3}}$$ $$\langle v(t) \rangle = 0$$</td></tr>
+<tr><td><img src="../pages/voltage.regulators.buck/triangular.half.waveform.svg" width="300"/></td>
+<td>$$V_{rms} = V_{pp}\sqrt{\frac{D}{12}}$$ $$\langle v(t) \rangle = 0$$</td></tr>
+<tr><td><img src="../pages/voltage.regulators.buck/rectangular.waveform.svg" width="300"/></td>
+<td>$$V_{rms} = a\sqrt{D} + b\sqrt{1-D} $$ $$\langle v(t) \rangle = aD - b(1-D)$$</td></tr>
+<tr><td><img src="../pages/voltage.regulators.buck/triangular_DC.waveform.svg" width="300"/></td>
+<td>$$V_{rms} = \sqrt{ \frac{V_{pp}^2}{12} + V_{dc}^2} $$ $$\langle v(t) \rangle = V_{dc}$$</td></tr>
+<tr><td><img src="../pages/voltage.regulators.buck/triangular_rectangular.waveform.svg" width="300"/></td>
+<td>$$V_{rms} = \sqrt{V_{pp1}^2D + V_{pp2}^2\frac{D}{12}} $$</td></tr>
+</table>
+</center>
+</p>
+<h3 id="h3_diode">The forward voltage drop in the diode</h3>
+<center>
+<img src="../pages/voltage.regulators.buck/buck.off.diode.svg" class="svg" width="250"/>
+</center>
+<p>
+The diode only becomes forward biased and lets current flow from anode to cathode when there is a forward voltage $V_D$ across it, usually around 0.7V. That means that the cathode is not at ground, but instead at $-V_D$. Schottky diodes are often used, since they have a forward voltage of ~0.4V instead of 0.7 for regular diodes. The voltage drop in the diode basically means dissipation. Those ~0.7V dropped in the diode are lost and the current flowing through the diode is the same as the inductor current during the off state. Therefore, the power lost is:
+$$P_{D} = V_D I_{L(off)} (1-D)$$
+where $V_D$ is the forward voltage and $I_{L(off)} = \langle i_{L(off)} \rangle$ is the average inductor current during the off state.
+</p>
+<p>To save some loss, the diode can be replaced by a switch (a transistor) that turns on and off when the diode would. This configuration is known as the <b>synchronous buck converter</b>. In this case, the control circuit needs to be careful not to turn on both transistors at the same time, creating a short-circuit to the input voltage. In practice, a dead time is added between switching off one and turning on the other switch.
+</p>
+<p>
+Regarding the effect of this nonideality on the transfer function, we can see that the only change is that the voltage across the inductor during the off state changes to $-V_D - V_{out}$. Then:
+$$\Delta I_L^+ + \Delta I_L^- = \frac{V_{in} - V_{out}}{L}DT + \frac{-V_D - V_{out}}{L}(1-D)T = 0$$
+$$DV_{in} - V_D(1-D)  - V_{out} = 0$$
+$$V_{out} = DV_{in} - V_D(1-D)$$
+$$D = \frac{V_{out} + V_D}{V_{in} + V_D}$$
+</p>
+<h3 id="h3_ron">The on resistance of the switch transistor</h3>
+<p>
+The switch transistor has a small resistance while it is on. Say the on resistance is $R_{on}$. The current flowing through the switch is the same as of the inductor. Thus, the voltage drop in the switch is:
+$$v_{on} = i_{L(on)} R_{on}$$
+and the power lost is
+$$P_{on} = I_{L(on)(rms)}^2 R_{on} D = \left(I_{out}^2 + \frac{\Delta I_L^2}{12}\right) D R_{on}$$
+Power MOSFET transistors have on resistances ranging from $~2 m\Omega$ up to $200 m\Omega$.
+</p>
+<h3 id="h3_dcr">The DCR of the inductor</h3>
+<p>
+Every inductor is made of wires, and wires have some resistance. It is only natural that real inductors have some resistance. If we name it $R_L$, the power lost in the inductor is:
+$$\begin{equation}P_L = I_{L(rms)}^2 R_L = \left(I_{out}^2 + \frac{\Delta I_{L}^2}{12}\right) R_L\label{eq:lossesdcr}\end{equation}$$
+The voltage dropped in the inductor is:
+$$v_L = i_L R_L $$
+</p>
+<h3 id="h3_esr">ESR of capacitors</h3>
+<p>
+The current flowing through the output capacitor is the difference between inductor and load current. This difference is nothing more, nothing less than the inductor current ripple. The inductor current ripple, being triangular (in the continuous mode), has a Root-Mean-Square (RMS) value of $\Delta i_{L(rms)} = \Delta I_L/(2\sqrt{3})$. Then:
+$$\begin{equation}P_{C_{out}} = R_{C_{out}} \Delta i_{L(rms)}^2 = R_{C_{out}} \frac{\Delta I_L^2}{12}\label{eq:lossescout}\end{equation}$$
+</p>
+<p>
+The RMS current of the input capacitor is:
+$$I_{C_{in}(rms)} = \sqrt{\frac{1}{T}\int_0^T i_{C_{in}}^2 dt }$$
+The current in the capacitor is $I_{in}$ during the off state and $I_{in} - i_L$ during the on state. Then:
+$$I_{C_{in}(rms)} = \sqrt{\frac{1}{T}\left(\int_0^{DT} (I_{in} - i_L)^2 dt + \int_{DT}^T I_{in}^2 dt\right)}$$
+Now, $i_L$ is changing, but if we neglect the ripple, we end up with it being equal to the load current. Then:
+$$I_{C_{in}(rms)} = \sqrt{\frac{1}{T}\left(\int_0^{DT} (I_{in} - I_{out})^2 dt + \int_{DT}^T I_{in}^2 dt\right)}$$
+By using the relation $I_{in} = DI_{out}$, we can simplify the above expression:
+$$I_{C_{in}(rms)} = \sqrt{\frac{1}{T}\left(\int_0^{DT} (I_{out} (1 - D))^2 dt + \int_{DT}^T (I_{out}D)^2 dt\right)}$$
+$$I_{C_{in}(rms)} = \sqrt{\frac{1}{T}\left((I_{out} (1 - D))^2 DT + (I_{out}D)^2 (1-D)T \right)}$$
+$$I_{C_{in}(rms)} = \sqrt{I_{out}^2 \left ( (1 - D)^2 D + D^2 (1-D) \right)}$$
+$$I_{C_{in}(rms)} = I_{out} \sqrt{ D (1 - D) }$$
+If we did not neglected the ripple current, the expression would be:
+$$I_{C_{in}(rms)} = \sqrt{D\left( I_{out}^2 (1-D) + \frac{\Delta I_L^2}{12}\right)}$$
+From here, the loss due to the input capacitor ESR is:
+$$\begin{equation}P_{C_{in}} = I_{C_{in}(rms)}^2 R_{C_{in}}\label{eq:lossescin}\end{equation}$$
+</p>
+<h3 id="h3_switch">Switching of the transistors</h3>
+<p>
+This is the only parameter that depends on the switching frequency $f_{SW}$. Higher frequency means more switching and more transitions through the high dissipation region of the transistor switch. Above a certain frequency, these type of losses become dominant.
+</p>
+<p>
+This type of losses are difficult to calculate accurately. Therefore, we should look for an estimate or an upper bound. We can take the following approach:
+<ul>
+<li>the high dissipation region is during the complete switching rise and fall times ($t_{rise}$ and $t_{fall}$)</li>
+<li>the voltage $V$ across the transistor is the same as the one when it is switched off</li>
+<li>the current through the transistor is the same as when it is turned on</li>
+<li>consider only half of the loss</li>
+</ul>
+Considering everything the power loss will be:
+$$P_{SW} = V I_{L(on)} (t_{rise} + t_{fall})f_{SW}$$
+where $I_{L(on)} = \langle i_{L(on)}\rangle$ is the average inductor current during the on state.
+</p>
+<p>
+The gate of the MOSFET transistor also needs to be charged and discharged for every transition. MOSFET datasheets usually present the amount of charge $Q_G$ needed to charge the gate of transistor. This, together with the gate-source voltage $V_{GS}$ that turns the transistor on, gives the energy spent every time the switch closes. Finally, we get the power by multiplying the energy by the switching frequency:
+$$P_G = Q_G V_{GS} f_{SW}$$
+</p>
+<p>
+Lets summarize all losses in the following table:
+<center>
+<table class="table" cellpadding="5">
+<tr><th>Cause</th><th>Power Lost</th></tr>
+<tr><td>Diode</td><td>$P_D = V_D I_{L(off)} (1-D)$</td></tr>
+<tr><td>Switch on resistance</td><td>$P_{on} = I_{L(on)(rms)}^2 R_{on} D$</td></tr>
+<tr><td>Inductor DCR</td><td>$P_L = \left(I_{out}^2 + \frac{\Delta I_L^2}{12} \right)R_L$</td></tr>
+<tr><td>Input Capacitor ESR</td><td>$P_{C_{in}} = D\left( I_{out}^2(1-D) + \frac{\Delta I_L^2}{12}\right) R_C  $</td></tr>
+<tr><td>Output Capacitor ESR</td><td>$P_{C_{out}} = \frac{\Delta I_L^2}{12} R_C $</td></tr>
+<tr><td>Transistor switching</td><td>$P_{SW} + P_G = \left(V I_{L(on)} (t_{rise} + t_{fall}) + Q_G V_{GS}\right) f_{SW}$</td></tr>
+</table>
+</center>
+</p>
+<p>
+Given the voltage drops of the non-ideal components, the relation between output and input voltages changes slightly. Instead of having:
+$$D = \frac{V_{out}}{V_{in}}$$
+we now get:
+$$D = \frac{V_{out} + V_D + V_L}{V_{in} - V_{on}+ V_D}$$
+This can be better seen with an Equivalent Circuit model.
+</p>
+<h2 id="h2_DCmodel">Equivalent Circuit model</h2>
+<p>
+With all these non-idealities, the complete circuit can become quite messy. A DC-DC converter can be seen as a DC transformer, a component that changes the level of the input voltage. We can keep this core transformer ideal and represent all non-idealities with extra components in the primary or secondary sides. This makes it very easy to analyze a non-ideal circuit with circuit analysis tools.
+In general, the output and input voltages are related by a factor $M$ that depends on the duty-cycle:
+$$V_{out} = M(D) V_{in}$$
+Since in the ideal transformer, the power is preserved, we have:
+$$P_{in} = P_{out} = V_{in} I_{in} = V_{out} I_{out}$$
+$$\frac{V_{out}}{V_{in}} = \frac{I_{in}}{I_{out}} = M(D)$$
+For the buck converter, $M(D) = D$. Such a model only looks at the DC values, no ripples involved. Now we have this circuit model being driven by an input voltage, which in turn defines the output voltage: that's a <b>voltage controlled voltage source</b>. When the output voltage is applied to a load, an output current starts flowing. The input current is a function of the output current: that's a <b>current controlled current source</b>. These two components make up the DC transformer model, as in the next figure.
+</p>
+<center>
+<img src="../pages/voltage.regulators.buck/dc.transformer.model.svg" class="svg" width="400"/>
+</center>
+<p>
+Now let us add some of the parasitic components to the model. As before, we will use the terms $I_{L(on)}$ for the average inductor current during the on state and $I_{L(off)}$ for the average inductor current during the off state. Also, this time we will take a more systematic approach, by using the principles of <a href="#h3_voltsecond">inductor volt-second</a> and <a href="#h3_ampsecond">capacitor amp-second balance</a>. Everything has to add up!
+</p>
+<h3 id="h3_model_diode">The forward voltage drop in the diode</h3>
+<p>
+When the switch is on, the diode is reverse biased and the equations are the same with or without considering the forward voltage of the diode. We have the following equations for the inductor voltage and capacitor current:
+$$v_L(t) = V_{in} - V_{out}$$
+$$i_C(t) = i_L(t) -\frac{V_{out}}{R}$$
+When the switch is off, the equations for the inductor voltage and capacitor current are:
+$$v_L(t) = -V_D - V_{out}$$
+$$i_C(t) = i_L(t) -\frac{V_{out}}{R}$$
+We can apply the principles of inductor voltage-second balance and capacitor amp-second balance.
+$$\langle v_L(t) \rangle = \frac{1}{T}\int_0^T v_L(t)dt = (V_{in} - V_{out})D + (-V_D -V_{out})(1-D) = 0$$
+$$V_{in}D - V_{out} - V_D (1-D) = 0$$
+$$\langle i_C(t) \rangle = \frac{1}{T}\int_0^T i_C(t)dt = I_L -\frac{V_{out}}{R} = 0$$
+From the first expression we can derive the input-output relation
+$$ V_{out}  = V_{in}D - V_D (1-D)$$
+$$ D = \frac{V_{out} + V_D}{V_{in} + V_D}$$
+Also, this expression is equivalent to adding a voltage source to the output with value $V_D(1-D)$. The DC transformer model becomes:
+</p>
+<center>
+<img src="../pages/voltage.regulators.buck/dc.transformer.model.forward.voltage.svg" class="svg" width="500"/>
+</center>
+<p>
+</p>
+<h3 id="h3_model_dcr">The DCR of the inductor</h3>
+<p>
+When the switch is on, we have the following equations for the inductor voltage and capacitor current:
+$$v_L(t) = V_{in} - V_{out} - i_L(t)  R_L$$
+$$i_C(t) = i_L(t) -\frac{V_{out}}{R}$$
+When the switch is off, the equations for the inductor voltage and capacitor current are:
+$$v_L(t) = - V_{out} - i_L(t) R_L$$
+$$i_C(t) = i_L(t) -\frac{V_{out}}{R}$$
+We can apply the principles of inductor voltage-second balance and capacitor amp-second balance.
+$$\langle v_L(t) \rangle = \frac{1}{T}\int_0^T v_L(t)dt = (V_{in} - V_{out} - I_{L(on)}  R_L)D + (-V_{out} - I_{L(off)} R_L)(1-D) = 0$$
+$$V_{in}D - V_{out} - I_L R_L = 0$$
+$$\langle i_C(t) \rangle = \frac{1}{T}\int_0^T i_C(t)dt = I_L - I_{out} = I_L -\frac{V_{out}}{R} = 0$$
+where $I_L = I_{L(on)}D + I_{L(off)}(1-D)$. So now we have two equations and the unknown $I_L$. We can use the two equations to get rid of this variable:
+$$I_L = \frac{V_{out}}{R}$$
+$$V_{in}D - V_{out} - \frac{V_{out}}{R} R_L = 0$$
+$$\frac{V_{out}}{V_{in}} = \frac{R}{R + R_L}D$$
+The series resistance of the inductor adds a voltage divider, so the regulator needs a bigger duty-cycle for the same input-output relation.
+In terms of the DC transformer model, the voltage divider can be accomplished by putting a resistance in the original model in series with the load. $I_L = V_{out}/R$ applies for the model with or without this extra resistance.
+</p>
+<center>
+<img src="../pages/voltage.regulators.buck/dc.transformer.model.DCR.svg" class="svg" width="500"/>
+</center>
+<p>
+Also, let us see how the duty-cycle expression changes:
+$$V_{out} = DV_{in} - V_L$$
+$$D = \frac{V_{out} + V_L}{V_{in}}$$
+where $V_L = I_L R_L$.
+</p>
+<h3 id="h3_model_ron">The on resistance of the switch transistor</h3>
+<p>
+We have the following equations for the inductor voltage and capacitor current:
+$$v_L(t) = V_{in} - R_{on} i_L(t) - V_{out} $$
+$$i_C(t) = i_L(t) -\frac{V_{out}}{R}$$
+When the switch is off, the equations for the inductor voltage and capacitor current are:
+$$v_L(t) = - V_{out}$$
+$$i_C(t) = i_L(t) -\frac{V_{out}}{R}$$
+We can apply the principles of inductor voltage-second balance and capacitor amp-second balance.
+$$\langle v_L(t) \rangle = \frac{1}{T}\int_0^T v_L(t)dt = (V_{in} - R_{on} I_{L(on)} - V_{out} )D + (-V_{out})(1-D) = 0$$
+$$V_{in}D - R_{on}D I_{L(on)}  - V_{out} = 0$$
+$$\langle i_C(t) \rangle = \frac{1}{T}\int_0^T i_C(t)dt = I_L -\frac{V_{out}}{R} = 0$$
+To find the the input-output relation, we can rearrange the voltage-second balance equation:
+$$V_{out} = D(V_{in} - R_{on} I_{L(on)})$$
+$$D = \frac{V_{out}}{V_{in} - V_{on}}$$
+where $V_{on} = R_{on} I_{L(on)}$. Now we know that we can represent this non-ideality with a resistance $R_{on}D$ in the secondary side:
+</p>
+<center>
+<img src="../pages/voltage.regulators.buck/dc.transformer.model.onresistance.svg" class="svg" width="500"/>
+</center>
+<h3 id="h3_model_all">All together</h3>
+<p>
+Finally, since the non-idealities are modeled as linear components, all of them can be superimposed on the same circuit:
+</p>
+<center>
+<img src="../pages/voltage.regulators.buck/dc.transformer.model.all.svg" class="svg" width="700"/>
+</center>
+<p>
+$$V_{out} = DV_{in} - R_{on} D I_L - R_L I_L - V_D(1-D)$$
+$$V_{out} + V_L + V_D = D(V_{in} - V_{on} + V_D)$$
+$$D = \frac{ V_{out} + V_L + V_D }{V_{in} - V_{on} + V_D}$$
+</p>
+<h2 id="h2_limitsoutput">Limits on the output voltage</h2>
+<p>
+Unlike the ideal case $V_{out} = D V_{in}$, all these non-idealities put a limit to the output voltage in real switching regulators. The output is now defined as:
+$$V_{out} = D(V_{in} - V_{on}+ V_D) - (V_D + V_L)$$
+To find the limits of the output voltage, all we have to do is consider the worst conditions for the minimum and maximum output voltages. The worst conditions for the minimum output voltage are the ones that push the voltage up: maximum input voltage and minimum load current. There may be a minimum duty-cycle due to technical reasons. Therefore, the minimum output voltage is not zero, but instead:
+$$V_{out(min)} = D_{min}(V_{in(max)} - V_{on(min)}+ V_D) - (V_D + V_{L(min)})$$
+The worst conditions for the maximum output voltage are the ones that push the voltage down: minimum input voltage and maximum load current. For similar reasons, there may be a maximum duty-cycle. Therefore, the maximum output voltage is:
+$$V_{out(max)} = D_{max}(V_{in(min)} - V_{on(max)}+ V_D) - (V_D + V_{L(max)})$$
+</p>
+<p>
+Let's try this in an example: for values $D_{min} = 10\%$, $D_{max} = 90\%$, $V_{in} = [36,40]V$, $I_{load} = [0.1,1]A$, $R_{on} = 100 m\Omega$, $V_D = 0.4 V$, $R_L=25 m\Omega$. Assume the converter works in continuous mode ($V_{on} = R_{on} I_L$, $V_L = R_L I_L$). Then:
+$$V_{out(min)} = 0.1(40 - 0.1\cdot 0.1 + 0.4) - (0.4 + 0.025\cdot 0.1) = 3.64 V$$
+$$V_{out(max)} = 0.9(36 - 0.1\cdot 1 + 0.4) - (0.4 + 0.025\cdot 1) = 32.3 V$$
+This means that if the desired voltage is between 3.64 V and 32.3 V, this regulator would work in the specified conditions.
+</p>
+<h2 id="h2_dynamics">Dynamics</h2>
+<p>
+Until now, we looked at switching voltage regulators in a steady-state condition, after they are stabilized. However, there is a dynamic side to it: when input voltage changes or the load asks for a different power, the regulator must adapt and enters in a transient behavior. In this section, we will look at how to analyze switching regulators in this perspective and learn how they work.
+</p>
+<h3 id="h3_ACmodel">AC Equivalent Circuit Model</h3>
+<p>
+Just as in the steady-state case, we can build a simplified model of the regulator that makes our life easier. One important thing to realize is that there are two types of dynamics:
+<ol>
+<li><b>Switching dynamics:</b> these are caused by the switching of transistors and are high frequency (hundreds of kHz).</li>
+<li><b>External dynamics:</b> these are caused by external perturbations, such as load or input voltage and are much slower (hundreds of Hz)</li>
+</ol>
+The first type of dynamics is not important to our AC model, they are intrinsic to the regulator and they were in fact analyzed in previous sections. The second type of dynamics are the ones we want to capture in the model.
+</p>
+<center>
+<div id="plot_dynamic" style="width:600px;height:300px"></div>
+</center>
+<p>
+The way we separate the high- and low-frequency parts is by simple averaging. If we average the signal across a full switching cycle, the switching frequencies are lost in the averaging process and not modeled anymore. On the other hand, by analyzing each cycle separately, the low-frequency variations that come across many cycles will be captured. Thus, we consider that the inductor voltage and capacitor current are constant during a cycle:
+$$L\frac{di_L}{dt} = \left\langle v_L \right\rangle_T$$
+$$C\frac{dv_C}{dt} = \left\langle i_C \right\rangle_T$$
+The subscript $T$ simply means the average is done over the period $T$.
+Unlike the <a href="#h2_steadystate">steady-state case</a>, the average voltage of the inductor and the average current of the capacitor are not zero, but will instead change over many cycles until they reach the steady-state condition.
+</p>
+<p>
+In a very similar way as in the steady-state case, we can find the average inductor current and capacitor voltage by solving the inductor and capacitor fundamental equations at the on and off states. For the buck converter, when the switch is on:
+$$\begin{equation}\langle v_L \rangle_{t_{on}}= \left\langle v_{in} - v_{out}\right\rangle_{t_{on}} = L\frac{ d i_L}{dt}\label{eq:vlton}\end{equation}$$
+$$\langle i_C \rangle_{t_{on}}= \left\langle i_L - i_{out}\right\rangle_{t_{on}} = C\frac{d v_{out}}{dt}$$
+During the off-state:
+$$\begin{equation}\langle v_L \rangle_{t_{off}}= \left\langle -v_{out}\right\rangle_{t_{off}} = L\frac{ di_L}{dt}\label{eq:vltoff}\end{equation}$$
+$$\langle i_C \rangle_{t_{off}}= \left\langle i_L - i_{out}\right\rangle_{t_{off}} = C\frac{dv_{out}}{dt}$$
+Now we just have to average both during a complete cycle:
+$$\begin{equation}\left\langle v_L \right\rangle_T = D \left\langle v_{in} - v_{out}\right\rangle_{t_{on}} + (1-D) \left\langle -v_{out}\right\rangle_{t_{off}}\label{eq:vld}\end{equation}$$
+$$\left\langle i_C \right\rangle_T = D \left\langle i_L - i_{out}\right\rangle_{t_{on}} + (1-D)\left\langle i_L - i_{out}\right\rangle_{t_{off}}$$
+Both terms will not be zero if not in steady-state condition. Since for all intents and purposes, the averaged terms are constants during a cycle, we can do the following:
+$$\left\langle v_L \right\rangle_T =  L\frac{ i_L(T + t) - i_L(t)}{T}$$
+$$i_L(T+t) = i_L(t) + \left\langle v_L \right\rangle_T \frac{T}{L} $$
+and
+$$\left\langle i_C \right\rangle_T = C\frac{v_{out}(T+t) - v_{out}(t)}{T}$$
+$$v_{out}(T+t) = v_{out}(t) + \left\langle i_C \right\rangle_T \frac{T}{C}$$
+Great, we have equations that describe how the inductor current and capacitor voltage change in a given cycle. In addition, the input current follows the same rule as before, but instead of having a fixed value, it is fixed only during a switching cycle:
+$$\left\langle i_{IN} \right\rangle_T = D \left\langle i_L \right\rangle_{t_{on}} + (1-D) 0$$
+As it is common in this type of analysis, we assume that the changes of all these terms are around and much smaller than a DC value. Therefore, we can decompose all signals in a DC component and a smaller low-frequency AC component:
+$$\left\langle v_L \right\rangle_T(t) = V_l + v_l(t)$$
+$$\left\langle i_C \right\rangle_T(t) = I_c + i_c(t)$$
+$$\left\langle i_{IN} \right\rangle_T(t) = I_{in} + i_{in}(t)$$
+with $|v_l(t)|\ll |V_l|$, $|i_c(t)|\ll |I_c|$ and $|i_{in}(t)|\ll |I_{in}|$. Now we also consider that the duty-cycle is changing:
+$$\left\langle D \right\rangle_T(t) = D + d(t)$$
+Every signal we have (lowercase letters and uppercase subscript) is made of a DC component (uppercase letters and lowercase subscript) and an AC signal (lowercase letters and lowercase subscript). Let us review equations $\eqref{eq:vlton}, \eqref{eq:vltoff}$ and $\eqref{eq:vld}$ in this new light:
+$$L\frac{d i_{OUT}}{dt} = L\frac{d i_L}{dt} = L\left( \frac{dI_l}{dt} + \frac{di_l}{dt} \right) = \langle v_L \rangle_T (t)$$
+$$ \langle v_L \rangle_T (t) = \left(D + d(t)\right) \left( V_{in} + v_{in}(t) - V_{out} - v_{out}(t) \right) + \left(1 - D - d(t)\right) \left( -V_{out} - v_{out}(t) \right) $$
+join and reorder these expressions in terms of magnitude:
+$$L\frac{di_l(t)}{dt} = \underset{\text{DC components}}{\underbrace{D V_{in} - V_{out}}} + \underset{\text{first order terms}}{\underbrace{D v_{in}(t) - v_{out}(t) + d(t) V_{in}}} + \underset{\text{second order terms}}{\underbrace{d(t)v_{in}(t)}} $$
+The second-order terms are non-linear, rather small compared to the others, and are stopping us from having a linear expression. So the most simple thing to do is to neglect them in our modeling, since they will have only a small effect in the overall scheme of things. Note that if the AC components are zero, the expression is the same as the one presented in steady-state. It couldn't be otherwise.
+</p>
+<p>
+We can take the same approach for the capacitor:
+$$C\frac{dV_{c}+dv_c(t)}{dt} = \langle i_C \rangle_T (t) = I_l + i_l(t) - I_{out} - i_{out}(t)$$
+$$C\frac{dv_c(t)}{dt} = \underset{\text{DC components}}{\underbrace{I_l - I_{out}}} + \underset{\text{AC components}}{\underbrace{i_l(t)  - i_{out}(t)}}$$
+This case, there are no high-order components, so no stress. Finally, the input current is:
+$$ \langle i_{IN} \rangle_T = I_{in} + i_{in}(t)  = (D + d(t))(I_l + i_l(t))$$
+$$ I_{in} + i_{in}(t)  = \underset{\text{DC component}}{\underbrace{DI_l}} + \underset{\text{first order components}}{\underbrace{Di_l(t) + d(t)I_l}} + \underset{\text{second order components}}{\underbrace{d(t)i_l(t)}}$$
+In all expressions, the DC components on both sides are equal (that follows from the steady-state condition) and can be removed.
+</p>
+<p>
+Before actually building the AC equivalent model, let us rewrite the expressions next:
+$$L\frac{di_l(t)}{dt} = D v_{in}(t) + V_{in} d(t) - v_{out}(t)$$
+$$C\frac{dv_c(t)}{dt} = i_l(t)  - i_{out}(t)$$
+$$i_{in}(t)  = Di_l(t) + I_l d(t)$$
+You can confirm that the following circuit obeys to the expressions above. Hence, this is the equivalent AC circuit.
+</p>
+<center>
+<img src="../pages/voltage.regulators.buck/ac.transformer.model.svg" class="svg" width="750"/>
+</center>
+<!--<h3 id="h3_ACmodel">Frequency response</h3>
+<p>
+A switched-mode regulator is comprised of inductors and capacitors. These components create a dynamic behavior that can be captured by a transfer function in the frequency domain. This transfer function can then be used to gain some insight on how the converter responds to changes in its inputs.
+</p>
+<p>
+To understand this section, you need to know the Laplace transform. So, go learn it before reading this section.
+</p>
+<p>
+A regulator has several inputs that change its response:
+<ul>
+<li>The input voltage</li>
+<li>The load current</li>
+<li>The duty-cycle</li>
+</ul>
+Therefore, we can define 3 transfer functions, one for each input. Apart from all the current and voltage sources, the model of the buck converter boils down to this:
+</p>
+<center>
+<img src="pages/voltage.regulators.buck/ac.model.svg" class="svg" width="300" />
+</center>
+<p>
+The transfer function of the circuit above is:
+$$G(s) = \frac{v_{out}}{v_{in}} = \frac{1}{1 + s\frac{L}{R} + s^2 LC}$$
+This is the transfer function of a second-order system. They all have the form:
+$$G(s) =  \frac{1}{1 + 2\zeta \frac{s}{\omega_0} + \left(\frac{s}{\omega_0}\right)^2} = \frac{1}{1 + \frac{s}{Q\omega_0} + \left(\frac{s}{\omega_0}\right)^2}$$
+The parameter $\zeta$ is called the damping ratio and it measures how much the response is damped, $\omega_0$ is the natural frequency and $Q$ is the quality factor and is a measure of the dissipation in the system. Therefore, the buck converter has:
+$$\omega_0 = \frac{1}{\sqrt{LC}}$$
+$$\Q = R\sqrt{\frac{C}{L}}$$
+When $Q \lt 0.5$, the poles are real, otherwise they are complex.
+</p>-->
+<h2 id="h2_examples">Examples</h2>
+<h3 id="h3_design">Designing a buck converter</h3>
+<p>
+In this section, we are going use all the information above to design a buck converter. To do so, we have the following specs:
+</p>
+<h4>Specifications</h4>
+<p>
+<center>
+<table class="table">
+<tr><td>Input voltage</td><td>30 V</td></tr>
+<tr><td>Output voltage</td><td>12 V</td></tr>
+<tr><td>Maximum power</td><td>120 W</td></tr>
+<tr><td>Switching frequency</td><td>500 kHz</td></tr>
+<tr><td>Inductor current ripple</td><td>30% of maximum current</td></tr>
+<tr><td>Output voltage ripple</td><td>200mV</td></tr>
+<tr><td>Input voltage ripple</td><td>1V</td></tr>
+</table>
+</center>
+</p>
+<h4>Component selection</h4>
+<p>
+Since the ripple is 30%, the regulator will work in continuous mode <a href="#h2_boundary">while the load current is more than half the inductor current ripple</a>, i.e., the load current is more than 15% of the maximum. The maximum load current is:
+$$I_{out(max)} = \frac{120}{12} = 10 A$$
+The ripple is then only 30% of this:
+$$\Delta I_L = 0.3 I_{out(max)} = 3 A$$
+From $\eqref{eq:tf_continuous}$, the duty-cycle is calculated for the continuous case:
+$$D = \frac{V_{out}}{V_{in}} = \frac{12}{30} = 0.4$$
+The inductor value can be directly found from $\eqref{eq:inductorripple}$:
+$$L = \frac{V_{in}-V_{out}}{\Delta I_L} D T &gt; \frac{30-12}{3 * 500 k} 0.4 = 4.8 \mu H$$
+</p>
+<center>
+<img src="../pages/voltage.regulators.buck/capacitor.output.ESR.svg" class="svg" width="300"/>
+</center>
+<p>
+The output capacitor has an ESR, which adds to the output ripple as an effect of the ripple inductor current flowing through the capacitor. Therefore, using $\eqref{eq:capacitorripple}$ as the sole expression to calculate the output ripple can be misleading. In fact, although the peaks of the two ripples ((dis)charge of the capacitor and voltage drop in $R_C$) are not synchronized, we can roughly say that the output ripple is the sum of the two:
+$$\Delta V_C = \frac{\Delta i_L T}{8C_{out}} + \Delta i_L R_C$$
+When choosing a capacitor, both the capacitor value and its ESR must be chosen. Therefore, we can either make an estimate of $R_C$ and then find $C$, or the other way around. In this example, we restrain the selection of the capacitor to the ones with $R_C \lt 30m\Omega$ and calculate the capacitance value:
+$$C_{out} = \frac{\Delta i_L T}{8(\Delta V_C - \Delta i_L R_C)} &gt; \frac{3}{8(200m - 3 *30m)500k} = 6.8 \mu F$$
+</p>
+<center>
+<img src="../pages/voltage.regulators.buck/capacitor.input.ESR.svg" class="svg" width="300"/>
+</center>
+<p>
+The input capacitor voltage ripple is limited by the specs of the input capacitor as $\eqref{eq:inputcapacitorripple}$ (with the ripple caused by the ESR added):
+$$\Delta V_{in} = I_{out} \left( \frac{ (1-D)DT}{C_{in}} + R_C \right)$$
+Just like the output capacitor, let us limit the ripple of the input capacitor by choosing a ESR and then sizing the capacitance value. For an ESR of $50 m\Omega$:
+$$C_{in} = I_{out(max)} \frac{ (1-D)DT}{\Delta V_{in} - R_C I_{out(max)}} &gt; 10 \frac{ 0.6 \cdot 0.4}{500k \cdot (1 - 50m \cdot 10)} = 9.6 \mu F$$
+</p>
+<p>
+The chosen diode must handle the peak inductor current ($I_{out} + \Delta I_L/2$) and have a maximum reverse voltage greater than $V_{in}$ (worst case, when the switch is closed).
+</p>
+<h4>Losses and efficiency</h4>
+<p>
+The chosen inductor will have a certain DCR. For example purposes, assume it is $0.2 m\Omega$. Then, the power in the inductor is $\eqref{eq:lossesdcr}$:
+$$P_L = (I_{out}^2 + \frac{\Delta I_L^2}{12})R_L = (10^2 + 3^2/12) * 0.2m \approx 0.02 W$$
+The power dissipation in the output capacitor can be estimated as $\eqref{eq:lossescout}$:
+$$P_{C_{out}} = R_{C_{out}} \frac{\Delta I_L^2}{12} = 30m \cdot 3^2/12 = 0.0225 W$$
+The power dissipation in the input capacitor can be estimated as $\eqref{eq:lossescin}$:
+$$P_{C_{in}} = R_{C_{in}} D\left( I_{out}^2 (1-D) + \frac{\Delta I_L^2}{12}\right) = 50m \cdot 0.4 (10^2 0.6 + 3^2/12) = 1.215 W$$
+We will use a regular diode in this example, with 0.7 V forward voltage. The diode has the following loss:
+$$P_D = V_D I_{out} (1-D) = 0.7 \cdot 10 \cdot (1 - 0.4) = 4.2 W$$
+<!--An alternative is to use the synchronous buck converter and the transistor loss is:
+$$P_D =  I_{out}^2 R_{on} (1-D) = 66.6^2 * 20m\Omega * (1 - 0.15) = 75.4 W$$
+In this case, it is better to use the diode version.-->
+Concerning the primary transistor switch, it has the on resistance and the switching dissipations. Assume we select a transistor with a $20 m\Omega$ on resistance. The power lost in the on resistance is:
+$$P_{on} = \left(I_{out}^2 + \frac{\Delta I_L^2}{12}\right) D R_{on} = (10^2 + \frac{3^2}{12}) 0.4 \cdot 20m \approx 0.8 W$$
+For the switching dissipation, assume rise and fall times of 10 ns, a $V_{GS} = 10 V$ and a gate charge of 50 nC. Then:
+$$P_{SW} + P_G = \left((V_{in} - V_{out}) I_{out}/2 (t_{rise} + t_{fall}) + Q_G V_{GS}\right) f_{SW}$$
+$$P_{SW} + P_G = ((30 - 12) * 10/2 * 20n + 50n*10) 500k = 0.9 + 0.25 = 1.15 W$$
+Finally, it would be wise to ensure that the selected MOSFET can handle the power dissipation. Thus, it is important to check the thermal resistance of the package. If a SMD package is used, with a 50º/W, the package would be 50*7 = 350º above ambient temperature. Then, it would be better to use a package with a lower thermal resistance and/or add a heatsink. 
+</p>
+<p>
+The following table summarizes all losses and calculates the efficiency:
+<center>
+<table class="table">
+<tr><td>Power supplied</td><td>$P_{out}$</td><td>120 W</td></tr>
+<tr><td>Power lost in the inductor</td><td>$P_L$</td><td>0.02 W</td></tr>
+<tr><td>Power lost in the output capacitor</td><td>$P_{C_{out}}$</td><td>0.0225 W</td></tr>
+<tr><td>Power lost in the input capacitor</td><td>$P_{C_{in}}$</td><td>1.215 W</td></tr>
+<tr><td>Power lost in the diode</td><td>$P_D$</td><td>4.2 W</td></tr>
+<tr><td>Power lost in the transistor's on resistance</td><td>$P_{R_{on}}$</td><td>0.8 W</td></tr>
+<tr><td>Power lost in the transistor's switching</td><td>$P_{SW}+P_G$</td><td>1.15 W</td></tr>
+<tr><td>Total Power lost</td><td>$P_{lost}$</td><td>7.4 W</td></tr>
+<tr><td>Power required</td><td>$P_{in} = P_{out} + P_{lost}$</td><td>127.4 W</td></tr>
+<tr><td><b>Efficiency</b></td><td>$\eta = \frac{P_{out}}{P_{in}}$</td><td>94%</td></tr>
+</table>
+</center>
+</p>
+<p>
+The load current plays a big role in all losses. So, if you were to calculate the losses for several load currents, you would then be able to make a plot of losses (or efficiency) against the load current.
+</p>
+<!--<h3 id="h3_datasheet">Datasheet of a buck converter</h3>
+<h3 id="h3_using">Using a buck converter</h3>-->
+<script type="text/javascript" src="../pages/voltage.regulators.buck.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

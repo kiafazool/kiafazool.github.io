@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Switching-mode voltage regulators/converters</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_voltage_regulators_switching/" />
+	<meta name="description" content="Switching voltage regulators control the output voltage by regulating the amount of energy transfered between input and output. The energy flow is gated by a transistor switch while the energy is buffered by inductors in the form of current and by capacitors in the form of voltage. Learn the basic concepts of switching mode power supplies.">
+	<meta name="keywords" content="switching converters, switch-mode power supply, switching-mode voltage regulators">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'voltage.regulators.switching';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_voltage.regulators/">http://www.onmyphd.com/?p=voltage.regulators.switching</a></p><h1>Switch-mode Voltage regulators</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basics of electronic circuits</li>
+<li><a href="../print.php/p_voltage/" class="page">What is a voltage regulator</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_indcap">An introduction to inductors and capacitors</a></li>
+<li><a href="#h2_lowdissipation">The transistor does not dissipate energy, like in the linear regulators</a></li>
+<li><a href="#h2_ripple">Ripple</a></li>
+<li><a href="#h2_dutycycle">Duty cycle</a></li>
+<li><a href="#h2_efficiency">Efficiency</a></li>
+<li><a href="#h2_control">Control</a></li>
+<li><a href="#h2_topologies">Topologies</a></li>
+</ul>
+<p>
+As we have seen in the <a href="../print.php/p_voltage/" class="page">voltage regulators section</a>, regulators can be roughly divided in linear or switched-mode. Switched-mode regulators do not waste energy like linear regulators. Instead, they transfer and store energy from the input to the output periodically and release the stored energy continuously to the load. Some internal components of the switched-mode regulators work as buffers of energy and the load gets a constant flow of current.
+</p>
+<p>
+Say we have a load that consumes 1A at 5V. The power is 5W, right? What other ways could this power be delivered to the load? We could divide the time in periods and deliver twice the power in half the period, and nothing in the other half, or 4 times the power in 1/4 of the period and nothing in the remaining period, and so on.
+</p>
+<center>
+<img src="../pages/voltage.regulators.switching/energy.svg" class="svg" width="350"/>
+</center>
+<p>
+In the same way, we have meals in specific periods, but we spend the energy from the food throughout the day, because we can store it. That begs the question: what type of components can store electric energy? Inductors store energy in the form of current and capacitors in the form of voltage, but we will talk about that in the next section. As of now, you know that <b>switch-mode regulators do not waste energy and it is stored temporarily in inductors and capacitors</b>.
+</p>
+<h2 id="h2_indcap">An introduction to inductors and capacitors</h2>
+<p>
+To understand how switching regulators work, you should know the basic principles of inductors and capacitors.
+Unlike resistances, the current flowing through inductors and capacitors may not be proportional to the voltage at their terminals. A current in an inductor can only change gradually, even if its voltage changes abruptly. The rate of change of the inductor current is proportional to the voltage across its terminals and inversely proportional to the inductor value $L$. In math,
+$$\frac{dI}{dt}=\frac{V}{L}$$
+If the voltage could suddenly drop to zero (ideal short circuit), the current in the inductor would remain the same.
+</p>
+<p>A voltage in a capacitor can only change gradually, even if its current changes abruptly. The rate of change of the capacitor voltage is proportional to the current flowing through it and inversely proportional to the capacitor value $C$., i.e.,
+$$\frac{dV}{dt}=\frac{I}{C}$$
+If the current flow stops (ideal open circuit), the voltage at the capacitor terminals remains constant. You can now see that these two components can store energy: the energy stored in an inductor is:
+$$E = \int_0^T i\cdot v\,dt = \int_0^T i L\frac{di}{dt}\,dt = L\int_0^{I} i\,di = \frac{1}{2}LI^2$$
+and the energy stored in a capacitor:
+$$E = \int_0^T i\cdot v\,dt = \int_0^T C\frac{dv}{dt} v\,dt = C\int_0^{V} v\,dv = \frac{1}{2}CV^2$$
+</p>
+<h2 id="h2_lowdissipation">The transistor does not dissipate energy, like in the linear regulators</h2>
+<p>
+The connection between input and output is done by active devices, such as bipolar or MOS transistors. A transistor can work as a switch, it can be on or off. Both states have low dissipation, off there is no current, on its resistance is very low. In between states, the transistor has high dissipation.
+</p>
+<center>
+<img src="../pages/voltage.regulators.switching/transistor.resistance.svg" class="svg" width="300"/>
+</center>
+<p>
+In linear regulators,  the transistor is controlled in the high dissipation region, because the regulator creates a controlled voltage drop at the terminals of the transistor. Switched-mode regulators send bursts of energy when the transistor is on, and cut the transfer of energy when the transistor is off. This way, the dissipation in the transistor is always low, except in the very short transition periods. But you might be wondering, how can an output voltage remain fixed with these bursts of energy?
+</p>
+<h2 id="h2_ripple">Ripple</h2>
+<p>
+In reality, the output voltage is not exactly fixed, but ripples around the desired value instead. When the energy is bursted to inside the regulator, the inductor current increases. When the energy flow is cutoff, the load takes charge from the inductor and its current decreases. The same happens with the voltage of the capacitors in the regulator.
+</p>
+<center>
+<img src="../pages/voltage.regulators.switching/ripple.svg" class="svg" width="300"/>
+</center>
+<p>
+The inductors/capacitors have a value large enough so that their currents/voltages remain close to the desired value during normal operation. The ripple term is commonly referred as the amplitude of the current/voltage around the average value, i.e., how much the current/voltage ripples around the average value, in a complete cycle in steady-state. The period controls the amplitude of the ripple: if you eat more times during the day, you will have smaller oscillations of the energy stored in your body.
+</p>
+<h2 id="h2_dutycycle">Duty cycle</h2>
+<p>
+The fraction of the period the transistor is on controls the output voltage, which also depends on the input voltage and the load current. This term is known as duty cycle. In analogy, if you spend more time eating (the duration of the on state), you get more energy and if you spend more energy (the load current), the energy decreases faster.
+</p>
+<center>
+<img src="../pages/voltage.regulators.switching/duty.cycle.svg" class="svg" width="300"/>
+</center>
+<h2 id="h2_efficiency">Efficiency</h2>
+<p>
+Efficiency is the ratio of output and input powers. In switched-mode regulators, power is lost in parasitic resistances, such as winding resistance of the inductors, equivalent series resistance in capacitors and on resistance of the transistors. Regulators of this type have efficiencies in the order of 90%.
+</p>
+<h2 id="h2_control">Control</h2>
+<p>
+We could regulate the output voltage by blindly setting the duty-cycle according to expressions that relate the input voltage, the output voltage and duty-cycle. However, most expressions are crude approximations and the error therein would be considerable. A much better way to make the control is by sensing the output voltage, comparing it against a reference voltage and using the error to set the duty-cyle.
+<center>
+<table cellpadding="10">
+<tr>
+<td><img src="../pages/voltage.regulators.switching/control.svg" class="svg" width="350"/><p class="comment">Control of voltage regulator</p></td>
+<td><img src="../pages/voltage.regulators.switching/control.pwm.svg" class="svg" width="400"/><p class="comment">PWM control of switch-mode regulators</p></td>
+</tr>
+</table>
+</center>
+</p>
+<p>
+The left diagram represents any type of voltage regulator. The <i>control block</i> pushes the output voltage to a value that minimizes the error between the sensed and reference voltages. In the limit, $V_{s} = V_{ref}$:
+$$\frac{R_2}{R_1+R_2}V_{out} = V_{ref}$$
+$$V_{out} = \left(\frac{R_1}{R_2} + 1\right)V_{ref}$$
+These resistances are inside the integrated circuit for fixed output voltage regulators. The right diagram represents the <i>control block</i> for the particular case of switched-mode regulators. A ramp signal is compared to an amplified version of the error. Every time the error is greater than the ramp, $\Phi$ is on, otherwise it is off. The ramp signal is periodic and its frequency is the switching frequency. The portion of the period the error is above the ramp is the duty-cycle. Since the output voltage is related to the duty-cycle, a feedback loop is formed that finds a balance when the sensed signal is equal to the reference voltage.
+</p>
+<h2 id="h2_topologies">Topologies</h2>
+<p>
+The switched-mode concept can be implemented in different topologies. They often have their own pros and cons, and their choice depends on the application. They can be separated on isolated or non-isolated, depending if the output is electrically isolated from the input or not. Further details depend on the topology used. The most well known are:
+<h3>Non-isolated topologies</h3>
+<ul>
+<li><a href="../print.php/p_voltage.regulators.buck.step.down/" class="page">Buck (step down) - input voltage greater than output voltage</a></li>
+<li>Boost - output voltage greater than input voltage</li>
+<li>Buck-boost</li>
+<li>Boost-buck (or Split-pi)</li>
+<li>Ćuk</li>
+<li>SEPIC</li>
+<li>Zeta</li>
+<li>Charge pump</li>
+</ul>
+<h3>Isolated topologies</h3>
+<ul>
+<li>Flyback</li>
+<li>Ringing choke converter</li>
+<li>Half forward</li>
+<li>Forward</li>
+<li>Resonant forward</li>
+<li>Push-pull</li>
+<li>Half-bridge</li>
+<li>Full-bridge</li>
+<li>Resonant zero-voltage switched</li>
+<li>Isolated Ćuk</li>
+</ul>
+<script type="text/javascript" src="../pages/typeset.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

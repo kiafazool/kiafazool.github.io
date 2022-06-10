@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Aliasing</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_aliasing/" />
+	<meta name="description" content="Aliasing is a phenomenon that happens when a signal is sampled at less than the double of the highest frequency contained in the signal (its bandwidth). The result is a destructive change on the spectrum of the original signal, rendering its perfect reconstruction after sampling impossible.">
+	<meta name="keywords" content="aliasing, anti-aliasing, Nyquist-Shannon sampling theorem, nyquist rate, nyquist frequency, frequency folding, fourier sampling">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'aliasing';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_aliasing/">http://www.onmyphd.com/?p=aliasing</a></p><h1>Aliasing</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>That a continuous signal can be sampled at a certain frequency</li>
+<li>That a signal can be represented in the frequency domain</li>
+<li>The Fourier Transform</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What is Aliasing?</a></li>
+<li><a href="#h2_fouriersampling">How does sampling affects the spectrum of the signal?</a></li>
+<li><a href="#h2_samplingtheorem">Nyquist-Shannon sampling theorem</a></li>
+<li><a href="#h2_reconstruction">Signal reconstruction</a></li>
+<li><a href="#h2_frequencyfolding">Frequency folding</a></li>
+<li><a href="#h2_antialiasing">Anti-aliasing filter</a></li>
+<li><a href="#h2_paradox">The paradox of the Nyquist rate</a></li>
+</ul>
+<h2 id="h2_whatis">What is Aliasing?</h2>
+<p>
+Aliasing is an interesting (and usually unwanted) phenomenon that happens when a signal is sampled at less than the double of the highest frequency contained in the signal. Related to this concept are the Nyquist-Shannon sampling theorem, Nyquist frequency, frequency folding, anti-aliasing filter and others. These concepts are so interconnected that is difficult to choose which one to introduce first. So, let us start with an example, a signal with a single frequency $f$ that is sampled at a frequency $f_s$. The following plot shows the signal in the time domain and the sampling points. You can control the sampling frequency with the slider and see how the sampled signal looks like.
+</p>
+<p>
+<center>
+<div style="width:600px;height:300px" id="sampling_time_plot"></div>
+<p class="comment">The slider below controls the sampling frequency as a function of the signal frequency. When $f_s \lt 2f$, the sampled signal appears to have a different frequency than the original.
+</p>
+<table>
+<tr><td width="100">$f_s$ = <span id="c">3</span>$f$</td><td><div id="fs_slider" style="width:450px"></div></td></tr>
+</table>
+</center>
+</p>
+<p>
+As you can see, if you lower the sampling frequency too much, the sampled signal appears to have a different frequency. This effect is called <b>aliasing</b> and it also happens when you watch wheels spinning so fast that it appears that they are moving slowly in the other direction (<a href="http://en.wikipedia.org/wiki/Wagon-wheel_effect" target="_blank">the Wagon-wheel effect</a>). For example, sampling frequencies <a href="#" onclick="$('#fs_slider').slider('/', 0.9); return false;">$0.9f$</a> and <a href="#" onclick="$('#fs_slider').slider('/', 1.1); return false;">$1.1f$</a> lead to the same sampled signal frequency $0.1f$. In general, a signal with frequency $f_i$ after sampling could have been obtained by the sampling of signals with frequency $f$
+$$f_i = |f - N \cdot f_s|$$
+where $N$ is any integer. Then, with $N = 1$, the <b>alias or image</b> with frequency $0.1 f$ comes from sampling at frequencies $0.9f$ ($f_i = |f - 0.9 \cdot f| = |0.1 \cdot f|$) or $1.1f$ ($f_i = |f - 1.1 \cdot f| = |0.1 \cdot f|$). Likewise, the alias with zero frequency comes from sampling cases:
+<ul>
+<li><a href="#" onclick="$('#fs_slider').slider('/', 1); return false;">$f_s = 1f, N=1$</a>: $|f - 1 \cdot 1 f| = 0$</li>
+<li><a href="#" onclick="$('#fs_slider').slider('/', 0.5); return false;">$f_s = 0.5f, N=2$</a>: $|f - 2 \cdot 0.5 f| = 0$</li>
+<li><a href="#" onclick="$('#fs_slider').slider('/', 0.2); return false;">$f_s = 0.2f, N=5$</a>: $|f - 5 \cdot 0.2 f| = 0$</li>
+</ul>
+Keep in mind that a signal is normally composed of many frequencies, and this effect can be analyzed individually for each of them. The last experiment shows that <b>the sampling process, when suffering from aliasing, is changing the spectrum of the signal</b>. To understand what is really happening, we should know how sampling affects the spectrum of the original signal.
+</p>
+<h2 id="h2_fouriersampling">How does sampling affects the spectrum of the signal?</h2>
+<p>
+Although it is easy to understand what happens to a signal in the time domain after sampling, it is not so clear what happens in the frequency domain. Sampling can be seen as multiplying a signal $x(t)$ by a train of dirac impulses equally spaced by $t_s=1/f_s$ (<a href="http://en.wikipedia.org/wiki/Dirac_comb" target="_blank" rel="external">a Dirac comb</a>):
+$$x_s(t) = x(t)\sum_{n=-\infty}^{\infty} \delta(t-n\cdot t_s)$$
+</p>
+<p>
+The Fourier transform of $x(t)$ is $X(f)$ and the transform of the train of impulses is:
+$$\mathcal{F}\left\{\sum_{n=-\infty}^{\infty} \delta(t-n\cdot t_s) \right\} = \frac{1}{t_s} \sum_{n=-\infty}^{\infty} \delta(f-n \cdot f_s)$$
+i.e., it is also a train of impulses. Recalling that multiplication in the time domain is the same as <a href="../print.php/p_convolution/" class="page">convolution</a> in the frequency domain, we have:
+$$X_s(f) = X(f)\star \left[\frac{1}{t_s} \sum_{n=-\infty}^{\infty} \delta(f-n \cdot f_s)\right] = \int_{-\infty}^{\infty}X(s) \frac{1}{t_s}\sum_{n=-\infty}^{\infty} \delta(f-s-n \cdot f_s)\textrm{d}s$$
+$$=\frac{1}{t_s} \sum_{n=-\infty}^{\infty} \int_{-\infty}^{\infty}X(s) \delta(f-s-n \cdot f_s)\textrm{d}s$$
+$$=\frac{1}{t_s} \sum_{n=-\infty}^{\infty} X(f-n\cdot f_s)$$
+where the first equation comes from the <a href="../print.php/p_convolution/" class="page">definition of convolution</a> and the last comes from the <a href="../print.php/p_convolution/" class="page">convolution of a function with a dirac impulse</a>. This expression tells us that <b>sampling of a signal with spectrum $X(f)$ replicates the same spectrum at distances multiples of $f_s$</b>.
+</p>
+<p>
+The next experiment lets you add a number of copies at multiples of the sampling frequency to the spectrum of a cosine function and you can see that the resulting signal starts to approach the sampled signal.
+</p>
+<p>
+<center>
+<div style="width:700px;height:200px" id="copies_freq_plot"></div>
+<div style="width:700px;height:300px" id="copies_time_plot"></div>
+<p class="comment">The slider below controls the number of copies that are added to the original signal. In this case, the sampling frequency is 3x the signal frequency. To see the original signal, set the number of copies to zero. As more copies are added, the waveform tends to the sampled signal (compare to the first experiment). The sampling process would produce an infinite number of these copies, resulting in a waveform with dirac impulses at the sampling points.
+</p>
+<table>
+<tr><td width="200">Number of copies = <span id="copies">0</span></td><td><div id="copies_slider" style="width:450px"></div></td></tr>
+</table>
+</center>
+</p>
+<p>
+From here, it will be very simple to figure out the minimum sampling frequency that avoids aliasing. This is stated in the <b>Nyquist-Shannon sampling theorem</b>.
+</p>
+<h2 id="h2_samplingtheorem">Nyquist-Shannon sampling theorem</h2>
+<p>
+From what you've learned so far, it is clear that aliasing is a destructive effect, since you can never recover the original signal after sampling. The Nyquist-Shannon sampling theorem states what you should do to avoid aliasing or, in other words, at what frequency you should sample a signal in order to reconstruct it perfectly. In the words of Shannon:
+<blockquote>
+If a function x(t) contains no frequencies higher than B hertz, it is completely determined by giving its ordinates at a series of points spaced 1/(2B) seconds apart.
+</blockquote>
+Therefore, if you sample a signal with bandwidth $B$ at a frequency higher than $2B$, you do not have aliasing. This condition is known as the <b>Nyquist criterion</b>. You have two ways of looking at it:
+<ul>
+<li>For a given signal with bandwidth $B$, you must sample at more than the <b>Nyquist rate</b>, which is $2B$.</li>
+<li>At a given sampling frequency $f_s$, the signal to be sampled must have a bandwidth smaller than the <b>Nyquist frequency</b>, which is $f_s/2$.</li> 
+</ul>
+From the previous section, we know that sampling replicates the spectrum of the original signal at distances multiples of the sampling frequency. The criterion stated in Nyquist-Shannon sampling theorem is sufficient to avoid overlap of these copies. This is necessary if we hope to ever recover the original signal.
+</p>
+<center>
+<img src="../pages/aliasing/aliasing.svg" class="svg" width="500px"/>
+</center>
+<h2 id="h2_reconstruction">Signal reconstruction</h2>
+<p>
+You might be wondering how come the original signal can be reconstructed by the sampled signal.
+The sampling process is making an infinite copies of the spectrum of the signal around multiples of the sampling frequency. If the sampling frequency respects the Nyquist criterion, none of these copies will overlap. Hence, the reconstructed signal can be low-pass filtered to remove all frequencies in the baseband and the original signal is obtained. On the other hand, if the Nyquist criterion is not respected, the copies will overlap and a certain band of frequencies in the baseband will be contaminated with components of adjacent copies, thereby ruining the possibility of exact recovery.
+</p>
+<p>
+<center>
+<img src="../pages/aliasing/aliasing_lowpass.svg" class="svg" width="500px"/>
+</center>
+</p>
+<h2 id="h2_frequencyfolding">Frequency folding</h2>
+<p>
+Now that you know more about the sampling process, let's revisit the aliasing effect in a different view. In pratice, it makes sense to look at a signal as a group of sinusoidal components, instead of just one. Let's fix the sampling frequency and look at what happens at each frequency component of the original signal, upon sampling. Frequencies between 0 and $f_s/2$ do not suffer from aliasing. Frequencies between $f_s/2$ and $f_s$ enter the baseband from the negative frequencies of the first replicas and frequencies between $f_s$ and $3f_s/2$ enter the baseband from the positive frequencies of the first replicas too. And so on and so forth... With increasing frequencies, their image goes back and forth between 0 and $f_s/2$, which looks like folding.
+</p>
+<center>
+<div style="width:600px;height:300px" id="frequency_folding_plot"></div>
+<p class="comment">The slider below controls the frequency component $f$ of a signal, given a fixed sampling rate $f_s$. As the frequency of the component increases, the alias frequency $f_i$ goes back and forth between zero and the Nyquist frequency $f_s/2$, due to the copies produced by sampling.
+</p>
+<p>
+<table>
+<tr><td width="100">$f$ = <span id="f">0</span>$f_s$</td><td><div id="f_slider" style="width:450px"></div></td></tr>
+</table>
+</center>
+</p>
+<p>
+Since <b>all frequencies above the Nyquist frequency "fold" to the Nyquist frequency band</b>, we name this effect as <b>frequency folding</b>. Due to this folding effect, which is another pretty name for the aliasing effect, the Nyquist frequency is also named the <b>folding frequency</b>. 
+</p>
+<h2 id="h2_antialiasing">Anti-aliasing filter</h2>
+<p>
+Usually, our signal of interest has a limited bandwidth, but it is contaminated with components of higher frequencies (such as noise, interferences or other signals that we want to ignore). If the sampling was done at twice the bandwidth of the signal of interest, the unwanted components would get folded (or aliased) to the baseband and contaminate the sampled signal. To avoid that, <b>the signal is filtered before sampling</b> with a cut-off frequency matching the bandwidth of the signal of interest. Higher frequencies are eliminated or greatly reduced and their aliasing becomes negligible.
+</p>
+<h2 id="h2_paradox">The paradox of the Nyquist rate</h2>
+<p>
+In the beginning we started with an example of a cosine. If we started with the sine function instead, a sampling rate of $2f$ leads to no signal. How come we can reconstruct a sampled cosine, but not a sampled sine? I will leave to you to solve this paradox. Hint: note that the only difference between sine and cosine is the time sampling occurs: the sine is sampled in the zero-crossings, but the cosine is sampled at its peaks.
+</p>
+<script type="text/javascript" src="../pages/aliasing.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

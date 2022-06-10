@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Gradient or steepest descent - method, example, step size selection</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_gradient_descent/" />
+	<meta name="description" content="The gradient descent algorithm descends along a function by taking steps in the opposite direction of the gradient of that function, at a given position. Step by step, it approaches the nearer local minimum.">
+	<meta name="keywords" content="minimize a function, gradient descend, ">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'gradient.descent';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_gradient/">http://onmyphd.com/?p=gradient.descent</a></p><h1>Gradient descent</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Basic mathematical background</li>
+<li>Gradient of a function</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_what">What is gradient descent?</a></li>
+<ul>
+<li><a href="#h3_example">A good example</a></li>
+<li><a href="#h3_problem">A bad example</a></li>
+</ul>
+<li><a href="#h2_lambda">Estimating the step size</a></li>
+<ul>
+<li><a href="#h3_maxlambda">Maximum step size for convergence</a></li>
+<li><a href="#h3_adaptivelambda">Adaptive step size</a></li>
+<ul>
+<li><a href="#h4_cauchy">Cauchy</a></li>
+<li><a href="#h4_barzilaiborwein">Barzilai and Borwein</a></li>
+<li><a href="#h4_backtracking">Backtracking</a></li>
+</ul>
+</ul>
+</ul>
+<h2 id="h2_what">What is gradient descent?</h2>
+<p>
+<b>Gradient descent method is a way to find a local minimum of a function</b>. The way it works is we start with an initial guess of the solution and we take the gradient of the function at that point. We <b>step the solution in the negative direction of the gradient</b> and we repeat the process. The algorithm will eventually converge where the gradient is zero (which correspond to a local minimum). Its brother, the gradient ascent, finds the local maximum nearer the current solution by stepping it towards the positive direction of the gradient. They are both first-order algorithms because they take only the first derivative of the function.
+</p>
+<p>
+Let's say we are trying to find the solution to the minimum of some function $f(\mathbf{x})$. Given some initial value $\mathbf{x_0}$ for $\mathbf{x}$, we can change its value in many directions (proportional to the dimension of $\mathbf{x}$: with only one dimension, we can make it higher or lower). To figure out what is the best direction to minimize $f$, we take the gradient $\nabla f$ of it (the derivative along every dimension of $\mathbf{x}$). Intuitively, the gradient will give the slope of the curve at that $\mathbf{x}$ and its direction will point to an increase in the function. So we change $\mathbf{x}$ in the opposite direction to lower the function value:
+$$\mathbf{x}_{k+1} = \mathbf{x}_k - \lambda \nabla f(\mathbf{x}_k)$$
+The $\lambda \gt 0$ is a small number that forces the algorithm to make small jumps. That keeps the algorithm stable and its optimal value depends on the function. Given stable conditions (a certain choice of $\lambda$), it is guaranteed that $f(\mathbf{x}_{k+1}) \le f(\mathbf{x}_k)$.
+</p>
+<h3 id="h3_example">A good example</h3>
+<p>
+<center>
+<table>
+<tr><td width="640" colspan="2"><div style="width:600px;height:300px" id="good_plot"></div></td></tr>
+<tr><td width="100">$x_0$ = <span id="x0_good"></span></td><td><div id="x0_good_slider" style="width:450px"></div></td></tr>
+<tr><td width="100">$\lambda$ = <span id="lambda_good"></span></td><td><div id="lambda_good_slider" style="width:450px"></div></td></tr>
+</table>
+<p class="comment">The sliders above control the initial point $x_0$ and the constant $\lambda$. In the above plot you can see the function to be minimized and the points at each iteration of the gradient descent. If you increase $\lambda$ too much, the method will not converge.</p>
+</center>
+</p>
+<h3 id="h3_problem">A bad example</h3>
+<p>
+There is a chronical problem to the gradient descent. For functions that have valleys (in the case of descent) or saddle points (in the case of ascent), the gradient descent/ascent algorithm zig-zags, because the gradient is nearly orthogonal to the direction of the local minimum in these regions. It is like being inside a round tube and trying to stay in the lower part of the tube. In case we are not, the gradient tells us we should go almost perpendicular to the longitudinal direction of the tube. If the local minimum is at the end of the tube, it will take a long time to reach it because we keep jumping between the sides of the tube (zig-zag). The Rosenbrock function is used to test this difficult problem:
+$$f(y,x) = (1-y)^2 + 100(x - y^2)^2$$
+</p>
+<center>
+<div style="width:600px;height:300px" id="bad_plot"></div>
+</center>
+<p class="comment">Click in the contour plot above to select the initial point from 1000 iterations of gradient descent. You easily see that as soon as the current iteration hits the valley (in dark blue), the iterations almost get stuck in the same position and move very slowly. The minimum is at (1,1).</p>
+<h2 id="h2_lambda">Estimating the step size</h2>
+<p>
+A wrong step size $\lambda$ may not reach convergence, so a careful selection of the step size is important. Too large it will diverge, too small it will take a long time to converge. One option is to choose a fixed step size that will assure convergence wherever you start gradient descent. Another option is to choose a different step size at each iteration (adaptive step size).
+</p>
+<h3 id="h3_maxlambda">Maximum step size for convergence</h3>
+<p>
+Any differentiable function has a maximum derivative value, i.e., the maximum of the derivatives at all points. If this maximum is not infinite, this value is known as the Lipschitz constant and the function is Lipschitz continuous.
+$$\frac{\left\Vert f(\mathbf{x})-f(\mathbf{y}) \right\Vert}{\left\Vert \mathbf{x} - \mathbf{y} \right\Vert}\le L(f), \textrm{ for any } \mathbf{x},\mathbf{y} $$
+This constant is important because it says that, given a certain function, any derivative will have a smaller value than the Lipschitz constant. The same can be said for the gradient of the function: if the maximum second derivative is finite, the function is Lipschitz continuous gradient and that value is the Lipschitz constant of $\nabla f$.
+$$\frac{\left\Vert \nabla f(\mathbf{x})-\nabla f(\mathbf{y}) \right\Vert}{\left\Vert \mathbf{x} - \mathbf{y} \right\Vert}\le L(\nabla f), \textrm{ for any } \mathbf{x},\mathbf{y} $$
+For the $f(x) = x^2$ example, the derivative is $df(x)/dx = 2x$ and therefore the function is not Lipschitz continuous. But the second derivative is $d^2f(x)/dx^2 = 2$, and the function is Lipschitz continuous gradient with Lipschitz constant of $\nabla f = 2$.
+</p>
+<p>
+Each gradient descent can be viewed as a minimization of the function:
+$$\mathbf{x}_{k+1} = \underset{\mathbf{x}}{\arg\min} f(\mathbf{x}_k) + (\mathbf{x} - \mathbf{x}_k)^T\nabla f(\mathbf{x}_k) + \frac{1}{2\lambda}\left\Vert\mathbf{x} - \mathbf{x}_k\right\Vert^2 $$
+If we differentiate the equation with respect to $\mathbf{x}$, we get:
+$$0 = \nabla f(\mathbf{x}_k) + \frac{1}{\lambda}(\mathbf{x} - \mathbf{x}_k)$$
+$$\mathbf{x} = \mathbf{x}_k - \lambda\nabla f(\mathbf{x}_k)$$
+<a href="/#descent_lemma" class="page">It can be shown</a> that for any $\lambda \le 1/L(\nabla f)$:
+$$f(\mathbf{x}) \le f(\mathbf{x}_k) + (\mathbf{x} - \mathbf{x}_k)^T\nabla f(\mathbf{x}_k) + \frac{1}{2\lambda}\left\Vert\mathbf{x} - \mathbf{x}_k\right\Vert^2 $$
+i.e., for any $\mathbf{x}$, $f(\mathbf{x})$ will always be equal or lower than the function that the gradient descent minimizes, if $\lambda \le 1/L(\nabla f)$. Under this view, the result we get from minimizing the right hand side is an upper bound to the real value of the function at $\mathbf{x}$.
+In our good example above, $L(\nabla f) = 2$, then $\lambda \le 0.5$ for good convergence. In fact, for this simple case, $\lambda = 0.5$ is a perfect value for the step size: smaller will converge slower, larger will exceed the optimum point at each iteration (although it still converges up to $\lambda = 1$).
+</p>
+<h3 id="h3_adaptivelambda">Adaptive step size</h3>
+</p>
+There are methods, known as <b>line search</b>, that make an estimate of what the step size should be at a given iteration. After calculating the gradient, these methods choose a step size by minimizing a function of the step size itself:
+$$\lambda_k = h(\lambda)$$ <br/>
+Each method defines its own function, based on some assumptions. Exact methods accurately minimize $h(\lambda)$, while inexact methods make an approximation that just improves on the last iteration. The following are just a few examples.
+<h4 id="h4_cauchy">Cauchy</h4>
+<p>
+One of the most obvious choices of $\lambda$ is to choose the one that minimizes the objective function:
+$$\lambda_k = \underset{\lambda}{\arg\min} f(\mathbf{x}_k - \lambda \nabla f(\mathbf{x}_k)) $$
+This approach is conveniently called the steepest descent method. Although it seems to the best choice, it converges only linearly (error $\propto 1/k$) and is very sensitive to ill-conditioning of problems.
+</p>
+<h4 id="h4_barzilaiborwein">Barzilai and Borwein</h4>
+<p>
+An <a href="../_swright/726/handouts/barzilai-borwein.pdf" target="_blank">approach proposed in 1988</a> is to find the step size that minimizes:
+$$\lambda_k = \underset{\lambda}{\arg\min} \left\Vert \Delta\mathbf{x} - \lambda \Delta g(\mathbf{x}) \right\Vert^2$$
+where $\Delta\mathbf{x} = \mathbf{x}_k - \mathbf{x}_{k-1}$ and $\Delta g(\mathbf{x}) = \nabla f(\mathbf{x}_k) - \nabla f(\mathbf{x}_{k-1})$. This is an approximation to the secant equation, used in quasi-Newton methods. The solution to this problem is easily solved differentiating with respect to $\lambda$:
+$$0 = \Delta g(\mathbf{x})^T (\Delta\mathbf{x} - \lambda \Delta g(\mathbf{x})) $$
+$$\lambda = \frac{\Delta g(\mathbf{x})^T \Delta\mathbf{x}}{\Delta g(\mathbf{x})^T\Delta g(\mathbf{x})} $$
+This approach works really well, even for large dimensional problems.
+</p>
+<h4 id="h4_backtracking">Backtracking</h4>
+<p>
+This is considered an inexact line search, in the sense it does not optimize $\lambda$, but instead chooses one that guarantees some descent.
+Start with $\lambda &gt; 0$ and $\tau \in (0,1)$.<br/>
+Repeat $\lambda = \tau \lambda$<br/>
+Until the <a href="http://en.wikipedia.org/wiki/Wolfe_conditions" target="_blank">Armijo-Goldstein or Wolfe conditions are met</a>
+</p>
+<script type="text/javascript" src="../components/js/math.js"></script>
+<script type="text/javascript" src="../components/js/math.types.js"></script>
+<script type="text/javascript" src="../components/js/math.charts.js"></script>
+<script type="text/javascript" src="../pages/gradient.descent.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

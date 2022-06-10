@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Shot noise</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_noise_shot/" />
+	<meta name="description" content="Shot noise is a noise associated with the stochastic nature of flow of electrons">
+	<meta name="keywords" content="noise, white, equal power, current, PSD, power spectral density">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'noise.shot';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_noise/">http://www.onmyphd.com/?p=noise.shot</a></p><h1>Shot noise</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Only the basics of electricity</li>
+<li>Power Spectral Density (PSD)</li>
+</ul>
+<h2>What is shot noise?</h2>
+<p>
+Current is made of electrons flowing in a certain direction. The amount of electrons flowing per unit of time is not precise, but instead it fluctuates through time. To that fluctuations around the mean value we call <b>shot noise</b>. It is considered only in devices in which electrons need to cross a barrier, such as <b>diodes or transistors</b>. The Power Spectral Density (PSD) of this noise is:
+$$\overline{i_n^2} = 2qI_{DC}$$
+where $q$ is the electron charge (Coulomb) and $I_{DC}$ is the average current (A). This <b>noise is proportional to current</b> because more current means more electrons and more collisions, leading to more fluctuations. The PSD does not depend on the frequency because <b>shot noise is white</b> (equal power for all frequencies).<br>
+</p>
+<p>
+In order to find out how much noise power the device would generate in some circuit, multiply the PSD by the <a href="../print.php/p_enbw.equivalent.noise/" class="page" id="enbw.equivalent.noise.bandwidth">equivalent noise bandwidth</a> of the system ($\Delta f$):
+$$ v_n^2 = \overline{v_n^2}\Delta f = 2qI_{DC} \Delta f$$
+</p>
+<script type="text/javascript" src="../pages/noise_shot.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

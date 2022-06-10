@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>MOSFET transistor (model)</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_mosfet_model/" />
+	<meta name="description" content="The MOSFET transistor model relates the voltage at its terminals to the current that flows through it. Equations are derived for the triode and saturation regions of operation">
+	<meta name="keywords" content="mosfet, cmos, transistor, model, triode, saturation, square law, source, drain, gate, substrate, threshold voltage">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'mosfet.model';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_mosfet/">http://www.onmyphd.com/?p=mosfet.model</a></p><h1>The MOSFET Model</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li><a href="../print.php/p_mosfet/" id="mosfet.transistor" class="page">The MOSFET operation (it helps)</a></li>
+<li>Circuit theory</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_regions">Regions of operation</a></li>
+<ul>
+<li><a href="#h3_triode">Triode</a></li>
+<li><a href="#h3_saturation">Saturation</a></li>
+</ul>
+<li><a href="#h2_curves">Characteristic curves</a></li>
+<ul>
+<li><a href="#h3_idvgs">The $I_{DS}-V_{GS}$ curve</a></li>
+<li><a href="#h3_idvds">The $I_{DS}-V_{DS}$ curve</a></li>
+</ul>
+</ul>
+<h2 id="h2_regions">Regions of operation</h2>
+<p>
+The <a href="../print.php/p_mosfet/" id="mosfet.transistor" class="page">MOSFET operation</a> was demonstrated in another topic, but in order to do any kind of analysis or simulation, it is required a model that represents the behavior of the transistor.
+</p>
+<center>
+<img src="../pages/mosfet.transistor/symbol.svg" width="200" class="svg"/>
+<p class="comment">Symbols of the NMOS and PMOS transistors</p>
+</center>
+<center>
+<img src="../pages/mosfet.transistor/mos.svg" class="svg" width="200"/>
+<p class="comment">The MOS structure</p>
+</center>
+<p>
+Depending on the bias conditions of the transistor (the voltages applied to it), the transistor can be at different regions of operation, that are distinct in the way currents and voltages interplay.
+</p>
+<h3 id="h3_triode">Triode region</h3>
+<p>
+For $V_{DS} \lt V_{GS} - V_{TH}$, we expect that the drain current increases with $V_{GS}$ because it increases the channel conductivity and also with $V_{DS}$ because it is the voltage across the channel. The relation is defined as
+$$\begin{equation}I_{DS} = \mu C_{ox}\frac{W}{L}\left((V_{GS}-V_{TH})V_{DS} - \frac{1}{2}V_{DS}^2 \right)\label{eq:triode}\end{equation}$$
+where $\mu$ is the mobility of the electric carrier (electrons for NMOS $\mu_n$ and holes for PMOS $\mu_p$), $C_{ox}$ is the oxide capacitance and $W$ and $L$ are the transistor's width and length. The drain current is directly proportional to $V_{GS}$ as expected and it has a non-linear dependence with $V_{DS}$ because of the <a href="../print.php/p_mosfet/#pinchoff" id="mosfet.transistor#pinchoff" class="page">tapering of the channel</a>.
+</p>
+<a href="#" id="toggletriodeded">I saved you the dirty details. If you want to find out how this equation is derived, click here.</a>
+<div id="triodeded" style="margin-left: 2em;">
+<p>
+The charge in the channel and in the gate terminal, together with the oxide isolator between them form a capacitor $C_{ox}$.
+</p>
+<center>
+<img src="../pages/mosfet.model/id_triode.svg" width="500" class="svg"/>
+</center>
+</p>
+Due to the tapering of the channel, the voltage across this capacitor is not equal throughout the channel. Instead, the voltage across $C_{ox}$ at the source is $V_{GS} - V_{TH}$ and at the drain is $V_{GD} - V_{TH} = V_{GS} - V_{TH} - V_{DS}$ (note that only when $V_{GS} &gt; V_{TH}$ a channel is formed). In general, at point $x$ is:
+$$ V_{C_{ox}}(x) = V_{GS} - V_{TH} - V(x) $$
+where $V(0) = 0$ at the source and $V(L) = V_{DS}$ at the drain. At point $x$, the point charge is Q = CV:
+$$ dQ(x) = -C_{ox}Wdx(V_{GS} - V_{TH} - V(x)). $$
+$C_{ox}Wdx$ is just a slice of the capacitor at a infinitesimal $dx$ and $dQ(x)$ has negative sign because the charge is negative. The electric field created by the voltage difference at any $dx$ is:
+$$ E(x) = -\frac{dV(x)}{dx}. $$
+This electric field is in the opposite direction of the voltage difference and pushes the charge in the same direction as the voltage difference with velocity:
+$$\frac{dx}{dt} = -\mu E(x) = \mu\frac{dV(x)}{dx}$$
+where $\mu$ is the mobility of the majority carriers (electrons for NMOS and holes for PMOS).
+Being the current the derivative of charge relative to time:
+$$I_{DS} =  -\left(\frac{dQ(x)}{dx}\frac{dx}{dt}\right) = C_{ox}W(V_{GS} - V_{TH} - V(x))\mu\frac{dV(x)}{dx} $$
+which can be rearranged to
+$$I_{DS}dx =  \mu C_{ox}W(V_{GS} - V_{TH} - V(x))dV(x). $$
+Now we take the integral on both sides, the left relative to $dx$, the right relative to $dV(x)$:
+$$\int_0^L{I_{DS}dx} =  \int_0^{V_{DS}}{\mu C_{ox}W(V_{GS} - V_{TH} - V(x))dV(x)}. $$
+$$I_{DS}L =  \left [ \mu C_{ox}W\left((V_{GS} - V_{TH})V(x) - \frac{V(x)^2}{2} \right)\right]_0^{V_{DS}}. $$
+$$I_{DS} =  \mu C_{ox}\frac{W}{L}\left((V_{GS} - V_{TH})V_{DS} - \frac{V_{DS}^2}{2}\right). $$
+</p>
+</div>
+<h3 id="h3_saturation">Saturation region</h3>
+<p>
+When the transistor reaches saturation, $V_{DS} = V_{GS}-V_{TH}$ and $\eqref{eq:triode}$ becomes
+$$I_{DS} = \mu C_{ox}\frac{W}{L}\left((V_{GS}-V_{TH})(V_{GS}-V_{TH}) - \frac{1}{2}(V_{GS}-V_{TH})^2 \right)$$
+$$\begin{equation}I_D = \frac{1}{2}\mu C_{ox}\frac{W}{L}\left(V_{GS}-V_{TH} \right)^2\label{eq:saturation}\end{equation}$$
+This region is also referred as the square-law, since the drain current is proportional to the square of $V_{GS}$.
+</p>
+<script type="text/javascript" src="../pages/mosfet.model.js"></script>
+<h2 id="h2_curves">Characteristic curves</h2>
+<p>
+It is often good to see the relationship between variables in a plot to have a better understanding of what is happening. The most important variables are the drain current $I_{DS}$, the gate-source voltage $V_{GS}$ and the drain-source voltage $V_{DS}$. The two voltages influence the drain current and thus is convenient to show the $I_{DS}-V_{GS}$ and $I_{DS}-V_{DS}$ plots. In the following plots, $V_{TH} = 0.5V$ and $\mu C_{ox}W/L = 1 mA/V^2$.
+</p>
+<h3 id="h3_idvgs">The $I_{DS}-V_{GS}$ curve</h3>
+<center>
+<div id="idvgs" style="width:600px;height:300px;"></div>
+</center>
+<p>
+It can be seen by this plot that for $V_{DS} \gt V_{GS} - V_{TH}$ (or $V_{GS} \lt V_{DS} + V_{TH}$), the transistor is in saturation and the curve bends due to the square law. For $V_{DS} \lt V_{GS} - V_{TH}$ (or $V_{GS} \gt V_{DS} + V_{TH}$), the relation $I_{DS}-V_{GS}$ becomes linear as it should be in the triode region.
+</p>
+<h3 id="h3_idvds">The $I_{DS}-V_{DS}$ curve</h3>
+<center>
+<div id="idvds" style="width:600px;height:300px;"></div>
+</center>
+<p>
+This plot shows that while $V_{GS} \lt V_{TH}$, no current flows through the channel. Furthermore, the non-linear relation between $I_{DS}$ and $V_{DS}$ in the triode region can also be seen, as well as the plateau the current reaches when the transistor enters in saturation. The dashed line separates the triode and the saturation regions and marks the points where $V_{DS} = V_{GS} - V_{TH}$.
+</p>
+<p>
+Truth be told, the plateaus you see above are not completely flat. In saturation, there is some dependence between $I_{DS}$ and $V_{DS}$. In order to know why, you need to understand what is <a href="../print.php/p_channel.length/" id="channel.length.modulation" class="page">channel length modulation</a>.
+</p>
+<script type="text/javascript" src="../pages/mosfet.model.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

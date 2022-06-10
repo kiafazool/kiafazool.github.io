@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Method of Lagrange Multipliers</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_lagrange_multipliers/" />
+	<meta name="description" content="All optimization problems are related to minimizing/maximizing a function with respect to some variable x. If there are constraints in the possible values of x, the method of Lagrange Multipliers can restrict the search of solutions in the feasible set of values of x. It does so by introducing in the cost function the constraints, but multiplying each constraint by a factor. Then it solves the problem in order to these factors and x.">
+	<meta name="keywords" content="lagrange multipliers, optimization problem, loss function, lagrangian">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'lagrange.multipliers';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_lagrange/">http://www.onmyphd.com/?p=lagrange.multipliers</a></p><h1>Method of Lagrange Multipliers</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>The importance of gradients into finding the minimum/maximum of functions</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What is the Method of Lagrange Multipliers?</a></li>
+<ul>
+<li><a href="#h3_graphicalexplanation">A graphical explanation</a></li>
+<li><a href="#h3_example">An example</a></li>
+</ul>
+<li><a href="#h2_regular">Regularity</a><li>
+<ul>
+<li><a href="#h3_regularexample">An example</a></li>
+</ul>
+<li><a href="#h2_kkt">Extending to inequality constraints</a></li>
+</ul>
+<h2 id="h2_whatis">What are Lagrangian Multipliers?</h2>
+<p>
+All optimization problems are related to minimizing a function (usually termed loss, cost or error function) or maximizing a function (such as the <a href="../print.php/p_mle.maximum.likelihood/" class="page">likelihood</a>) with respect to some variable $\mathbf{x}$. <b>If there are constraints in the possible values of $\mathbf{x}$, the method of Lagrange Multipliers can restrict the search of solutions in the feasible set of values of $\mathbf{x}$</b>. Let us limit the constraints to equalities, for now. The problem can be formulated as:
+$$\mathbf{x^\star} = \underset{\mathbf{x}}{\textrm{argmin}} f(\mathbf{x}) $$
+$$\textrm{subject to } h_i(\mathbf{x}) = 0, \forall i=1,..,m$$
+In words, find the solution that minimizes $f(\mathbf{x})$, as long as all equalities $h_i(\mathbf{x}) = 0$ hold. It is easy to see that any equality constraint can be defined, so long as all terms are in the left side of the equation. The method of Lagrange Multipliers works as follows: <b>Put the cost function as well as the constraints in a single minimization problem, but multiply each constraint by a factor $\lambda_i$ (the lagrange multipliers)</b>. In our example, we would have $m$ lagrange multipliers. Hence the expression for the optimization problem becomes:
+$$\mathbf{x^\star} = \underset{\mathbf{x}}{\textrm{argmin }} L(\mathbf{x}, \mathbf{\lambda}) = \underset{\mathbf{x}}{\textrm{argmin }} f(\mathbf{x})  + \underset{i=1}{\overset{m}{\sum}} \lambda_i h_i(\mathbf{x}),$$
+where $L(\mathbf{x}, \mathbf{\lambda})$ is the Lagrangian and depends also on $\mathbf{\lambda}$, which is a vector of all multipliers.
+</p>
+<p>
+As usual, we find the roots of the gradient of the loss function with respect to $\mathbf{x}$ to find the minimum (in case of a convex function) or the maximum (in case of a concave function). That will give us the optimality condition:
+$$\nabla_{\mathbf{x}}L(\mathbf{x}, \lambda) = \nabla_{\mathbf{x}}f(\mathbf{x}) + \sum_i\lambda_i \nabla_{\mathbf{x}}h_i(\mathbf{x}) = 0$$
+We have number of variables equal to the elements in $\mathbf{x}$ (say $k$) plus the number of lagrange multipliers ($m$), and, as of now, we only have $k$ equations coming from the gradient with respect to $\mathbf{x}$. If we derive the loss function with respect to each lagrange multiplier, we have $m$ more equations and each new equation is:
+$$\frac{\partial L(\mathbf{x}, \lambda)}{\partial \lambda_i} = h_i(\mathbf{x}) = 0,$$
+which means that by forcing their derivates to zero we are also limiting the possible solutions to the ones that meet the constraints. Having the same number of equations and variables makes the problem determined and can be solved. Since in the solution, the terms multiplied by the multipliers are zero, they have no contribution to the value of the loss function.
+</p>
+<h3 id="h3_graphicalexplanation">A graphical explanation</h3>
+<p>
+There is also an intuitive graphical explanation for the method.  Referring to Fig. 1, the extremum points of the function subject to the constraint (two different examples in the figure) are points at which the gradient of function $f(x,y)$ points in the same direction as the gradient of function $h(x,y)$ (apart from a multiplication factor).
+</p>
+<!--<p><a href="#" id="proof1ctrl">The proof why this is true</a></p>
+<p class="#proof1">
+	Starting from the extremum without constraints, we can keep increasing $f(\mathbf{x})$ and enlarge their contours until the contour reach our constraint. For all sets of values in that contour, only the one where $g(\mathbf{x}) = 0$ is valid. Furthermore, at that same point, the counter line tangent is the same as the tangent of the constraint. That point is said to be stationary.
+	Given a certain stationary point $\mathbf{x}$, any direction $\mathbf{v}$ that will not change the value of $f(\mathbf{x})$ is
+	$$f(\mathbf{x} + \mathbf{v}) = f(\mathbf{x})$$
+	$$f(\mathbf{x}) + \nabla_\mathbf{x} f(\mathbf{x}) \mathbf{v} = f(\mathbf{x})$$
+	$$\nabla_\mathbf{x} f(\mathbf{x}) \mathbf{v} = 0$$
+	The directions that keep the point stationary are perpendicular to $\nabla_\mathbf{x} f(\mathbf{x})$.
+	On the other hand, the same rule applies to the keep the constraints valid:
+	$$g(\mathbf{x} + \mathbf{v}) = g(\mathbf{x}) = 0$$
+	$$g(\mathbf{x}) + \nabla_\mathbf{x} g(\mathbf{x}) \mathbf{v} = g(\mathbf{x})$$
+	$$\nabla_\mathbf{x} g(\mathbf{x}) \mathbf{v} = 0$$
+	Which means the directions that keep the point within the constraints are perpendicular to $\nabla_\mathbf{x} g(\mathbf{x})$.
+	Then, at stationary points, if the possible directions must be perpendicular to both $\nabla_\mathbf{x} f(\mathbf{x})$ and $\nabla_\mathbf{x} g(\mathbf{x})$ and there tangents are the same, then they must point in the same direction (apart from a multiplicative factor).
+</p>-->
+<p>
+Then, we can impose for the solution:
+$$\nabla_{\mathbf{x}}f(\mathbf{x}) = -\lambda \nabla_{\mathbf{x}}h(\mathbf{x})$$
+$$\nabla_{\mathbf{x}}f(\mathbf{x}) + \lambda \nabla_{\mathbf{x}}h(\mathbf{x}) = 0$$
+This is the same result as taking the gradient of the Lagrange function with respect to $\mathbf{x}$.
+</p>
+<center>
+<img src="../pages/lagrange.multipliers/graphical.explanation.svg" width="500" alt="Graphical explanation for the method of lagrange multipliers" class="svg"/>
+<p class="comment">Fig. 1 - Graphical explanation for the method of lagrange multipliers</p>
+</center>
+<p>
+However, there are still an infinite number of points where the equation above may be true. We still have to find the multiplication factor $\lambda$ in order to solve the problem. As before, we impose the constraints (equivalent to taking the gradient of the Lagrangian with respect to $\lambda$) to get more functions and have a determined system.
+</p>
+<h3 id="h3_example">An example</h3>
+<p>
+Let's say we want to minimize the $\ell_2$-norm of a variable, so long as it obeys to a constraint:
+$$\mathbf{x^\star} = \underset{\mathbf{x}}{\textrm{argmin}} ||\mathbf{x}||^2 $$
+$$\textrm{subject to } \mathbf{y} - A\mathbf{x} = 0.$$
+Assuming that the number of observations in $\mathbf{y}$ are less than the number of variables in $\mathbf{x}$, the problem as an infinite number of solutions, and we are interested in finding the one with least $\ell_2$ norm. Setting the problem in Lagrangian form:
+$$\mathbf{x^\star} = \underset{\mathbf{x}}{\textrm{argmin }} L(\mathbf{x}, \mathbf{\lambda}) = \underset{\mathbf{x}}{\textrm{argmin }} ||\mathbf{x}||^2  + \mathbf{\lambda}^T (\mathbf{y} - A\mathbf{x}),$$
+we have a number of lagrange multipliers as the number of elements in $\mathbf{y}$. The gradient with respect to $\mathbf{x}$ is:
+$$\begin{equation}2\mathbf{x} - A^T \mathbf{\lambda} = 0.\label{eq:1}\end{equation}$$
+You can see $\mathbf{x}$ depending on $\mathbf{\lambda}$. From the gradient of the function with respect to $\mathbf{\lambda}$ we get:
+$$\mathbf{y} = A\mathbf{x}$$
+which in this case is pretty obvious. Premultiply $\eqref{eq:1}$ by $A$ to get:
+$$2A\mathbf{x} = A A^T \mathbf{\lambda}$$
+$$2\mathbf{y} = A A^T \mathbf{\lambda}$$
+$$\mathbf{\lambda} = 2(A A^T)^{-1}\mathbf{y} $$
+We now replace the lagrange multipliers back in $\eqref{eq:1}$ to get:
+$$2\mathbf{x} = A^T 2(A A^T)^{-1}\mathbf{y}$$
+$$\mathbf{x} = A^T (A A^T)^{-1}\mathbf{y}$$
+It turns out that <b>the expression $A^T (A A^T)^{-1}$ is called the pseudo-inverse of A and is a closed-form solution to this problem</b>.
+</p>
+<h2 id="h2_regular">Regularity</h2>
+<p>
+There are cases where the Lagrange multipliers simply do not exist. <b>We say that a feasible point is regular when the gradients of the constraints at that point are linearly independent</b>. If they are not, it may happen that at the optimal feasible point, the gradient of the function cannot be formed by a linear combination of the constraints, and therefore, there are no Lagrange multipliers that will meet the optimality conditions.
+</p>
+<h3 id="h3_regularexample">Example</h3>
+<p>
+Let's look at this regularity issue with an example. Imagine the following problem:
+$$\min f(x_1, x_2) = x_1 + x_2$$
+$$\mbox{subject to }h_1(x_1,x_2) = (x_1-1)^2 + x_2^2 -1 = 0$$
+$$\mbox{subject to }h_1(x_1,x_2) = (x_1-2)^2 + x_2^2 -4 = 0$$
+The constraints are circles with different radius, both crossing the origin $(x_1,x_2) = (0,0)$, which is the optimal solution. The optimality condition is:
+$$\nabla_{\mathbf{x}}f(\mathbf{x}) + \lambda_1 \nabla_{\mathbf{x}}h_1(\mathbf{x}) + \lambda_2 \nabla_{\mathbf{x}}h_2(\mathbf{x}) = 0$$
+However, the gradients at the origin are $\nabla_{\mathbf{x}}f(0,0) = (1,1)$, $\nabla_{\mathbf{x}}h_1(0,0) = (-2,0)$, $\nabla_{\mathbf{x}}h_2(0,0) = (-4,0)$. Since the $x_2$ component is zero in both gradients of the constraints and not in the gradient of the function, the latter can never be formed as a linear combination of the formers. Therefore, there are no Lagrange multipliers that enforce the optimality condition.
+</p>
+<center>
+<img src="../pages/lagrange.multipliers/noregular.svg" width="500px" class="svg"/>
+</center>
+<p>
+But what if the function to be minimized is:
+$$\min f(x_1,x_2) = x_1?$$
+In this case, the optimal solution still is $(0,0)$ and the gradient of $f(x_1,x_2)$  at the optimal point is $\nabla_{\mathbf{x}}f(0,0) = (1,0)$. Then, the gradient of the function can be formed as a linear combination of the gradients of the constraints and there are Lagrange multipliers that enforce the optimality condition.
+</p>
+<center>
+<img src="../pages/lagrange.multipliers/regular.svg" width="500px" class="svg"/>
+</center>
+<p>
+As a recap:
+<ul>
+<li>A feasible solution is regular? The Lagrange multipliers exist and they are unique.</li>
+<li>A feasible solution is not regular? The Lagrange multipliers may or may not exist, depending if the gradient of the function can be represented as a linear combination of the gradients of the constraints.</li>
+</ul>
+</p>
+<h2 id="h2_kkt">Extending to inequality constraints</h2>
+<p>
+And what if we have inequalities as constraints, instead of equalities? The <a href="../print.php/p_kkt.karush.kuhn/" class="page">Karush-Kuhn-Tucker (KKT) conditions</a> extend the method of Lagrange Multipliers to allow inequalities and the KKT conditions are the necessary conditions for optimality.
+</p>
+<script type="text/javascript" src="../pages/typeset.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

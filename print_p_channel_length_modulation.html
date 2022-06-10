@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Channel length modulation</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_channel_length_modulation/" />
+	<meta name="description" content="Channel length modulation in MOSFET transistors is the influence of drain-source voltage in the current due to change of the effective length of the transistor by this voltage">
+	<meta name="keywords" content="mosfet, cmos, transistor, saturation, square law, source, drain, effective length, pinch-off">
+<meta name="thumbnail" content="http://www.onmyphd.com/pages/channel.length.mod/channel.length.modulation.png">	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'channel.length.modulation';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_channel.length/">http://www.onmyphd.com/?p=channel.length.modulation</a></p><h1>Channel Length Modulation</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li><a href="../print.php/p_mosfet/" id="mosfet.transistor" class="page">The MOSFET operation</a></li>
+<li><a href="../print.php/p_mosfet/" id="mosfet.model" class="page">The MOSFET model</a></li>
+</ul>
+<h2>What is channel length modulation?</h2>
+<center>
+<img src="../pages/channel.length.mod/pinch.off.svg" width="200" class="svg"/>
+<p class="comment">Pinch-off</p>
+</center>
+<p>
+It was previously said that <a href="../print.php/p_mosfet/#pinchoff" id="mosfet.transistor" class="page">a MOS transistor pinches off its channel</a> when the drain-source voltage reaches the override voltage ($V_{DS} = V_{GS} - V_{TH}$). But what happens as we keep increasing the drain voltage? As we know, when the drain reaches pinch-off, we have $V_{GD} = V_{TH}$. More generally, the pinch-off occurs in the channel when the difference in potential between gate and that point in the channel is $V_{TH}$. If $V_{DS}$ keeps increasing, the pinch-off must occur at a position $x$ within the channel, somewhere between the drain and source.
+$$V_{Gx} = V_{TH}$$
+$$V_G - V_x = V_{TH}$$
+$$V_x = V_G - V_{TH}$$
+$$V_{xS} = V_{GS} - V_{TH}$$
+and
+$$V_{DS} &gt; V_{GS} - V_{TH}.$$
+There is a voltage drop between the pinch-off point $x$ and the drain. Whatever distance $\Delta L$ remains between these two is a depletion region. Since the channel is being modulated by $V_{DS}$, we call this effect <b>channel-length modulation</b>.
+</p>
+<center>
+<img src="../pages/channel.length.mod/channel.length.mod.svg" width="200" class="svg"/>
+<p class="comment">Channel Length modulation</p>
+</center>
+<h2>What effect has channel length modulation? </h2>
+<p>
+To see the effect of channel length modulation on transistor operation, we replace the length of the transistor by the <b>effective length $L - \Delta L$</b> in the $I_{DS}$ equation in saturation:
+$$I_{DS} = \frac{1}{2}\mu C_{ox}\frac{W}{L - \Delta L}(V_{GS} - V_{TH})^2$$
+$$I_{DS} = \frac{1}{2}\mu C_{ox}\frac{W}{L} \frac{1}{1 - \Delta L/L}(V_{GS} - V_{TH})^2.$$
+Assuming that $\Delta L \ll L$, we can linearize $\frac{1}{1 - \Delta L/L}$ around $\Delta L/L = 0$ to get $\frac{1}{1 - \Delta L/L} \approx 1 + \frac{\Delta L}{L}$. Then:
+$$\begin{equation}I_{DS} = \frac{1}{2}\mu C_{ox}\frac{W}{L} (1 + \frac{\Delta L}{L})(V_{GS} - V_{TH})^2.\label{eq:a}\end{equation}$$
+Next we state that $\Delta L$ is influenced linearly by $V_{DS}$ by a factor of $\lambda'$ (this is more or less true), which is a process parameter:
+$$\Delta L = \lambda' V_{DS}.$$
+But usually, a parameter $\lambda = \lambda'/L$ is used instead, so:
+$$\begin{equation}\frac{\Delta L}{L} = \frac{\lambda' V_{DS}}{L} = \lambda V_{DS}\label{eq:b}\end{equation}.$$
+We can replace $\eqref{eq:b}$ in $\eqref{eq:a}$ to get
+$$I_{DS} = \frac{1}{2}\mu C_{ox}\frac{W}{L}(V_{GS} - V_{TH})^2(1 + \lambda V_{DS}).$$
+By the above equation it is easy to see that increasing $V_{DS}$ increases $I_{DS}$. The following plots show the $I_{DS}-V_{DS}$ curve with channel-length modulation.
+<h3>The $I_{DS}-V_{DS}$ curve</h3>
+<center>
+<div id="idvds" style="width:600px;height:300px;"></div>
+</center>
+<p>
+Now the plateaus are not flat, but have some slope. The meaning and value of the slope is discussed in <a href="../print.php/p_small.signal/" class="page" id="small.signal.model">the small-signal model</a>.
+<script type="text/javascript" src="../pages/channel.length.mod.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

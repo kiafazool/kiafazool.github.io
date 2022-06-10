@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>On My Phd - in electronics and signal processing</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_about_me/" />
+	<meta name="description" content="My name is Hugo Gonçalves and this is my personal project, in which I explain concepts of signal processing and electronics in a way that I identify with, with lots of diagrams and interactive examples. My objective is to prove with A + B that what I am explaining is true. I avoid giving information as if it was a dogma. To support my claims, I usually add interactive examples that simulate the concepts and that you can use to test them.">
+	<meta name="keywords" content="electronics, circuits, CMOS, signal, processing, conditioning, semiconductor">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'about.me';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_about/">http://www.onmyphd.com/?p=about.me</a></p>Hi, my name is Hugo and I am a Ph.D. student at Carnegie Mellon University and University of Porto.
+<p>
+Here I jot down my notes about what I learned in my Ph.D., as well as some other topics I find important. I do this for a bunch of reasons:
+<ul>
+	<li>It helps consolidate my knowledge about these topics by forcing me to explain them.</li>
+	<li>It improves my teaching skills, since I have to look at simple ways to explain things.</li>
+	<li>It gives me a database that I can go back and remember what I need.</li> 
+	<li>It gives me the satisfaction of knowing that people are learning something from me.</li>
+</ul>
+</p>
+<p>
+If you have any questions or comments for me, you can do them at <a href="mailto:onmyphd@gmail.com">onmyphd@gmail.com</a>.
+</p>
+<div id="toc">
+<table cellpadding="10"><tr><td valign="top"><h1>Signal processing</h1><img src="../images/header.signal.processing.jpg"/><p class="comment"></p><ul><li>Analog signals</li><ul><li><a class="page" id="convolution" href="../print.php/p_convolution/">Convolution</a></li><li><a class="page" id="snr.signal.noise.ratio" href="../print.php/p_snr.signal.noise/">Signal-Noise Ratio (SNR)</a></li><li><a class="page" id="dynamic.range" href="../print.php/p_dynamic/">Dynamic Range (DR)</a></li><li><a class="page" id="harmonics" href="../print.php/p_harmonics/">Harmonics</a></li><li><a class="page" id="intermodulation" href="../print.php/p_intermodulation/">Intermodulation</a></li><li><a class="page" id="thd.total.harmonic.distortion" href="../print.php/p_thd.total.harmonic/">Total Harmonic Distortion</a></li><li>Principal Component Analysis (PCA)</li><li>Independent Component Analysis (ICA)</li><li>Continuous systems</li><ul><li>Fourier Transform</li><li>Laplace transform</li></ul><li>Discrete systems</li><ul><li>Z-Transform</li><li>Nyquist-Shannon sampling theorem</li><li><a class="page" id="aliasing" href="../print.php/p_aliasing/">Aliasing</a></li></ul></ul></ul></td><td valign="top"><h1>Microelectronics</h1><img src="../images/header.electronics.jpg"/><p class="comment">Credits: Morten Ingemann</p><ul><li>Sources of noise</li><ul><li><a class="page" id="enbw.equivalent.noise.bandwidth" href="../print.php/p_enbw.equivalent.noise/">Equivalent Noise Bandwidth</a></li><li><a class="page" id="noise.thermal" href="../print.php/p_noise/">Johnson-Nyquist (thermal) noise</a></li><li><a class="page" id="noise.flicker" href="../print.php/p_noise/">Flicker (1/f) noise</a></li><li><a class="page" id="noise.shot" href="../print.php/p_noise/">Shot noise</a></li></ul><li>MOSFET transistor</li><ul><li><a class="page" id="mosfet.transistor" href="../print.php/p_mosfet/">MOSFET transistor - physics</a></li><li><a class="page" id="mosfet.model" href="../print.php/p_mosfet/">MOSFET transistor - model</a></li><li><a class="page" id="channel.length.modulation" href="../print.php/p_channel.length/">Channel length modulation</a></li><li><a class="page" id="body.effect" href="../print.php/p_body/">Body effect</a></li><li><a class="page" id="small.signal.model" href="../print.php/p_small.signal/">Small signal model</a></li><li><a class="page" id="mosfet.parasitic" href="../print.php/p_mosfet/">Parasitic capacitances</a></li><li>Subthreshold operation</li><ul><li><a class="page" id="mosfet.subthreshold.model" href="../print.php/p_mosfet.subthreshold/">Transistor model</a></li></ul><li><a class="page" id="mosfet.short.channel.effects" href="../print.php/p_mosfet.short.channel/">Short channel effects</a></li></ul><li>Design</li><ul><li><a class="page" id="circuit.simulation" href="../print.php/p_circuit/">Circuit simulation</a></li><li>Power management</li><ul><li><a href="../print.php/p_voltage/" class="page">Voltage regulators</a><ul><li><a href="../print.php/p_voltage.regulators/" class="page">Linear voltage regulators</a><ul><li><a class="page" id="voltage.regulators.linear.zener.diode.shunt" href="../print.php/p_voltage.regulators.linear.zener.diode/">Zener-Diode / Shunt regulators</a></li><li><a class="page" id="voltage.regulators.linear.series" href="../print.php/p_voltage.regulators.linear/">Series regulators</a></li><li><a class="page" id="voltage.regulators.linear.ldo.lowdropout" href="../print.php/p_voltage.regulators.linear.ldo/">Low dropout regulator and types of pass transistors</a></li><li><a class="page" id="load.regulation" href="../print.php/p_load/">Load regulation</a></li><li><a class="page" id="line.regulation" href="../print.php/p_line/">Line regulation</a></li></ul><li><a href="../print.php/p_voltage.regulators/" class="page">Switching-mode voltage regulators</a><ul><li><a class="page" id="voltage.regulators.buck.step.down.converter" href="../print.php/p_voltage.regulators.buck.step.down/">Buck converter</a></li></ul></ul></ul><li>Analog</li><ul><li>Operational Amplifiers</li><li><a class="page" id="bode.plot" href="../print.php/p_bode/">Bode plot</a></li><li><a class="page" id="slew.rate" href="../print.php/p_slew/">Slew rate</a></li><li>Feedback</li><li><a class="page" id="quantization.noise.snr" href="../print.php/p_quantization.noise/">Quantization noise and SNR</a></li><li><a class="page" id="analog.digital.converter" href="../print.php/p_analog.digital/">Analog-Digital Converters (ADC)</a></li><li>Digital-Analog Converters (DAC)</li><li><a class="page" id="bandgap.reference" href="../print.php/p_bandgap/">Band-gap voltage reference</a></li><li>Switched Current techniques</li><ul><li><a class="page" id="si.analog.memory" href="../print.php/p_si.analog/">Switched Current analog memory</a></li><li><a class="page" id="si.errors" href="../print.php/p_si/">Sources of errors in SI</a></li></ul><li>Translinear circuits</li><ul><li><a class="page" id="current.squarer" href="../print.php/p_current/">Current squarer</a></li></ul></ul><li>Digital</li><ul><li><a class="page" id="flip.flop" href="../print.php/p_flip/">Flip-flop</a></li></ul></ul><li>How To</li><ul><li><a class="page" id="pcb.design" href="../print.php/p_pcb/">Tips on how to properly design/layout a Printed Circuit Board (PCB)</a></li></ul></ul></td></tr><tr><td valign="top"><h1>Algebra</h1><img src="../images/header.algebra.jpg"/><p class="comment">Credits: Ted Blackman</p><ul><li>Matrix properties</li><li>Matrix operations</li><li><a class="page" id="invertible.singular.ill.conditioned.matrix" href="../print.php/p_invertible.singular.ill.conditioned/">Invertible, singular and ill-conditioned matrix</a></li><li><a class="page" id="legendre.fenchel.transform" href="../print.php/p_legendre.fenchel/">Legendre and Legendre-Fenchel transforms</a></li><li><a class="page" id="eigen.decomposition" href="../print.php/p_eigen/">Eigenvalues, eigenvectors and eigendecomposition</a></li><li>Optimization</li><ul><li><a class="page" id="duality.theory" href="../print.php/p_duality/">Duality Theory</a></li><li>Operators</li><ul><li><a class="page" id="proximal.operator" href="../print.php/p_proximal/">Proximal operator or mapping</a></li></ul><li>Minimizing any function</li><ul><li><a class="page" id="gradient.descent" href="../print.php/p_gradient/">Gradient descent</a></li></ul><li>Minimizing with equality constraints</li><ul><li><a class="page" id="lagrange.multipliers" href="../print.php/p_lagrange/">Method of Lagrangian Multipliers</a></li></ul><li>Minimizing with inequality constraints</li><ul><li><a class="page" id="kkt.karush.kuhn.tucker" href="../print.php/p_kkt.karush.kuhn/">Karush-Kuhn-Tucker (KKT) conditions</a></li></ul><li>Find the solution to a linear system of equations</li><ul><li><a class="page" id="conjugate.gradient.method" href="../print.php/p_conjugate.gradient/">Conjugate gradient method</a></li></ul></ul></ul></td><td valign="top"><h1>Statistics</h1><img src="../images/header.statistics.jpg"/><p class="comment">Credits: How I met your mother</p><ul><li>Estimation Theory</li><ul><li><a class="page" id="mle.maximum.likelihood.estimation" href="../print.php/p_mle.maximum.likelihood/">Maximum Likelihood Estimation (MLE)</a></li></ul><li>Data Mining</li><ul><li><a class="page" id="k-means.clustering" href="../print.php/p_k-means/">K-means clustering</a></li></ul></ul></td></tr></table></div>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

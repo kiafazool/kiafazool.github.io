@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Bode Plot online generator (magnitude and phase)</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_bode_plot_online_generator/" />
+	<meta name="description" content="The bode plot is a graphical representation of a linear, time-invariant system transfer function. There are two bode plots, one plotting the magnitude (or gain) versus frequency (Bode Magnitude plot) and another plotting the phase versus frequency (Bode Phase plot). Here you can create your own examples with the bode plot online plotter.">
+	<meta name="keywords" content="transfer function, poles, zeros, asymptotic, example, calculator, magnitude, gain, phase, applet">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'bode.plot.online.generator';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="/">http://www.onmyphd.com/?p=bode.plot.online.generator</a></p><h1>Bode plot online generator</h1>
+<h3>Real poles and zeros</h3>
+<p>
+This online bode plot generator lets you compare asymptotic bode plots with transfer function plots. You can add poles and zeros to the transfer function $H(s)$ and verify the <a href="../print.php/p_bode/#h3_asymptotic" class="page">rules</a> for yourself. The plot starts with a pole at -10 rad/s and a zero at -10 Krad/s. You can make your own examples by changing these poles/zeros and adding more.
+</p>
+<table>
+<tr>
+<td rowspan="2">$H(s)$</td><td>zeros</td><td id="listzeros"><input type="text" size="5" value="-10000" id="zero0"/></td><td><input type="button" value="more" id="morezeros"/></td>
+</tr>
+<tr>
+<td>poles</td><td id="listpoles"><input type="text" size="5" value="-10" id="pole0"/></td><td><input type="button" value="more" id="morepoles"/></td>
+</tr>
+</table>
+<center>
+<input type="button" value="Plot!" id="btnplot"/>
+<div style="width:600px;height:300px" id="bode_mag_plot"></div>
+<p class="comment">
+</p>
+<div style="width:600px;height:300px" id="bode_phase_plot"></div>
+<p class="comment">
+</p>
+</center>
+<p>
+Learn more about drawing <a href="../print.php/p_bode/#h3_asymptotic" class="page">bode plots with real poles/zeros in here</a>.
+</p>
+<h3>Complex poles and zeros</h3>
+<p>
+Now you can add imaginary parts to the poles and zeros and see how they affect the bode plot of the transfer function. The asymptotic approximation takes the natural frequency as the points of change.
+</p>
+<table>
+<tr>
+<td rowspan="2">$H(s)$</td>
+<td>zeros</td><td id="listcomplexzeros"><input type="text" size="5" value="-10000" id="zeroreal0"/>+j<input type="text" size="5" value="0" id="zeroimag0"/></td><td><input type="button" value="more" id="morecomplexzeros"/></td>
+</tr>
+<tr>
+<td>poles</td><td id="listcomplexpoles"><input type="text" size="5" value="-10" id="polereal0"/>+j<input type="text" size="5" value="50" id="poleimag0"/></td><td><input type="button" value="more" id="morecomplexpoles"/></td>
+</tr>
+</table>
+<center>
+<input type="button" value="Plot!" id="btnplotcomplex"/>
+<div style="width:600px;height:300px" id="complexbode_mag_plot"></div>
+<p class="comment">
+</p>
+<div style="width:600px;height:300px" id="complexbode_phase_plot"></div>
+<p class="comment">
+</p>
+</center>
+<p>
+Learn more about drawing <a href="../print.php/p_bode/#h3_complex" class="page">bode plots with complex poles/zeros in here</a>.
+</p>
+<script type="text/javascript" src="../pages/bode_plot.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

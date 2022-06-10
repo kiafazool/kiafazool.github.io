@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>MOSFET short channel effects</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_mosfet_short_channel_effects/" />
+	<meta name="description" content="MOSFETs with short channels suffer from negative effects such as Drain Induced Barrier Lowering (DIBL), surface scattering, velocity saturation, impact ionization and Hot Carrier Injection (HCI), that can lead to performance and reliability degradation.">
+	<meta name="keywords" content="mosfet, short channel effects, Drain Induced Barrier Lowering (DIBL), surface scattering, velocity saturation, impact ionization, Hot Carrier Injection (HCI)">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'mosfet.short.channel.effects';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_mosfet.short.channel/">http://onmyphd.com/?p=mosfet.short.channel.effects</a></p><h1>MOSFET short channel effects</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li><a href="../print.php/p_mosfet/" id="mosfet.transistor" class="page">The MOSFET structure and operation</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What are short channel effects?</a></li>
+<li><a href="#h2_dibl">Drain-Induced Barrier Lowering (DIBL)</a></li>
+<li><a href="#h2_surface_scattering">Surface scattering</a></li>
+<li><a href="#h2_velocity_saturation">Velocity saturation</a></li>
+<ul>
+<li><a href="#h3_velocity_saturate">When does the velocity of charge carriers saturate?</a></li>
+<li><a href="#h3_saturate_current">What effect has velocity saturation in the drain current?</a></li>
+</ul>
+<li><a href="#h2_impact_ionization">Impact ionization</a></li>
+<li><a href="#h2_hci">Hot Carrier Injection (HCI)</a></li>
+</ul>
+<h2 id="h2_whatis">What are short channel effects?</h2>
+<p>
+The main drives for reducing the size of the transistors, i.e., their lengths, is increasing speed and reducing cost. When you make circuits smaller, their capacitance reduces, thereby increasing operating speed. In the same token, smaller circuits allow more of them in the same wafer, dividing the total cost of a single wafer among more dies.
+</p>
+However, with great reduction come great problems, in this case in the form of unwanted side effects, the so called <b>short-channel effects</b>. When the channel of the MOSFET becomes the same order of magnitude as the depletion layer width of source and drain, the transistors start behaving differently, which impacts performance, modeling and reliability. These effects can be divided among the following:
+<ul>
+<li><a href="#h2_dibl">Drain-Induced Barrier Lowering (DIBL)</a></li>
+<li><a href="#h2_surface_scattering">Surface scattering</a></li>
+<li><a href="#h2_velocity_saturation">Velocity saturation</a></li>
+<li><a href="#h2_impact_ionization">Impact ionization</a></li>
+<li><a href="#h2_hci">Hot Carrier Injection (HCI)</a></li>
+</ul>
+</p>
+<h2 id="h2_dibl">Drain-Induced Barrier Lowering (DIBL)</h2>
+<p>
+This effect is better understood when we see the potential barrier profile that an electron has to overcome to go from source to drain. Under normal conditions ($V_{DS} = 0$ and $V_{GS} = 0$), there is a potential barrier that stops the electrons from flowing from source to drain. The gate voltage has the function of lowering this barrier down to the point where electrons are able to flow (left side of figure). Ideally, this would be the only voltage that would affect the barrier. However, as the channel becomes shorter, a larger $V_{D}$ widens the drain depletion region to a point that reduces the potential barrier (right side of figure). For this reason, this effect is aptly called <b>Drain Induced Barrier Lowering (DIBL)</b>.
+</p>
+<center>
+<img src="../pages/mosfet.short.channel.effects/dibl.svg" width="400" class="svg"/>
+<p class="comment">The top figure shows a cut of a short channel (solid line) and a long-channel (dashed line) MOSFETs. The bottom part shows the potential barrier profile along the surface of the channel (from source to drain). In the left side, $V_{DS} = 0$, while in the right the drain voltage is raised to show the DIBL effect.</p>
+</center>
+<p>
+If this a hard concept to grasp, think about it in terms of depletion regions only. The drain is close enough to the source to easily form the depletion region normally created by the gate. That is, the drain depletion region extends to the source, forming a unique depletion region. This is known as <b>punchthrough</b>. Therefore, a high drain voltage can open the bottleneck and contribute to turn on the transistor as a gate would. This is essentially equivalent to reducing the threshold voltage of the transistor, which leads to higher leakage current.
+</p>
+<p>
+The DIBL effect can be calculated by measuring the threshold voltage as a function of two extreme drain voltages, $V_{th}(V_D)$:
+$$DIBL=\frac{V_{th}(V_D^{low}) - V_{th}(V_{supply})}{V_{supply} - V_D^{low}}$$
+where $V_D^{low}$ is a very low drain voltage and $V_{supply}$ is the supply voltage (the highest drain voltage that can be applied). This function is always positive and no DIBL effect would return 0.
+</p>
+<h2 id="h2_surface_scattering">Surface scattering</h2>
+<p>
+The velocity of the charge carriers is defined by the mobility of that carrier times the electric field along the channel. When the carriers travel along the channel, they are atracted to the surface by the electric field created by the gate voltage. As a result, they keep crashing and bouncing against the surface, during their travel, following a zig-zagging path. This effectively reduces the surface mobility of the carriers, in comparison with their bulk mobility. The change in carrier mobility impacts the current-voltage relationship of the transistor.
+</p>
+<center>
+<img src="../pages/mosfet.short.channel.effects/surface.scattering.svg" width="400" class="svg"/>
+<p class="comment">As the electron travels through the channel, it is atracted to the $Si-SiO_2$ interface and bounces against it. This effect reduces its mobility.</p>
+</center>
+<p>
+You may be wondering why this is a short-channel effect... Indeed, as the length of the channel becomes shorter, the lateral electric field created by $V_{DS}$ becomes stronger. To compensate that, the vertical electric field created by the gate voltage needs to increase proportionally, which can be achieved by reducing the oxide thickness. As a side effect, surface scattering becomes heavier, reducing the effective mobility in comparison with longer channel technology nodes.
+</p>
+<!-- The surface mobility is lower than the bulk mobility because of surface roughness scattering [5, 6].
+http://people.eecs.berkeley.edu/~hu/Chenming-Hu_ch6.pdf-->
+<h2 id="h2_velocity_saturation">Velocity saturation</h2>
+<p>
+The velocity of charge carriers, such as electrons or holes, is proportional to the electric field that drives them, but that is only valid for small fields. As the field gets stronger, their velocity tends to saturate. That means that above a critical electric field, they tend to stabilize their speed and eventually cannot move faster. Velocity saturation is specially seen in short-channel MOSFET transistors, because they have higher electric fields.
+</p>
+<h3 id="h3_velocity_saturate">When does the velocity of charge carriers saturate?</h3>
+<p>
+The critical velocity is defined by the material the charge carriers are flowing through. In particular, in diffusions it is defined by their doping concentration. As a first-order approximation, the carrier velocity is defined as:
+$$\begin{equation}v_d = \frac{\mu E}{1 + E/E_c}\label{eq:vel}\end{equation}$$
+where $\mu$ is the carrier mobility, $E$ is the electric field and $E_c$ is the critical electric field (the point at which the velocity tends to saturate).
+<!-- from 2002, Liu, Kramer, Indiveri, Delbruck, Douglas, Analog VLSI: Circuits and Principles -->
+</p>
+<p>
+The velocity saturates when $E \gg E_c$ and it becomes $v_{d} = \mu E_c = v_{sat}$ (when $E \ll E_c$, $v_{d} = \mu E$ as expected). In silicon, for electrons it is ~10<sup>7</sup> cm/s and for holes around 0.6*10<sup>7</sup> cm/s.
+</p>
+<h3 id="h3_saturate_current">What effect has velocity saturation in the drain current?</h3>
+<p>
+To see the effect of velocity saturation on transistor operation, we must see how the limit in the velocity of carriers influences the current.
+We go back to see <a href="../print.php/p_mosfet/#h3_triode" id="mosfet.model" class="page">how the current is derived for the transistor model</a>. The current is the change in charge through time. Charge in a slice of length of the transistor is
+$$ dQ(x) = -C_{ox} Wdx (V_{GS} - V_{TH} - V(x)).$$
+The current is the derivative of this charge through time:
+$$ I_{DS} = -\frac{dQ(x)}{dt} = \frac{dQ(x)}{dx}\frac{dx}{dt}.$$
+This must be true for any $x$, since the current is equal throughout the channel. $\frac{dx}{dt}$ is the velocity of the carriers and it is equal to the expression $\eqref{eq:vel}$. For long channel transistor, we assume $v_d = \mu E$, so the difference between current with or without velocity saturation is a division by $1 + E/E_c$. That is:
+$$\begin{equation}I_{DS_{short}} = \frac{I_{DS_{long}}}{1 + E/E_c} = \frac{\mu C_{ox} W ((V_{GS} - V_{TH})V_{DS} - V_{DS}^2/2))}{L(1 + E/E_c)}\label{eq:short}\end{equation}$$
+But velocity saturation is only apparent when the current saturates due to velocity saturation before saturating due to pinch-off. That means that the drain-source saturation voltage will be lower than $V_{GS} - V_{TH}$ in short channel transistors. To find out this saturation voltage, we must look for when a change in the drain-source voltage does not change the current, i.e., when $dI_{DS}/dV_{DS} = 0$.
+Differentiating $\eqref{eq:short}$ with respect to $V_{DS}$ and finding its zero will lead to (keep in mind that $E_c = v_{sat}/\mu$ and $E = V_{DS}/L$):
+$$ V_{DS_{SAT}} = \frac{2(V_{GS} - V_{TH})}{1 + \sqrt{1 + \frac{2\mu(V_{GS} - V_{TH})}{v_{sat}L} }}.$$
+Given that the term $\frac{2\mu(V_{GS} - V_{TH})}{v_{sat}L}$ is positive, $V_{DS_{SAT}}$ will be smaller than $V_{GS} - V_{TH}$. 
+<!--By the simplified model, one gets:
+$$I_{DS_{SAT}} = W C_{ox} (V_{GS} - V_{TH} - V_{DS_{SAT}}/2)v_{sat}$$
+where $V_{DS_{SAT}} = Lv_{sat}/\mu$. -->
+</p>
+<h2 id="h2_impact_ionization">Impact ionization</h2>
+<p>
+As mentioned earlier, short-channel transistors create strong lateral electric fields, since the distance between source and drain is very small. This electric field endows the charge carriers with high velocity, and therefore, high energy. The carriers that have high enough energy to cause troubles are called <b>"hot" carriers</b>. These normally appear close to the drain, where they have the most energy.
+</p>
+<p>
+ Since they are traveling through a Silicon lattice, there is a possibility that they collide with an atom of the structure. Given enough energy, the energy passed to the atom upon collision can knock out an electron out of the valence band to the conduction band. This originates an electron-hole pair: the hole is attracted to the bulk while the generated electron moves on to the drain. The substrate current is a good way to measure the impact ionization effect.
+</p>
+<center>
+<img src="../pages/mosfet.short.channel.effects/impact.ionization.svg" width="400" class="svg"/>
+<p class="comment">When an electron collides with an atom of the Silicon lattice structure, the energy passed to the atom upon collision can knock out an electron out of the valence band to the conduction band, creating an electron-hole pair. The hole is attracted to the bulk while the generated electron moves on to the drain.</p>
+</center>
+<p>
+In case the generation of electron-hole pairs is very agressive, two catastrophic effects can happen. One of them relates to the parasitic bipolar transistor that is formed by the junctions between source-bulk-drain. This transistor is normally turned off because the bulk is biased at the lowest voltage of the circuit. However, when holes are flowing through the bulk, they are causing a voltage drop at the parasitic resistance of the bulk itself. This, in turn, can active the BJT if the base-emitter (bulk-source) voltage exceeds 0.6-0.7 V. With the transistor on, electrons start flowing from the source to the bulk and drain, which can lead to even more generation of electron-hole pairs.
+</p>
+<center>
+<img src="../pages/mosfet.short.channel.effects/parasitic.bipolar.conduction.svg" width="400" class="svg"/>
+<p class="comment">Holes flowing through the bulk create a voltage drop that may turn on the parasitic bipolar transistor. When it turns on, electrons can flow to the bulk and drain by the BJT instead of the channel created by the MOSFET.</p>
+</center>
+<p>
+The most catastrophic case happens when the newly generated electrons become themselves hot carriers and knock out other atoms of the lattice. This in turn can create an avalanche effect, eventually leading to an overrun current that the gate voltage cannot control.
+</p>
+<h2 id="h2_hci">Hot Carrier Injection (HCI)</h2>
+<p>
+The hot carrier accelerated by the high electric field can have a different fate as well. The energy it contains may be sufficient to enter the oxide and get trapped in it. The trapped electrons alter the transistor response to the gate voltage in the form of increased threshold voltage. Over time, the accumulation of electrons in the oxide causes the so called "ageing" of transistors. Interestingly, FLASH memories use the same effect to memorize bits: the negative charge stored in the floating gate through injection of "hot carriers" changes the threshold voltage and this change is interpreted as a 1 or 0.
+</p>
+<center>
+<img src="../pages/mosfet.short.channel.effects/hot.carrier.injection.svg" width="400" class="svg"/>
+<p class="comment">A "hot" electron manages to enter the oxide and gets trapped in it.</p>
+</center>
+<p>
+To reduce the formation of "hot" carriers and their negative effects, the electric field is artificially weakened with the implantation of lighty-doped drains, beside the heavily-doped drains. The electric field only needs to be weakened at the drain, but since the drain terminal is only defined by the operating point, the implant is added to both terminals of the MOSFET. The reasoning here is that the depletion regions of the lightly-doped implant are wider. With wider depletion regions there is a larger distance between different potentials, which reduces the electric field. The other side of the coin is that the parasitic resistances of source and drain are increased.
+</p>
+<center>
+<img src="../pages/mosfet.short.channel.effects/lightly_doped.drain.svg" width="400" class="svg"/>
+<p class="comment">Lightly doped drains help reduce the strength of lateral electric fields and therefore, reduce the formation of "hot" carriers.</p>
+</center>
+<script type="text/javascript" src="../pages/typeset.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

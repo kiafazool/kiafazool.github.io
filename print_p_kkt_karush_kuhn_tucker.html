@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Karush-Kuhn-Tucker (KKT) conditions: Derivation and examples</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_kkt_karush_kuhn_tucker/" />
+	<meta name="description" content="The method of Lagrange Multipliers is used to find the solution for optimization problems constrained to one or more equalities. When our constraints also have inequalities, we need to extend the method to the Karush-Kuhn-Tucker (KKT) conditions.">
+	<meta name="keywords" content="Karush-Kuhn-Tucker, inequality constraints, optimization problem">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'kkt.karush.kuhn.tucker';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_kkt.karush.kuhn/">http://onmyphd.com/?p=kkt.karush.kuhn.tucker</a></p><h1>Karush-Kuhn-Tucker (KKT) conditions</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>The importance of gradients into finding the minimum/maximum of functions</li>
+<li><a href="../print.php/p_lagrange/" class="page">The method of Lagrange Multipliers</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What are the Karush-Kuhn-Tucker (KKT) conditions?</a></li>
+<li><a href="#h2_kkt">The KKT conditions</a></li>
+<ul>
+<li><a href="#h3_example">An example</a></li>
+</ul>
+<li><a href="#h2_regular">Sufficiency and regularization</a></li>
+</ul>
+<h2 id="h2_whatis">What are the Karush-Kuhn-Tucker (KKT) ?</h2>
+<p>
+<a href="../print.php/p_lagrange/" class="page">The method of Lagrange Multipliers</a> is used to find the solution for optimization problems constrained to one or more equalities. When our constraints also have inequalities, we need to extend the method to the KKT conditions.
+</p>
+<p>
+The new problem can be formulated as:
+$$\b{x^*} = \underset{\b{x}}{\textrm{argmin}} f(\b{x}) $$
+$$\textrm{subject to } h_i(\b{x}) = 0, \forall i=1,..,m$$
+$$\textrm{subject to } g_i(\b{x}) \le 0, \forall i=1,..,n$$
+In words, find the solution that minimizes $f(\b{x})$, as long as all equalities $h_i(\b{x}) = 0$ and all inequalities $g_i(\b{x}) \le 0$ hold. It is easy to see that any equality or inequality constraint can be defined, so long as all terms are in the left side of the equation. The inequality conditions are added to the method of Lagrange Multipliers in a similar way to the equalities: <b>Put the cost function as well as the constraints in a single minimization problem, but multiply each equality constraint by a factor $\lambda_i$ and the inequality constraints by a factor $\mu_i$ (the KKT multipliers)</b>. In our example, we would have $m$ equalities and $n$ inequalities. Hence the expression for the optimization problem becomes:
+$$\b{x^*} = \underset{\b{x}}{\textrm{argmin }} L(\b{x}, \b{\lambda}, \b{\mu}) = \underset{\b{x}}{\textrm{argmin }} f(\b{x})  + \underset{i=1}{\overset{m}{\sum}} \lambda_i h_i(\b{x}) + \underset{i=1}{\overset{n}{\sum}} \mu_i g_i(\b{x}),$$
+where $L(\b{x}, \b{\lambda}, \b{\mu})$ is the Lagrangian and depends also on $\b{\lambda}$ and $\b{\mu}$, which are vectors of the multipliers.
+</p>
+<p>
+As usual, we find the roots of the gradient of the loss function with respect to $\b{x}$ to find the extremum of the function. However, the constraints in the function will make $\b{x}$ depend on $\b{\lambda}$ and $\b{\mu}$. Furthermore, we have number of variables equal to the elements in $\b{x}$ (say $k$) plus the number of multipliers ($m + n$), and, as of now, we only have $k$ equations coming from the gradient with respect to $\b{x}$. <a href="../print.php/p_lagrange/" class="page">We have seen before</a> that we can differentiate the function with respect to each lagrange multiplier $\lambda_i$ to get $m$ more equations. These equations are restricting the set of solutions to the ones that meet the equality constraints.
+</p>
+<p>
+The new challenge is how to come up with $n$ more equations coming from the inequality constraints. In order to do so, think of what the inequality constraints mean. If the extremum of the original function is in $g_i(\b{x^*}) \lt 0$, then this constraint will never play any role in changing the extremum compared with the problem without the constraint. Therefore, its coefficient $\mu_i$ can be set to zero. If, on the other hand, the new solution is at the border of the constraint, then $g_i(\b{x^*}) = 0$. The next graphical representation helps to understand this concept.
+</p>
+<center>
+<img src="../pages/kkt/graphical.explanation.svg" width="500" alt="Graphical explanation for the KKT conditions" class="svg"/>
+<p class="comment">Fig. 1 - Graphical explanation for the KKT conditions.</p>
+</center>
+<p>
+In both situations, the equation:
+$$\mu_i g_i(\b{x}) = 0$$
+is necessary for the solution to our new problem. Therefore, we get $n$ equations from the inequality constraints. The constraint terms are always zero in the set of possible solutions, thereby not affecting the result of the loss function. The coefficients $\lambda_i$ can have any value. However, the coefficients $\mu_i$ are limited to nonnegative values. To see why that is, and with the aid of Fig. 2, imagine $\b{x^*}$ is in the region $g_i(\b{x}) = 0$, so that $\mu_i$ can be different from zero.
+</p>
+<center>
+<img src="../pages/kkt/signofkkt.svg" width="250" alt="Graphical explanation for sign of the KKT multipliers" class="svg"/>
+<p class="comment">Fig. 2 - Graphical explanation for the sign of the $\mu$.</p>
+</center>
+<p>
+$$\b{x^*} = \underset{\b{x}}{\textrm{argmin }} f(\b{x})  + \mu_i g_i(\b{x})$$
+$$0 = \nabla f(\b{x})  + \mu_i \nabla g_i(\b{x})$$
+$$\begin{equation}\mu_i = -\frac{\nabla f(\b{x})}{\nabla g_i(\b{x})}\label{eq:signofmu}\end{equation}$$
+At such point $\b{x^*}$, the gradient of $f(\b{x})$ and of $g_i(\b{x})$ both with respect to $\b{x}$ have opposite directions. Therefore, according to $\eqref{eq:signofmu}$, $\mu_i$ must be positive.
+</p>
+<h2 id="h2_kkt">The KKT conditions</h2>
+<p>
+We are now ready to enumerate the KKT conditions:
+<ul>
+<li><b>Stationarity</b>
+$$\nabla_\b{x} f(\b{x})  + \underset{i=1}{\overset{m}{\sum}} \nabla_\b{x} \lambda_i h_i(\b{x}) + \underset{i=1}{\overset{n}{\sum}} \mu_i \nabla_\b{x} g_i(\b{x}) = 0 \textrm{  (minimization)}$$
+</li>
+$$\nabla_\b{x} f(\b{x})  + \underset{i=1}{\overset{m}{\sum}} \nabla_\b{x} \lambda_i h_i(\b{x}) - \underset{i=1}{\overset{n}{\sum}} \mu_i \nabla_\b{x} g_i(\b{x}) = 0 \textrm{  (maximization)}$$
+</li>
+<li><b>Equality constraints</b>
+$$\nabla_\b{\lambda} f(\b{x})  + \underset{i=1}{\overset{m}{\sum}} \nabla_\b{\lambda} \lambda_i h_i(\b{x}) + \underset{i=1}{\overset{n}{\sum}} \mu_i \nabla_\b{\lambda} g_i(\b{x}) = 0$$
+</li>
+<li><b>Inequality constraints a.k.a. complementary slackness condition</b>
+$$\mu_i g_i(\b{x}) = 0, \forall i = 1,..,n$$
+$$\mu_i \ge 0, \forall i = 1,..,n$$
+</li>
+</ul>
+</p>
+<h3 id="h3_example">An example</h3>
+<p>
+Consider we are trying to maximize the transmission rate of a multi-carrier communication system with $N$ channels. Each carrier/channel can carry a signal power $p_i \ge 0$ under noise $n_i &gt; 0$. The total power must be smaller or equal than P. The transmission rate of each carrier is proportional to:
+$$\log_2\left(1 + \frac{p_i}{n_i}\right)$$
+Given this information, and noting that maximizing $\ln(x)$ also maximizes $\log_2(x)$, the problem is:
+$$\max \underset{i=1}{\overset{N}{\sum}}\ln\left(1 + \frac{p_i}{n_i}\right)$$
+$$\textrm{subject to } \underset{i=1}{\overset{N}{\sum}}p_i \le P$$
+$$\textrm{subject to }  p_i \ge 0, \forall i= 1,..N$$
+Changing $p_i \ge 0$ to $-p_i \le 0$ and noting that this a maximization problem, the Lagrangian is then:
+$$L(\b{p}, \b{\mu}) = \ln\left(1 + \frac{p_i}{n_i}\right) - \mu_0\left(\underset{i=1}{\overset{N}{\sum}}p_i - P\right) - \underset{i=1}{\overset{N}{\sum}} \mu_i(-p_i)$$
+$$L(\b{p}, \b{\mu}) = \ln\left(1 + \frac{p_i}{n_i}\right) + \mu_0\left(P - \underset{i=1}{\overset{N}{\sum}}p_i\right) + \underset{i=1}{\overset{N}{\sum}} \mu_i p_i$$
+Taking the stationarity condition, we get:
+$$\nabla_{p_i}L(\b{p}, \b{\mu}) = \frac{1}{p_i + n_i} - \mu_0 + \mu_i = 0$$
+$$p_i + n_i = \frac{1}{\mu_0 - \mu_i}$$
+Since $n_i &gt; 0$, then $\mu_0 &gt; \mu_i$, which also means that $\mu_0 &gt; 0$. From the complimentary slackness conditions:
+$$\mu_0\left(P - \underset{i=1}{\overset{N}{\sum}}p_i\right) = 0$$
+$$\mu_i p_i = 0$$
+$$\mu_0, \mu_i \ge 0$$
+and since $\mu_0 &gt; 0$, we know that
+$$P - \underset{i=1}{\overset{N}{\sum}}p_i = 0$$
+$$P = \underset{i=1}{\overset{N}{\sum}}p_i$$
+which means that $p_i$ cannot be zero (all of them since they all have the same role in the optimization problem), forcing $\mu_i = 0, \forall i=1,..,N$. Then
+$$p_i + n_i = \frac{1}{\mu_0 - \mu_i} = \frac{1}{\mu_0}$$
+$$p_i = \frac{1}{\mu_0} - n_i$$
+The final equations to solve the problem are:
+$$p_i = \frac{1}{\mu_0} - n_i, \forall i=1,..,N$$
+$$\underset{i=1}{\overset{N}{\sum}}p_i = P$$
+which are easily solvable.
+</p>
+<h2 id="#h2_regular">Sufficiency and regularization</h2>
+<p>
+<b>The KKT conditions are necessary to find an optimum, but not necessarily sufficient</b>. A set of problems where these conditions are also sufficient are the ones where the functions $f(\b{x})$ and $g_i(\b{x})$ are continuously differentiable and convex, and the functions $h_i(\b{x})$ are linear.
+</p>
+<p>
+Furthermore, a certain value of $\b{x}$ only satisfies these conditions if it is regular. There are several ways of determining the regularity of $\b{x}$, some of which are in the <a href="http://en.wikipedia.org/wiki/Karush-Kuhn-Tucker_conditions" target="_blank" rel="external">wikipedia page</a>, while a more extensive explanation can be found in the book <a href="http://www.amazon.com/gp/product/1886529000/ref=as_li_qf_sp_asin_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=1886529000&amp;linkCode=as2&amp;tag=httpwwwonmyph-20" target="_blank" rel="external">Nonlinear Programming by Bertsekas</a><img src="../e/ir_t_httpwwwonmyph-20_l_as2_o_1_a_1886529000.jpg" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"/>.
+</p>
+<p>
+The table below summarizes the KKT conditions depending on these two types of conditions. The problem can either have sufficient conditions or not and $\b{x}$ can either be regular or not.
+<center>
+<table class="table" style="text-align: center" cellpadding="5">
+<tr><td rowspan="2"><b>Sufficient conditions?</b></td><td colspan="2"><b>$\b{x}$ is regular?</b></td></tr>
+<tr><td><b>No</b></td><td><b>Yes</b></td></tr>
+<tr><td><b>No</b></td><td><font color="red">Do not hold</font></span></td><td><font color="orange">Necessary</font></td></tr>
+<tr><td><b>Yes</b></td><td><font color="red">Do not hold</font></td><td><font color="green">Sufficient</font></td></tr>
+</table>
+</center>
+</p>
+<script type="text/javascript" src="../pages/typeset.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

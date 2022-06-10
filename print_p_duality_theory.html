@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Duality Theory</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_duality_theory/" />
+	<meta name="description" content="Duality theory links two complementary types of problems (minimization vs. maximization) by applying the Lagrange method to a constrained " primal" problem. the other "dual" problem may be simpler to solve than the primal problem, or have a smaller number of variables.">
+	<meta name="keywords" content="Duality, legendre-fenchel transform, primal-dual, dual problem, optimization, lagrangian">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'duality.theory';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_duality/">http://www.onmyphd.com/?p=duality.theory</a></p><h1>Duality Theory</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li><a href="../print.php/p_lagrange/" page="lagrange.multipliers" class="page">Lagrange Multipliers</a></li>
+<li><a href="../print.php/p_kkt.karush.kuhn/" page="kkt.karush.kuhn.tucker" class="page">Karush-Kuhn-Tucker (KKT) conditions</a></li>
+</ul>
+<h2>Sections</h2>
+<ul>
+<li><a href="#h2_whatis">What is a Dual problem?</a></li>
+<li><a href="#h2_dualitygap">What is the duality gap?</a></li>
+<li><a href="#h2_strongweak">What are strong and weak dualities?</a></li>
+<li><a href="#h2_whentouseit">When to use the dual problem?</a></li>
+<li><a href="#h2_examples">Examples</a></li>
+	<ul>
+	<li><a href="#h3_exlinear">Linear problem</a></li>
+	<li><a href="#h3_exlinearcon">Linear program with inequality constraints</a></li>
+	<li><a href="#h3_exquadeqcon">Quadratic program with equality constraints</a></li>
+	<li><a href="#h3_exquadineqcon">Quadratic program with inequality constraints</a></li>
+	<li><a href="#h3_exothers">Other examples</a></li>
+	</ul>
+<li><a href="#h2_sources">Sources</a></li>
+</ul>
+<h2 id="h2_whatis">What is a Dual problem?</h2>
+<p>
+<p>
+Duality theory relates to the inversion of a maximization problem into a minimization problem, or vice-versa, through a change of variables based on <a href="../print.php/p_lagrange/" page="lagrange.multipliers" class="page">Lagrange Multipliers</a> and/or <a href="../print.php/p_kkt.karush.kuhn/" page="kkt.karush.kuhn.tucker" class="page">Karush-Kuhn Tucker (KKT) multipliers</a>.
+</p>
+<p>
+To explain how the duality works, let's use the general problem:
+$$
+\begin{eqnarray*}
+\min & & f(\mathbf{x})\\
+\mbox{subject to} & & h_i(\mathbf{x})=0 \quad, i=1,...,n_h\\
+ & & g_i(\mathbf{x})\le 0 \quad, i=1,...,n_g\\
+\end{eqnarray*}
+$$
+The problem, which is defined as the <b>primal problem</b>, has equality and inequality constraints. We can state that any point $\mathbf{x}$ that meets these constraints belongs to a domain $\mathcal{X}$:
+$$\mathcal{X} = \left(\cap_{i=1}^{n_{h}}\mathbf{dom}\,h_{i}\right)\cap\left(\cap_{i=1}^{n_{g}}\mathbf{dom}\,g_{i}\right)$$
+In other words, any feasible point of this problem belongs to domain $\mathcal{X}$. We can switch the constraints to penalties with <a href="../print.php/p_lagrange/" page="lagrange.multipliers" class="page">Lagrange Multipliers</a> and <a href="../print.php/p_kkt.karush.kuhn/" page="kkt.karush.kuhn.tucker" class="page">Karush-Kuhn-Tucker multipliers</a> (some authors do not make a distinction between the multipliers and call both of them Lagrange Multipliers).The Lagrangian function is:
+$$
+\begin{eqnarray*}
+L(\mathbf{x},\lambda,\mu) & = & f(\mathbf{x})+\sum_{i=1}^{n_h}\lambda_i \cdot h_i\left(\mathbf{x}\right)+\sum_{i=1}^{n_g}\mu_i \cdot g_i\left(\mathbf{x}\right)\\
+\mu & \ge & \mathbf{0}
+\end{eqnarray*} 
+$$
+where $\mathbf{\lambda}=[\lambda_1,...,\lambda_{n_h}]$ is the vector of Lagrange multipliers and $\mathbf{\mu}=[\mu_1,...,\mu_{n_g}]$ is the vector of KKT multipliers. Recall from the <a href="../print.php/p_kkt.karush.kuhn/" page="kkt.karush.kuhn.tucker" class="page">KKT conditions</a> that any KKT multiplier must be nonnegative, hence the constraint in the above equation. Since at a feasible solution of the problem we have
+$$
+\begin{eqnarray*}
+h_i(\mathbf{x}) & = & 0,i=1,...,n_h \\
+g_i(\mathbf{x}) & \le & 0, i=1,...,n_g \\
+\mathbf{\mu} & \ge & \mathbf{0},
+\end{eqnarray*}
+$$
+then
+$$\mathbf{\lambda}^{T}\mathbf{h}(\mathbf{x})=\sum_{i=1}^{n_h}\lambda_i \cdot h_i\left(\mathbf{x}\right)=0$$ $$\mathbf{\mu}^{T}\mathbf{g}(\mathbf{x})=\sum_{i=1}^{n_g}\mu_i \cdot g_i\left(\mathbf{x}\right)\le0.$$
+From the above equations, we can derive the following inequality:
+$$L(\mathbf{x},\lambda,\mu) = f(\mathbf{x})+\underset{0}{\underbrace{\lambda^{T}\mathbf{h}(\mathbf{x})}}+\underset{\le0}{\underbrace{\mu^{T}\mathbf{g}\left(\mathbf{x}\right)}} \le f(\mathbf{x}), \qquad \forall \mathbf{x}\in \mathcal{X}, \mu \ge \mathbf{0}, \lambda.$$
+This means that the result of the Lagrangian is always smaller than the result of the original function for any feasible point. If we define the dual function $q(\lambda,\mu)$ as the infimum value of the Lagrangian over all $\mathbf{x}$, we are sure that:
+$$q(\lambda,\mu)=\inf_\mathbf{x} L(\mathbf{x},\lambda,\mu)\le\inf_{\mathbf{x}\in\mathcal{X}} L(\mathbf{x},\lambda,\mu)\le f(\mathbf{x}), \forall \mathbf{x}\in\mathcal{X}, \mathbf{\mu\ge0}, \mathbf{\lambda}$$
+<b>This is called the lower bound property</b>. It tells us that $q(\lambda, \mu)$ is always smaller than $f(\mathbf{x})$ and, therefore, it serves as a lower bound for the primal function. Thus, <b>we can define our new problem as the dual problem</b>:
+$$
+\begin{eqnarray*}
+\max & q(\mathbf{\lambda,\mu})\\
+\mbox{subject to} & \mathbf{\mu\ge0}
+\end{eqnarray*}
+$$
+Recall from <a href="../print.php/p_kkt.karush.kuhn/" page="kkt.karush.kuhn.tucker" class="page">KKT conditions</a> that $\mu^{T}\mathbf{h}(\mathbf{x})=0$ for optimality. Therefore, at optimal values of $\lambda=\lambda^{\star}$ and $\mu=\mu^{\star}$, we have:
+$$
+\begin{eqnarray*}
+q(\lambda^{\star},\mu^{\star}) & = & \inf_\mathbf{x} L(\mathbf{x},\lambda^{\star},\mu^{\star})\\
+ & \le & \inf_{\mathbf{x}\in\mathcal{X}} L(\mathbf{x},\lambda^{\star},\mu^{\star})\\
+ & = & L(\mathbf{x}^{\star},\lambda^{\star},\mu^{\star})\\
+ & = & f(\mathbf{x}^{\star})
+\end{eqnarray*}
+$$
+</p>
+<h2 id="h2_dualitygap">What is the duality gap?</h2>
+<p>
+The previous section ended with the following inequality:
+$$f(\mathbf{x}^\star) - q(\lambda^\star,\mu^\star)\ge 0.$$
+This difference is called the <b>duality gap</b> and is always nonnegative. Although very simple, it indicates that the maximum of the dual may not be equal to the minimum of the primal problem. This, in turn, tells us how accurately we are solving the primal problem by using the dual instead. In fact, there are terms for zero and non-zero duality gaps.
+</p>
+<h2 id="h2_strongweak">What are strong and weak dualities?</h2>
+<p>
+We know for certain that:
+$$q(\lambda^\star,\mu^\star) \le f(\mathbf{x}^\star)$$
+i.e., the maximum of the dual problem is always smaller or equal than the minimum of the primal. What we really want is that both are equal, so that by solving the dual, we have the solution for the primal and not just an approximation. <b>When the duality gap is zero, we say the problem has a strong duality, otherwise it has a weak duality</b>.
+</p>
+<p>
+The illustration below shows the main idea. The primal problem is a minimization with respect to $x$, while the dual problem is a maximization with respect to another variable $\lambda$. When there is strong duality, the optimal values $f(x^\star)$ and $q(\lambda^\star)$ coincide. Whenever there is weak duality, there is the so called duality gap between the two optimal values.
+</p>
+<center>
+<img src="../pages/dual/primal.dual.svg" class="svg" width="600"/>
+</center>
+<p>
+There are ways of knowing what type of duality the problem has: several <b>constraint qualifications</b> have been studied that ensure that a problem has strong duality. For instance, if the primal problem satisfies the Slater's conditions, than it has strong duality (see <a href="../_boyd/cvxbook/bv_cvxbook.pdf" target="_blank" rel="external">Section 5.2.3 of Boyd's Convex Optimization</a>). Since this issue is quite tedious, I suggest that you read more about it in <a href="http://www.amazon.com/Nonlinear-Programming-Dimitri-P-Bertsekas/dp/1886529000" target="_blank" rel="external">Sections 5.2-5.4 of Bertsekas' Nonlinear Optimization</a>.
+</p>
+<h2 id="h2_whentouseit">When to use the dual problem?</h2>
+<p>
+You may have noticed that the number of variables in the dual problem is equal to the number of constraints. Therefore, if the number of constraints is smaller than the number of variables in the primal problem, then switching to the dual problem reduces the number of variables.
+</p>
+<p>
+<b>The Lagrange dual problem is always a convex optimization problem</b>, since the objective to be maximized is concave and the constraint is convex, regardless if the primal problem is convex or not. It can thus be solved efficiently, no matter the complexity of the primal problem. Therefore, the dual can be used to find an approximate lower bound in an efficient way.
+</p>
+<p>
+As you will see with the next examples, it may happen that the dual problem is simpler than the dual problem. 
+</p>
+<h2 id="h2_examples">Examples</h2>
+<p>
+Let's show how the duality theory can be applied in practice with a few examples.
+</p>
+<h3 id="h3_exlinear">Linear problem</h3>
+<p>
+Take for example the linear program:
+$$
+\begin{eqnarray*}
+\min_\mathbf{x} & \mathbf{c}^{T}\mathbf{x}\\
+\mbox{s.t.} & \mathbf{Ax=b}\\
+ & \mathbf{x\ge0}
+\end{eqnarray*}
+$$
+The dual function is:
+$$
+\begin{eqnarray*}
+q(\lambda,\mu) & = & \underset{\mathbf{x\ge0}}{\inf}L(\mathbf{x},\lambda,\mu)\\
+ &  & \underset{\mathbf{x\ge0}}{\inf}\mathbf{c}^{T}\mathbf{x}+\lambda^{T}\left(\mathbf{Ax-b}\right)\\
+ &  & \underset{\mathbf{x\ge0}}{\inf}\left(\mathbf{c}^{T}+\lambda^{T}\mathbf{A}\right)\mathbf{x}-\lambda^{T}\mathbf{b}
+\end{eqnarray*}
+$$
+Here comes the tricky part: values of $q(\lambda,\mu)=-\infty$ do not count, they basically say that it is not feasible to maximize a function which is $-\infty$. If any element in vector $\mathbf{c}^{T}+\lambda^{T}\mathbf{A}$ is negative, the corresponding element of $\mathbf{x}$ can be made arbitrarily large to make $q(\lambda,\mu)=-\infty$. However, if $\mathbf{c}^{T}+\lambda^{T}\mathbf{A}\ge\mathbf{0}$ (reads $\ge0$ for all elements in the vector), the minimum is found for $\mathbf{x=0}$ and $q(\lambda,\mu)=-\lambda^{T}\mathbf{b}$. In summary, the dual problem is:
+$$
+\begin{eqnarray*}
+\max & -\lambda^{T}\mathbf{b}\\
+\mbox{s.t.} & \mathbf{c}^{T}+\lambda^{T}\mathbf{A}\ge 0
+\end{eqnarray*}
+$$
+Just to make it a bit easier to read, you can replace $-\lambda$ by $\lambda$ because everything else is unaffected:
+$$
+\begin{eqnarray*}
+\max & \lambda^{T}\mathbf{b}\\
+\mbox{s.t.} & \mathbf{c}^{T}\ge\lambda^{T}\mathbf{A}
+\end{eqnarray*}
+$$
+</p>
+<h3 id="h3_exlinearcon">Linear program with inequality constraint</h3>
+<p>
+Ok, the above inequality constraint of the primal problem was pretty easy. Let's make it more difficult, like this:
+$$
+\begin{eqnarray*}
+\min & \mathbf{c}^{T}\mathbf{x}\\
+\mbox{s.t.} & \mathbf{Ax\le b}
+\end{eqnarray*}
+$$
+But note that this is similar to the dual problem of the above example, so we should end up with its primal problem. Let's find the Lagrangian with the KKT multipliers:
+$$
+\begin{eqnarray*}
+L(\mathbf{x},\mu) & = & \mathbf{c}^{T}\mathbf{x}+\mu^{T}\left(\mathbf{Ax-b}\right)\\
+ & = & \left(\mathbf{c}^{T}+\mu^{T}\mathbf{A}\right)^{T}\mathbf{x}-\mu^{T}\mathbf{b}, \mu\ge0
+\end{eqnarray*}
+$$
+For the dual problem, we have that:
+$$
+\begin{eqnarray*}
+\nabla_{\mathbf{x}}L(\mathbf{x},\mu) & = & \mathbf{c}+\mathbf{A}^{T}\mu=\mathbf{0}
+\end{eqnarray*}
+$$
+This is a necessary condition for optimality. Then, under this condition, the $\mathbf{x}$ is not relevant, since it is multiplied by 0 in the Lagrange function. Finally, we have:
+$$
+\begin{eqnarray*}
+\min & \mathbf{\mu}^{T}\mathbf{b}\\
+\mbox{s.t.} & \mathbf{A}^{T}\mu+\mathbf{c}=0
+& \mu\ge0
+\end{eqnarray*}
+$$
+Can you see the resemblance between this dual problem and the primal problem of the previous example?
+</p>
+<h3 id="h3_exquadeqcon">Quadratic program with equality constraint</h3>
+<p>
+So far we have dealt only with linear problems. Consider now the quadratic program:
+$$
+\begin{eqnarray*}
+\min & \mathbf{x}^{T}\mathbf{x}\\
+\mbox{s.t.} & \mathbf{Ax=b}
+\end{eqnarray*}
+$$
+The Lagrangian is
+$$
+L(\mathbf{x},\lambda)=\mathbf{x}^{T}\mathbf{x}+\lambda^{T}\left(\mathbf{Ax-b}\right)
+$$
+To find the infimum, the derivative with respect to $\mathbf{x}$ must be zero. Then:
+$$
+\begin{eqnarray*}
+q(\lambda) & = & \underset{\mathbf{x}}{\inf}L(\mathbf{x},\lambda)\\
+\nabla_{\mathbf{x}}L(\mathbf{x},\lambda) & = & 2\mathbf{x}+\mathbf{A}^{T}\lambda=0\\
+\mathbf{x} & = & -\frac{1}{2}\mathbf{A}^{T}\lambda
+\end{eqnarray*}
+$$
+Replacing it in the Lagrangian function we get:
+$$
+\begin{eqnarray*}
+L(\lambda) & = & \frac{1}{4}\left(\mathbf{A}^{T}\lambda\right)^{T}\mathbf{A}^{T}\lambda+\lambda^{T}\left(-\frac{1}{2}\mathbf{A}\mathbf{A}^{T}\mathbf{\lambda-b}\right)\\
+ & = & -\frac{1}{4}\left(\mathbf{A}^{T}\lambda\right)^{T}\mathbf{A}^{T}\lambda-\lambda^{T}\mathbf{b}
+\end{eqnarray*}
+$$
+The Lagragian is a concave function and should be maximized with respect to $\lambda$. After finding the solution, replace it in $\mathbf{x}=-\frac{1}{2}\mathbf{A}^{T}\lambda$ to find $\mathbf{x}$.
+</p>
+<h3 id="h3_exquadineqcon">Quadratic program with inequality constraint</h3>
+<p>
+Now, let's add an inequality constraint and make the objective function a bit more complex:
+$$
+\begin{eqnarray*}
+\min & \frac{1}{2}\mathbf{x}^{T}\mathbf{Q}\mathbf{x}+\mathbf{c}^{T}\mathbf{x}\\
+\mbox{s.t.} & \mathbf{Ax\le b}
+\end{eqnarray*}
+$$
+where $\mathbf{Q}$ is a $n\times n$ positive-definite symmetric matrix and $\mathbf{A}$ is a $m\times n$ matrix. As before, the dual function is:
+$$
+\begin{eqnarray*}
+q(\mu) & = & \inf_\mathbf{x}\frac{1}{2}\mathbf{x}^{T}\mathbf{Q}\mathbf{x}+\mathbf{c}^{T}\mathbf{x}+\mu^{T}\left(\mathbf{Ax-b}\right)\\
+ &  & \inf_\mathbf{x}\frac{1}{2}\mathbf{x}^{T}\mathbf{Q}\mathbf{x}+\left(\mathbf{c}^{T}+\mu^{T}\mathbf{A}\right)\mathbf{x}-\mu^{T}\mathbf{b}
+\end{eqnarray*}
+$$
+In this case we can set the gradient of $q(\mu)$ w.r.t. $\mathbf{x}$ to zero:
+$$
+\begin{eqnarray*}
+\mathbf{Qx}+\mathbf{c}+\mathbf{A}\mu & = & 0\\
+\mathbf{x} & = & -\mathbf{Q}^{-1}\left(\mathbf{c}+\mathbf{A}^{T}\mu\right)
+\end{eqnarray*}
+$$
+and replace it in the original dual function:
+$$
+\begin{eqnarray*}
+q(\mu) & = & \frac{1}{2}\left(\mathbf{c}^{T}+\mu^{T}\mathbf{A}\right)\left(\mathbf{Q}^{-1}\right)^{T}\mathbf{Q}\mathbf{\mathbf{Q}^{-1}}\left(\mathbf{c}+\mathbf{A}^{T}\mu\right)-\left(\mathbf{c}^{T}+\mu^{T}\mathbf{A}\right)\mathbf{Q}^{-1}\left(\mathbf{c}+\mathbf{A}^{T}\mu\right)-\mu^{T}\mathbf{b}\\
+ & = & -\frac{1}{2}\mathbf{c}^{T}\mathbf{Q}^{-1}\mathbf{c}-\frac{1}{2}\mu^{T}\mathbf{A}\mathbf{Q}^{-1}\mathbf{A}^{T}\mu-\mu^{T}\mathbf{A}\mathbf{Q}^{-1}\mathbf{c}-\mu^{T}\mathbf{b}
+\end{eqnarray*}
+$$
+This long train can be further reduced by removing the constant term $-\frac{1}{2}\mathbf{c}^{T}\mathbf{Q}^{-1}\mathbf{c}$. Then, our dual problem becomes:
+$$
+\begin{eqnarray*}
+\max_\mathbf{\mu} & -\frac{1}{2}\mu^{T}\mathbf{A}\mathbf{Q}^{-1}\mathbf{A}^{T}\mu-\mu^{T}\left(\mathbf{A}\mathbf{Q}^{-1}\mathbf{c}+\mathbf{b}\right)\\
+\mbox{s.t.} & \mathbf{\mu\ge0}
+\end{eqnarray*}
+$$
+When the solution $\mu=\mu^{\star}$ of dual problem is found, the solution of the primal problem is just $\mathbf{x^{\star}}=-\mathbf{Q}^{-1}\left(\mathbf{c}+\mathbf{A}^{T}\mu^{\star}\right)$. Now compare the two problems: the primal is a problem with dimension $n$ with complicated constraints, while the dual is a problem with dimension $m$ ($\mathbf{A}\mathbf{Q}^{-1}\mathbf{A}^{T}$ is a $m\times m$ matrix) and with a much simpler constraint. If $m\le n$, the dual problem is simpler to solve.
+</p>
+<h3 id="h3_exothers">Other examples</h3>
+<p>
+As you can see, the recipe is always the same:
+<ol>
+<li>In case the problem does not have a constraint, create one by changing the problem statement.</li>
+<li>In case the problem is a maximization, invert it to become a minimization.</li>
+<li>Formulate the Lagrange function (function of the primal variables and multipliers)</li>
+<li>Minimize the Lagrange function with respect to the primal variable to obtain the dual function.</li>
+<li>Maximize the dual function with respect to the multipliers, in this case named dual variables</li>
+</ol>
+We expect that point 4 is easy to compute, as in the examples above. The last point can be solved with a wide range of iterative methods. There are even some methods that give you both the primal and dual variables simultaneously upon convergence.
+</p>
+<h2 id="h2_sources">Sources</h2>
+<p>
+For more information, you can read these sources:
+<ul>
+<li>Stephen Boyd and Lieven Vandenberghe, <a href="../_boyd/cvxbook/bv_cvxbook.pdf" target="_blank" rel="external">Convex Optimization</a></li>
+<li>Dimitri Bertsekas, <a href="http://www.amazon.com/Nonlinear-Programming-Dimitri-P-Bertsekas/dp/1886529000" target="_blank" rel="external">Nonlinear Programming</a></li>
+</ul>
+</p>
+<script type="text/javascript" src="../pages/typeset.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>

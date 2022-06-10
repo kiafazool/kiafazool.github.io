@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Bode Plot - online generator, examples, drawing rules, transfer function (magnitude and phase)</title>
+	<link rel="canonical" href="http://onmyphd.com/print_p_bode_plot/" />
+	<meta name="description" content="The bode plot is a graphical representation of a linear, time-invariant system transfer function. There are two bode plots, one plotting the magnitude (or gain) versus frequency (Bode Magnitude plot) and another plotting the phase versus frequency (Bode Phase plot). Learn what is the bode plot, try the bode plot online plotter and create your own examples. ">
+	<meta name="keywords" content="transfer function, poles, zeros, asymptotic, example, calculator, drawing, rules, magnitude, gain, phase, applet">
+	<meta name="author" content="Hugo Gonçalves"> 
+	<meta property="fb:admins" content="100004669092914"/>		
+</head>
+<body>
+<script src="../ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+// Google Analytics
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36174546-1']);
+_gaq.push(['_trackPageview']);
+loadJS(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+ var page = 'bode.plot';// Add event listener compatible with all browsers
+function addEvent(e, ev, f) {
+	// W3C DOM || IE DOM
+	if (e.addEventListener) e.addEventListener(ev,f,false)
+	else if (e.attachEvent) e.attachEvent("on"+ev, f);
+}
+// Asynchronous load of script
+function loadJS(src, callback) {
+	var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = src;
+	if (callback) addEvent(e, 'load', callback);
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s);
+}
+function loadJSonce(src, id, callback) {
+	var s = document.getElementsByTagName('script')[0];
+	if(!s.getElementById(id)) loadJS(src, callback);
+}
+function r(obj, f) {
+	var a = [].slice.call(arguments);
+	var f = a[a.length - 1];
+	f.apply(undefined, a.slice(0,-1));
+}
+_jQ = jQuery;
+_phd = jQuery.phd;
+</script>
+<script type="text/javascript" src="../components/js/phd.js"></script>
+<div id="pages">
+<p class="comment">Source: <a href="../p_bode/">http://onmyphd.com/?p=bode.plot</a></p><h1>Bode plot</h1>
+<h2>What do you need to know to understand this topic?</h2>
+<ul>
+<li>Laplace transform</li>
+<li>System transfer function</li>
+</ul>
+<h2>Sections</h2>
+<ul>
+	<li><a href="#h2_whatis">What is the Bode plot?</a></li>
+	<li><a href="#h2_how">How to draw a bode plot?</a></li>
+	<ul>
+		<li><a href="#h3_asymptotic">Asymptotic drawing</a></li>
+		<li><a href="#h3_real">Transfer function plots</a></li>
+		<li><a href="#h3_complex">With complex poles and zeros</a></li>
+	</ul>
+	<li><a href="#h2_resources">Resources</a></li>
+</ul>
+<h2 id="h2_whatis">What is the Bode plot?</h2>
+<p>
+A Bode plot is a graphical representation of a linear, time-invariant system transfer function. In a linear system, any sinusoidal that inputs the system is only changed in <b>magnitude</b>, when it is amplified or attenuated, and <b>phase</b>, when delayed. Therefore, the system can be described for every frequency, just by its gain and phase shift. The bode plots simply trace the gain and phase shift of the system to a range of frequencies. There are two bode plots, one plotting the magnitude (or gain) versus frequency (<b>Bode Magnitude plot</b>) and another plotting the phase versus frequency (<b>Bode Phase plot</b>). They are represented with the frequency in a logarithmic scale, the magnitude in decibels (20log<sub>10</sub>(magnitude)) and the phase in a linear scale.
+</p>
+<h2 id="h2_how">How to draw a bode plot?</h2>
+<p>
+There are two ways of drawing a bode plot. One is taking the magnitude and phase of the system transfer function at each frequency and drawing the plot with those points. The other, called <b>asymptotic bode plot</b>, considers straight lines between poles or zeros and has some simple rules for the slopes of those lines. Given its simplicity, these can be drawn by hand.
+</p>
+<h3 id="h3_asymptotic">Asymptotic drawing</h3>
+<p>
+A linear system is composed of poles and zeros, expressed in the form:
+$$H(s) = A\frac{(s/z_0 + 1)(s/z_1 + 1)\cdots(s/z_n + 1)}{(s/p_0 + 1)(s/p_1 + 1)\cdots(s/p_n + 1)}$$
+where $A$ is the gain of the system, $z_0, z_1, ..., z_n$ are the location of the zeros and $p_0, p_1, ..., p_n$ are the location of the poles. The poles and zeros can be in the left hand plane (LHP) or right hand plane (RHP). If we divide the range of values for the poles/zero between negative and positive, the LHP has the negative poles/zeros and the RHP has the positive poles/zeros.
+</p>
+<center>
+<img src="../pages/bode.plot/planes.svg" class="svg" alt="Poles/zeros plane divided between left (negative) and right (positive)" width="200"/>
+</center>
+<p>
+The expression comes from the Laplace transformation of the transfer function from the time domain. For example, a simple first-order low pass filter has a single pole, while a first-order high pass filter has a pole and a zero. The concatenation of these and other higher-order (more poles and zeros) linear systems can give rise to a large expression, but always with the factorization of poles and zeros as in the expression above.
+</p>
+<p>
+<b>The rules for drawing the magnitude plot</b> are the following:
+<ul>
+<li>The plot starts with a horizontal line at a magnitude equal to the DC magnitude of the system ($H(0) = A$)
+</p>
+<center>
+<img src="../pages/bode.plot/magnitude.rule1.svg" class="svg" alt="Magnitude bode plot gain rule" width="300"/>
+</center>
+<p>
+</li>
+<li>For every pole, the slope of the line decreases by 20 dB/decade of frequency at that pole's frequency
+</p>
+<center>
+<img src="../pages/bode.plot/magnitude.rule2.svg" class="svg" alt="Magnitude bode plot pole rule" width="600"/>
+</center>
+<p>
+</li>
+<li>For every zero, the slope of the line increases by 20 dB/decade of frequency at that zero's frequency
+</p>
+<center>
+<img src="../pages/bode.plot/magnitude.rule3.svg" class="svg" alt="Magnitude bode plot zero rule" width="600"/>
+</center>
+<p>
+</li>
+<li>For every pole or zero at zero frequency, the plot starts with the effect of that pole/zero on the slope. Zeros and poles at zero frequency are represented as :
+$$H(s)= As$$
+$$H(s)= A\frac{1}{s}$$
+which means that at frequency 1 rad/s, the magnitude must be equal to the DC magnitude $A$. Then, the trace of the plot must cross $A$ at 1 rad/s and be backtracked to the starting frequency of the plot.
+</p>
+<center>
+<img src="../pages/bode.plot/magnitude.rule4.svg" class="svg" alt="Magnitude bode plot zero frequency rule" width="600"/>
+</center>
+<p>
+</li>
+<li>For multiple zeros or poles at the same frequency, the slope of the line changes according to that number</li>
+</ul>
+Yes, it is that simple!
+</p>
+<p>
+<b>The rules for drawing the phase plot</b> are the following:
+<ul>
+<li>Start the plot with a horizontal line at 0º phase if the gain is positive or -180º if the gain is negative (negative gain corresponds to an inverted sinusoid and thus to a 180º phase between input and output)
+</p>
+<center>
+<img src="../pages/bode.plot/phase.rule1.svg" class="svg" alt="Phase bode plot gain rule" width="500"/>
+</center>
+<p>
+</li>
+<li>For each LHP pole or RHP zero, decrease the slope by 45º/decade one decade before the pole/zero, and increase by the same amount one decade after the pole/zero. After two decades, the phase will be -90º than before for each pole/zero.
+</p>
+<center>
+<img src="../pages/bode.plot/phase.rule2.svg" class="svg" alt="Magnitude bode plot pole rule" width="600"/>
+</center>
+<p>
+</li>
+<li>For each RHP pole or LHP zero, increase the slope by 45º/decade one decade before the pole/zero, and decrease by the same amount one decade after the pole/zero. After two decades, the phase will be +90º than before for each pole/zero.
+</p>
+<center>
+<img src="../pages/bode.plot/phase.rule3.svg" class="svg" alt="Magnitude bode plot zero rule" width="600"/>
+</center>
+<p>
+</li>
+<li>For each pole or zero at zero frequency, the plot starts with the effect of that pole/zero on the phase. For a pole:
+$$ \angle H(s) = \angle \frac{1}{s} = \angle \frac{1}{j\omega} = \angle -\frac{j}{\omega} = \tan^{-1} -\frac{1/\omega}{0} = \tan^{-1}{-\infty} = -90º.$$
+For a zero:
+$$ \angle H(s) = \angle s = \angle j\omega = \tan^{-1} \frac{\omega}{0} = \tan^{-1}{\infty} = 90º.$$
+Since bode plots are drawn in logarithmic scale, we never see the zero frequency. Hence, for frequencies just above zero, the ratio above for the zero is not indeterminate and leads to 90º.
+</p>
+<center>
+<img src="../pages/bode.plot/phase.rule4.svg" class="svg" alt="Magnitude bode plot zero frequency rule" width="550"/>
+</center>
+<p>
+</li>
+</ul>
+Again, yes, it is that simple!
+</p>
+<h3 id="h3_real">Transfer function plots</h3>
+<p>
+The magnitude of the system is taken from the absolute value of the magnitude:
+$$|H(s)| = \left|A\frac{(s/z_0 + 1)(s/z_1 + 1)\cdots(s/z_n + 1)}{(s/p_0 + 1)(s/p_1 + 1)\cdots(s/p_n + 1)} \right|$$
+$$|H(s)| = |A|\sqrt{\frac{((\omega/z_0)^2 + 1)((\omega/z_1)^2 + 1)\cdots((\omega/z_n)^2 + 1)}{((\omega/p_0)^2 + 1)((\omega/z_1)^2 + 1)\cdots((\omega/z_n)^2 + 1)}}$$
+The phase of the system is taken from the contribution of each pole and zero for the total phase.
+$$\angle H(s) = \angle A - \tan^{-1}(\frac{\omega}{z_0}) - \tan^{-1}(\frac{\omega}{z_1}) - \cdots - \tan^{-1}(\frac{\omega}{z_n}) + \tan^{-1}(\frac{\omega}{p_0}) + \tan^{-1}(\frac{\omega}{p_1}) + \cdots + \tan^{-1}(\frac{\omega}{p_n})$$
+Now let's compare the asymptotic plots with the transfer function plots. You can add poles and zeros to the transfer function and verify the rules for yourself. The plot starts with a pole at -10 rad/s and a zero at -10 Krad/s. You can make your own examples by changing these poles/zeros and adding more.
+</p>
+<p>
+Try out these examples:
+$$H(s) = \frac{s+1}{\left(\frac{s}{10}+1\right)\left(\frac{s}{100}+1\right)}$$
+$$H(s) = \frac{\frac{s}{10}+1}{s\left(\frac{s}{3}+1\right)}$$
+$$H(s) = \frac{s}{\left(s+1\right)^2 \left(\frac{s}{10}+1\right)}$$
+</p>
+<table>
+<tr>
+<td rowspan="2">$H(s)$</td><td>zeros</td><td id="listzeros"><input type="text" size="5" value="-10000" id="zero0"/></td><td><input type="button" value="more" id="morezeros"/></td>
+</tr>
+<tr>
+<td>poles</td><td id="listpoles"><input type="text" size="5" value="-10" id="pole0"/></td><td><input type="button" value="more" id="morepoles"/></td>
+</tr>
+</table>
+<center>
+<input type="button" value="Plot!" id="btnplot"/>
+<div style="width:600px;height:300px" id="bode_mag_plot"></div>
+<p class="comment">
+</p>
+<div style="width:600px;height:300px" id="bode_phase_plot"></div>
+<p class="comment">
+</p>
+</center>
+<h3 id="h3_complex">With complex poles and zeros</h3>
+<p>
+Up until now we dealt with real poles and zeros: the asymptotic plots are pretty close to the transfer function plots. But what if the poles or zeros are complex? Will the rules for drawing the asymptotic plots change? Will the approximation still be good?
+</p>
+<p>
+Notice that we took the real part of the poles or zeros to draw the plots (which in the previous case was all there was). Now we have some imaginary parts to account for. If we take the real part of the complex poles or zeros, the asymptotic approximation does not capture the effect of the imaginary part. First of all, complex poles or zeros come in pairs, so for every complex zero or pole, the transfer function will also have its conjugate (with the imaginary part negated).<br/>
+For a pair of roots $\omega \pm i\sigma$, the expression:
+$$ (s + \omega + i\sigma)(s + \omega - i\sigma) = s^2 + 2\omega s + \sigma^2 + \omega^2$$
+can be converted to the form
+$$ s^2 + 2\xi\omega_ns + \omega_n^2.$$
+That is, the natural frequency created by the conjugate pair is $\omega_n = \sqrt{\sigma^2 + \omega^2}$ and the damping ratio (how fast the oscillation fades away) is $\xi = \omega/\omega_n$. In other words, <b>the magnitude plot will change slope around the natural frequency (not the real part of the root)</b>, which can be calculated as above or by making a simpler approximation of the maximum of the real and imaginary parts.
+<br/>
+However, the peaking that exists when the damping ratio is too low is not captured.
+</p>
+<p>
+Regarding the phase plot, we can use the same rules, but by <b>changing the pole/zero frequency by the natural frequency of the conjugate pair</b>. That will give a better approximation, but for small damping ratios ($\sigma &gt; \omega$), the slope of the phase is much bigger than what expected by using the rules. We can however make some better approximations as <a href="http://lpsa.swarthmore.edu/Bode/underdamped/underdampedApprox.html" target="_blank">described in here</a>. The following table shows three approximations, by stating at what frequency the asymptotic phase starts to change and at what frequency it stops changing.
+<table class="table" width="100%" style="text-align:center">
+<tr>
+<th>Starts changing at</th><td>$\omega_n \frac{log_{10}\left(2 /\xi\right)}{2}$</td><td>$\omega_n \left(\frac{1}{5}\right)^\xi$</td><td>$\omega_n \frac{1}{1+5\xi}$</td>
+</tr>
+<tr>
+<th>Stops changing at</th><td>$\omega_n \frac{2}{log_{10}\left(2/\xi\right)}$</td><td>$\omega_n 5^\xi$</td><td>$\omega_n (1+5\xi)$</td>
+</tr>
+</table>
+There is no right or wrong here, any approximation can be used. In the plot below, I use the middle approximation.
+</p>
+<p>
+Now you can add imaginary parts to the poles and zeros and see how they affect the bode plot of the transfer function. The asymptotic approximation takes the natural frequency as the points of change.
+</p>
+<p>
+Try out these examples:
+$$H(s) = \frac{\frac{s}{10}+1}{s^2+3s+50}$$
+$$H(s) = \frac{s^2+s+25}{s^2 \left(\frac{s}{100}+1\right)}$$
+</p>
+<table>
+<tr>
+<td rowspan="2">$H(s)$</td>
+<td>zeros</td><td id="listcomplexzeros"><input type="text" size="5" value="-10000" id="zeroreal0"/>+j<input type="text" size="5" value="0" id="zeroimag0"/></td><td><input type="button" value="more" id="morecomplexzeros"/></td>
+</tr>
+<tr>
+<td>poles</td><td id="listcomplexpoles"><input type="text" size="5" value="-10" id="polereal0"/>+j<input type="text" size="5" value="50" id="poleimag0"/></td><td><input type="button" value="more" id="morecomplexpoles"/></td>
+</tr>
+</table>
+<center>
+<input type="button" value="Plot!" id="btnplotcomplex"/>
+<div style="width:600px;height:300px" id="complexbode_mag_plot"></div>
+<p class="comment">
+</p>
+<div style="width:600px;height:300px" id="complexbode_phase_plot"></div>
+<p class="comment">
+</p>
+</center>
+<h2>Resources</h2>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/File:Bode_plot_template.pdf">A PDF bode plot template</a> for you to draw your own plots on paper (from Wikipedia)</li>
+</ul>
+<script type="text/javascript" src="../pages/bode_plot.js"></script>
+</div>
+<script>
+jQuery (function ($) {
+	// avoid loading javascript for the two main pages, as it would replicate the toc
+	if (page != 'contents' && page != 'about.me' && page != '404')
+	{
+		$.phd.onload('#pages');
+		$("#pages a.page").attr({rel: 'external', target: '_blank'});
+		$.phd.cite('#pages');
+		//$.phd.ads('#pages');
+	}
+	/*$('#searchbox').hide();
+	$('#searchtoggle').click( function () {
+		if ($('#searchbox').toggle().is(':visible')) {			
+			$(this).html('Search &#x25B2;');
+		} else {
+			$(this).html('Search &#x25BC;');
+		}
+		return false;
+	});*/	
+});
+</script>
+<link href="../main.css" rel="stylesheet" type="text/css">
+</body>
+</html>
